@@ -82,6 +82,8 @@ body.sidebar-open .admin-backdrop{opacity:1;visibility:visible}
 
 /* Forms / cards */
 .form-card{padding:12px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.dashboard-card{min-height:220px;display:flex;flex-direction:column;justify-content:center}
+.dashboard-card .display-6{font-size:2rem}
 .table-responsive{border-radius:8px;overflow:hidden}
 
 /* Accessibility */

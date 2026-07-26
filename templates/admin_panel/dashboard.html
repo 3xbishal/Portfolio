@@ -14,33 +14,37 @@
 <!-- Stats Cards -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
+        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
             <div class="display-6 text-primary mb-2"><i class="fas fa-folder-open"></i></div>
             <h3 class="h4 fw-bold mb-1">{{ stats.projects }}</h3>
             <p class="text-muted small mb-0">Projects</p>
             <p class="text-muted small mb-0">({{ stats.active_projects }} active)</p>
+            <a href="{% url 'admin_panel:project_list' %}" class="stretched-link" aria-label="View projects"></a>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
+        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
             <div class="display-6 text-primary mb-2"><i class="fas fa-star"></i></div>
             <h3 class="h4 fw-bold mb-1">{{ stats.skills }}</h3>
             <p class="text-muted small mb-0">Skills</p>
+            <a href="{% url 'admin_panel:skill_list' %}" class="stretched-link" aria-label="View skills"></a>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
+        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
             <div class="display-6 text-primary mb-2"><i class="fas fa-briefcase"></i></div>
             <h3 class="h4 fw-bold mb-1">{{ stats.experiences }}</h3>
             <p class="text-muted small mb-0">Experience</p>
+            <a href="{% url 'admin_panel:experience_list' %}" class="stretched-link" aria-label="View experience"></a>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
+        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
             <div class="display-6 text-primary mb-2"><i class="fas fa-envelope"></i></div>
             <h3 class="h4 fw-bold mb-1">{{ stats.messages }}</h3>
             <p class="text-muted small mb-0">Messages</p>
             <p class="text-muted small mb-0">({{ stats.unread_messages }} unread)</p>
+            <a href="{% url 'admin_panel:contactmessage_list' %}" class="stretched-link" aria-label="View messages"></a>
         </div>
     </div>
 </div>
