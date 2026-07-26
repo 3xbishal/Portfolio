@@ -3,6 +3,8 @@ Models for the portfolio application.
 All content is managed through the Django admin panel.
 """
 
+import os
+
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
@@ -33,15 +35,16 @@ class Profile(models.Model):
     # Social links
     linkedin_url = models.URLField(blank=True, help_text="LinkedIn profile URL")
     github_url = models.URLField(blank=True, help_text="GitHub profile URL")
-    twitter_url = models.URLField(blank=True, help_text="Twitter/X profile URL")
-    stackoverflow_url = models.URLField(blank=True, help_text="Stack Overflow profile URL")
-    dribbble_url = models.URLField(blank=True, help_text="Dribbble profile URL")
-
-    # Availability
-    available_for_work = models.BooleanField(
-        default=True,
-        help_text="Whether you are currently available for new opportunities"
+    instagram_url = models.URLField(blank=True, help_text="Instagram profile URL")
+    facebook_url = models.URLField(blank=True, help_text="Facebook profile URL")
+    leetcode_url = models.URLField(blank=True, help_text="LeetCode profile URL")
+    gmail_address = models.EmailField(blank=True, help_text="Gmail address")
+    whatsapp_number = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="WhatsApp number with country code"
     )
+
     is_active = models.BooleanField(
         default=True,
         help_text="Only the active profile is shown on the site"
@@ -92,36 +95,18 @@ class Project(models.Model):
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly slug")
-    short_description = models.CharField(
-        max_length=300,
-        help_text="Brief description shown in project cards"
-    )
     description = models.TextField(help_text="Full project description")
-    project_image = models.ImageField(
+    project_media = models.FileField(
         upload_to='projects/',
         blank=True,
         null=True,
-        help_text="Main project image / screenshot"
+        help_text="Image or video file for this project"
     )
     project_url = models.URLField(blank=True, help_text="Live demo URL")
     github_url = models.URLField(blank=True, help_text="GitHub repository URL")
-    technologies = models.ManyToManyField(
-        Skill,
-        related_name='projects',
-        help_text="Technologies used in this project"
-    )
-    is_featured = models.BooleanField(
-        default=False,
-        help_text="Feature this project on the home page"
-    )
-    is_active = models.BooleanField(
-        default=True,
-        help_text="Only active projects are shown"
-    )
-    date_completed = models.DateField(
+    technologies_used = models.TextField(
         blank=True,
-        null=True,
-        help_text="When the project was completed"
+        help_text="Describe the technologies used in this project"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -129,7 +114,7 @@ class Project(models.Model):
     class Meta:
         verbose_name = "Project"
         verbose_name_plural = "Projects"
-        ordering = ['-date_completed', '-created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
@@ -138,9 +123,13 @@ class Project(models.Model):
         return reverse('project_detail', kwargs={'slug': self.slug})
 
     @property
-    def featured_technologies(self):
-        """Return up to 5 technologies for display."""
-        return self.technologies.all()[:5]
+    def media_type(self):
+        if not self.project_media:
+            return None
+        ext = os.path.splitext(self.project_media.name)[1].lower()
+        if ext in {'.mp4', '.webm', '.ogg'}:
+            return 'video'
+        return 'image'
 
 
 class ProjectImage(models.Model):
@@ -175,10 +164,6 @@ class Experience(models.Model):
     is_current = models.BooleanField(
         default=False,
         help_text="Check if this is your current position"
-    )
-    is_active = models.BooleanField(
-        default=True,
-        help_text="Only active entries are shown"
     )
     order = models.PositiveIntegerField(default=0, help_text="Display order (lower = first)")
 

@@ -8,16 +8,22 @@
                     <a href="{{ profile.linkedin_url }}" target="_blank" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                 {% endif %}
                 {% if profile.github_url %}
-                    <a href="{{ profile.github_url }}" target="_blank" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="{{ profile.github_url }}" target="_blank" class="social-link github" aria-label="GitHub"><i class="fab fa-github"></i></a>
                 {% endif %}
-                {% if profile.twitter_url %}
-                    <a href="{{ profile.twitter_url }}" target="_blank" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                {% if profile.instagram_url %}
+                    <a href="{{ profile.instagram_url }}" target="_blank" class="social-link instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 {% endif %}
-                {% if profile.stackoverflow_url %}
-                    <a href="{{ profile.stackoverflow_url }}" target="_blank" class="social-link" aria-label="Stack Overflow"><i class="fab fa-stack-overflow"></i></a>
+                {% if profile.facebook_url %}
+                    <a href="{{ profile.facebook_url }}" target="_blank" class="social-link facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                 {% endif %}
-                {% if profile.dribbble_url %}
-                    <a href="{{ profile.dribbble_url }}" target="_blank" class="social-link" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                {% if profile.leetcode_url %}
+                    <a href="{{ profile.leetcode_url }}" target="_blank" class="social-link leetcode" aria-label="LeetCode"><i class="fas fa-laptop-code"></i></a>
+                {% endif %}
+                {% if profile.gmail_address %}
+                    <a href="mailto:{{ profile.gmail_address }}" class="social-link email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                {% endif %}
+                {% if profile.whatsapp_number %}
+                    <a href="https://wa.me/{{ profile.whatsapp_number|urlencode }}" target="_blank" class="social-link whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                 {% endif %}
             </div>
             <p class="text-muted mb-0">&copy; {{ profile.name }} - {{ profile.title }}. All rights reserved.</p>

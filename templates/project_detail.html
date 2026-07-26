@@ -9,17 +9,21 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto text-center">
-                {% if project.project_image %}
-                    <img src="{{ project.project_image.url }}" alt="{{ project.title }}" class="img-fluid rounded shadow-lg project-detail-image">
+                {% if project.project_media %}
+                    {% if project.media_type == 'video' %}
+                        <video controls class="img-fluid rounded shadow-lg project-detail-image" preload="metadata">
+                            <source src="{{ project.project_media.url }}" type="video/{{ project.project_media.name|slice:'-3:' }}">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% else %}
+                        <img src="{{ project.project_media.url }}" alt="{{ project.title }}" class="img-fluid rounded shadow-lg project-detail-image">
+                    {% endif %}
                 {% else %}
                     <div class="project-detail-image-placeholder d-flex align-items-center justify-content-center rounded shadow-lg mx-auto">
                         <i class="fas fa-image fa-5x text-muted"></i>
                     </div>
                 {% endif %}
                 <h1 class="fw-bold mt-4">{{ project.title }}</h1>
-                {% if project.date_completed %}
-                    <p class="text-muted"><i class="fas fa-calendar me-1"></i>{{ project.date_completed|date:"F j, Y" }}</p>
-                {% endif %}
                 <div class="d-flex justify-content-center gap-2 mb-3">
                     {% if project.project_url %}
                         <a href="{{ project.project_url }}" target="_blank" class="btn btn-success">
@@ -43,18 +47,12 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <h2 class="fw-bold mb-4 section-title">Project Overview</h2>
-                <p class="lead mb-4">{{ project.short_description }}</p>
                 <div class="mb-5">{{ project.description|linebreaks }}</div>
 
-                {% if project.technologies.all %}
+                {% if project.technologies_used %}
                     <h3 class="fw-bold mb-3">Technologies Used</h3>
-                    <div class="d-flex flex-wrap gap-2 mb-5">
-                        {% for tech in project.technologies.all %}
-                            <span class="badge bg-primary fs-6 px-3 py-2">
-                                {% if tech.icon_class %}<i class="{{ tech.icon_class }} me-1"></i>{% endif %}
-                                {{ tech.name }}
-                            </span>
-                        {% endfor %}
+                    <div class="mb-5">
+                        <p>{{ project.technologies_used|linebreaks }}</p>
                     </div>
                 {% endif %}
 

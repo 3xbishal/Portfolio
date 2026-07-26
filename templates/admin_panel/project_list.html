@@ -13,9 +13,7 @@
         <thead>
           <tr>
             <th>Title</th>
-            <th>Completed</th>
-            <th>Featured</th>
-            <th>Active</th>
+            <th>Technologies</th>
             <th class="text-end">Actions</th>
           </tr>
         </thead>
@@ -23,9 +21,7 @@
           {% for project in projects %}
             <tr>
               <td>{{ project.title }}</td>
-              <td>{% if project.date_completed %}{{ project.date_completed }}{% else %}-{% endif %}</td>
-              <td>{% if project.is_featured %}<span class="badge bg-warning text-dark">Featured</span>{% endif %}</td>
-              <td>{% if project.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="text-muted">Inactive</span>{% endif %}</td>
+              <td>{{ project.technologies_used|truncatechars:60|default:'-' }}</td>
               <td class="text-end">
                 <a href="{% url 'admin_panel:project_edit' project.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
                 <a href="{% url 'admin_panel:project_delete' project.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>

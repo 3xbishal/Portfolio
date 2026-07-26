@@ -29,7 +29,8 @@
 
     {% block extra_css %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="portfolio-body {% block body_class %}{% endblock %}">
+    <div class="page-bg"></div>
 
     <!-- Header / Navigation -->
     {% include 'partials/_header.html' %}

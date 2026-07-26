@@ -96,8 +96,6 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
         context['profile'] = Profile.objects.filter(is_active=True).first()
         context['stats'] = {
             'projects': Project.objects.count(),
-            'active_projects': Project.objects.filter(is_active=True).count(),
-            'featured_projects': Project.objects.filter(is_featured=True).count(),
             'skills': Skill.objects.count(),
             'experiences': Experience.objects.count(),
             'educations': Education.objects.count(),
@@ -116,22 +114,25 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
 # ---------------------------------------------------------------------------
 
 class ProfileEditView(AdminRequiredMixin, TemplateView):
-    """Edit the single profile instance."""
+    """Edit the active profile instance."""
     template_name = 'admin_panel/profile_edit.html'
+
+    def get_profile(self):
+        return Profile.objects.filter(is_active=True).first() or Profile.objects.first()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.first()
+        context['profile'] = self.get_profile()
         context['form'] = self.form
         return context
 
     def get(self, request, *args, **kwargs):
-        profile = Profile.objects.first()
+        profile = self.get_profile()
         self.form = ProfileAdminForm(instance=profile)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        profile = Profile.objects.first()
+        profile = self.get_profile()
         self.form = ProfileAdminForm(
             request.POST, request.FILES, instance=profile
         )

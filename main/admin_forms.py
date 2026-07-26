@@ -20,6 +20,8 @@ class AdminBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.CheckboxInput):
+                continue
             field.widget.attrs.update({
                 'class': 'form-control',
             })
@@ -35,9 +37,9 @@ class ProfileAdminForm(AdminBaseForm):
         fields = [
             'name', 'title', 'bio', 'email', 'phone', 'location',
             'profile_image', 'cv_file',
-            'linkedin_url', 'github_url', 'twitter_url',
-            'stackoverflow_url', 'dribbble_url',
-            'available_for_work', 'is_active',
+            'linkedin_url', 'github_url',
+            'instagram_url', 'facebook_url', 'leetcode_url',
+            'gmail_address', 'whatsapp_number',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 5}),
@@ -59,14 +61,13 @@ class ProjectAdminForm(AdminBaseForm):
     class Meta:
         model = Project
         fields = [
-            'title', 'slug', 'short_description', 'description',
-            'project_image', 'project_url', 'github_url',
-            'technologies', 'is_featured', 'is_active', 'date_completed',
+            'title', 'slug', 'description',
+            'project_media', 'project_url', 'github_url',
+            'technologies_used',
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 6}),
-            'short_description': forms.Textarea(attrs={'rows': 3}),
-            'technologies': forms.CheckboxSelectMultiple(),
+            'technologies_used': forms.Textarea(attrs={'rows': 4}),
         }
 
 
@@ -76,7 +77,7 @@ class ExperienceAdminForm(AdminBaseForm):
         fields = [
             'company', 'company_website', 'position', 'location',
             'description', 'start_date', 'end_date', 'is_current',
-            'is_active', 'order',
+            'order',
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 5}),

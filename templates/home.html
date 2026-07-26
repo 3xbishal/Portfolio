@@ -16,30 +16,19 @@
                     </h1>
                     <p class="lead text-muted mb-4">{{ profile.title }}</p>
                     <p class="lead mb-5">{{ profile.bio|truncatewords:30 }}</p>
-                    {% if profile.available_for_work %}
-                        <div class="d-flex flex-wrap gap-3">
-                            <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4">
-                                <i class="fas fa-folder-open me-2"></i>View My Work
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-folder-open me-2"></i>View My Work
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="fas fa-envelope me-2"></i>Get In Touch
+                        </a>
+                        {% if profile.cv_file %}
+                            <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4" download>
+                                <i class="fas fa-download me-2"></i>Download CV
                             </a>
-                            <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4">
-                                <i class="fas fa-envelope me-2"></i>Get In Touch
-                            </a>
-                            {% if profile.cv_file %}
-                                <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4" download>
-                                    <i class="fas fa-download me-2"></i>Download CV
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="d-flex flex-wrap gap-3">
-                            <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4">
-                                <i class="fas fa-folder-open me-2"></i>View My Work
-                            </a>
-                            <a href="{% url 'about' %}" class="btn btn-outline-primary btn-lg px-4">
-                                <i class="fas fa-user me-2"></i>About Me
-                            </a>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 {% else %}
                     <h1 class="hero-title display-4 fw-bold mb-3">Welcome to My Portfolio</h1>
                     <p class="lead text-muted mb-4">Web Developer</p>
@@ -71,8 +60,15 @@
             {% for project in featured_projects %}
             <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm project-card">
-                    {% if project.project_image %}
-                        <img src="{{ project.project_image.url }}" class="card-img-top project-image" alt="{{ project.title }}">
+                    {% if project.project_media %}
+                        {% if project.media_type == 'video' %}
+                            <video controls class="card-img-top project-image" preload="metadata">
+                                <source src="{{ project.project_media.url }}" type="video/{{ project.project_media.name|slice:'-3:' }}">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% else %}
+                            <img src="{{ project.project_media.url }}" class="card-img-top project-image" alt="{{ project.title }}">
+                        {% endif %}
                     {% else %}
                         <div class="card-img-top project-image-placeholder d-flex align-items-center justify-content-center">
                             <i class="fas fa-image fa-3x text-muted"></i>
@@ -80,12 +76,7 @@
                     {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h3 class="h5 card-title">{{ project.title }}</h3>
-                        <p class="card-text text-muted small flex-grow-1">{{ project.short_description|truncatechars:120 }}</p>
-                        <div class="mb-3">
-                            {% for tech in project.featured_technologies %}
-                                <span class="badge bg-light text-dark border">{{ tech.name }}</span>
-                            {% endfor %}
-                        </div>
+                        <p class="card-text text-muted small flex-grow-1">{{ project.technologies_used|truncatechars:120 }}</p>
                         <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-auto">
                             <i class="fas fa-arrow-right me-1"></i>View Details
                         </a>

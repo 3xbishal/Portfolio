@@ -23,8 +23,8 @@ from .forms import ContactForm
 
 
 def get_active_profile():
-    """Return the active profile or None."""
-    return Profile.objects.filter(is_active=True).first()
+    """Return the active profile or the first profile if none are active."""
+    return Profile.objects.filter(is_active=True).first() or Profile.objects.first()
 
 
 # ---------------------------------------------------------------------------
@@ -34,11 +34,11 @@ def get_active_profile():
 def home(request):
     """Home page with featured projects, skills, and testimonials."""
     profile = get_active_profile()
-    featured_projects = Project.objects.filter(is_featured=True, is_active=True)[:6]
+    featured_projects = Project.objects.all()[:6]
     skills = Skill.objects.all()
     services = Service.objects.filter(is_active=True)
     testimonials = Testimonial.objects.filter(is_active=True)[:6]
-    experiences = Experience.objects.filter(is_active=True)[:3]
+    experiences = Experience.objects.all()[:3]
 
     context = {
         'profile': profile,
@@ -58,7 +58,7 @@ def home(request):
 def about(request):
     """About page with profile, experience, and education."""
     profile = get_active_profile()
-    experiences = Experience.objects.filter(is_active=True)
+    experiences = Experience.objects.all()
     educations = Education.objects.filter(is_active=True)
     skills = Skill.objects.all()
 

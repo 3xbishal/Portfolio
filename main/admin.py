@@ -24,9 +24,9 @@ from .models import (
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'title', 'email', 'location', 'is_active', 'available_for_work']
-    list_editable = ['is_active', 'available_for_work']
-    list_filter = ['is_active', 'available_for_work']
+    list_display = ['name', 'title', 'email', 'location', 'is_active']
+    list_editable = ['is_active']
+    list_filter = ['is_active']
     search_fields = ['name', 'title', 'email', 'location']
     fieldsets = (
         ('Basic Information', {
@@ -36,11 +36,13 @@ class ProfileAdmin(admin.ModelAdmin):
             'fields': ('profile_image', 'cv_file')
         }),
         ('Social Links', {
-            'fields': ('linkedin_url', 'github_url', 'twitter_url',
-                       'stackoverflow_url', 'dribbble_url')
+            'fields': (
+                'linkedin_url', 'github_url', 'instagram_url',
+                'facebook_url', 'leetcode_url', 'gmail_address', 'whatsapp_number'
+            )
         }),
-        ('Availability', {
-            'fields': ('available_for_work', 'is_active')
+        ('Status', {
+            'fields': ('is_active',)
         }),
     )
 
@@ -82,31 +84,27 @@ class ProjectImageInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['title', 'is_featured', 'is_active', 'date_completed', 'tech_list']
-    list_editable = ['is_featured', 'is_active']
-    list_filter = ['is_featured', 'is_active', 'date_completed']
-    search_fields = ['title', 'description', 'short_description']
+    list_display = ['title', 'tech_list']
+    search_fields = ['title', 'description', 'technologies_used']
     prepopulated_fields = {'slug': ('title',)}
-    filter_horizontal = ['technologies']
     inlines = [ProjectImageInline]
     fieldsets = (
         ('Project Details', {
-            'fields': ('title', 'slug', 'short_description', 'description')
+            'fields': ('title', 'slug', 'description')
         }),
         ('Media & Links', {
-            'fields': ('project_image', 'project_url', 'github_url')
+            'fields': ('project_media', 'project_url', 'github_url')
         }),
         ('Technologies', {
-            'fields': ('technologies',)
-        }),
-        ('Visibility', {
-            'fields': ('is_featured', 'is_active', 'date_completed')
+            'fields': ('technologies_used',)
         }),
     )
 
     def tech_list(self, obj):
-        """Display technologies as comma-separated list."""
-        return ', '.join([s.name for s in obj.technologies.all()[:5]])
+        """Display a preview of the technologies used text."""
+        if not obj.technologies_used:
+            return '-'
+        return obj.technologies_used if len(obj.technologies_used) <= 70 else f"{obj.technologies_used[:67]}..."
     tech_list.short_description = 'Technologies'
 
 
@@ -116,9 +114,9 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
-    list_display = ['position', 'company', 'location', 'is_current', 'is_active', 'duration', 'order']
-    list_editable = ['is_current', 'is_active', 'order']
-    list_filter = ['is_current', 'is_active', 'company']
+    list_display = ['position', 'company', 'location', 'is_current', 'duration', 'order']
+    list_editable = ['is_current', 'order']
+    list_filter = ['is_current', 'company']
     search_fields = ['position', 'company', 'description']
     fieldsets = (
         ('Company Info', {
@@ -130,8 +128,8 @@ class ExperienceAdmin(admin.ModelAdmin):
         ('Details', {
             'fields': ('description',)
         }),
-        ('Visibility', {
-            'fields': ('is_active', 'order')
+        ('Order', {
+            'fields': ('order',)
         }),
     )
 
