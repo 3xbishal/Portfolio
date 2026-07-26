@@ -110,9 +110,9 @@
                         <h2 class="page-title h6 mb-0" id="adminPageTitle">{% block page_title %}Dashboard{% endblock %}</h2>
                     </div>
                     <div class="flex-grow-1 px-3 search">
-                        <form role="search" class="w-100">
+                        <form role="search" class="w-100" method="get" action="">
                             <div class="input-group">
-                                <input type="search" class="form-control" placeholder="Search content, projects, messages..." aria-label="Search">
+                                <input type="search" name="q" class="form-control" placeholder="Search content, projects, messages..." aria-label="Search" value="{{ search_query|default:'' }}">
                                 <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
                             </div>
                         </form>

@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from .models import (
     Profile,
@@ -56,6 +56,31 @@ class AdminRequiredMixin:
     @method_decorator(user_passes_test(lambda u: u.is_active and u.is_superuser, login_url='admin_panel:login'))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
+
+
+class AdminSearchMixin:
+    """Mixin to add simple query-based searching for admin list views."""
+
+    search_fields = []
+
+    def get_search_query(self):
+        return self.request.GET.get('q', '').strip()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.get_search_query()
+        if not query or not self.search_fields:
+            return queryset
+
+        q_objects = Q()
+        for field in self.search_fields:
+            q_objects |= Q(**{f'{field}__icontains': query})
+        return queryset.filter(q_objects)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.get_search_query()
+        return context
 
 
 # ---------------------------------------------------------------------------
@@ -122,14 +147,12 @@ class ProfileEditView(AdminRequiredMixin, TemplateView):
 # Skill CRUD
 # ---------------------------------------------------------------------------
 
-class SkillListView(AdminRequiredMixin, ListView):
+class SkillListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Skill
     template_name = 'admin_panel/skill_list.html'
     context_object_name = 'skills'
     paginate_by = 50
-
-    def get_queryset(self):
-        return Skill.objects.all()
+    search_fields = ['name']
 
 
 class SkillCreateView(AdminRequiredMixin, CreateView):
@@ -168,11 +191,12 @@ class SkillDeleteView(AdminRequiredMixin, DeleteView):
 # Project CRUD
 # ---------------------------------------------------------------------------
 
-class ProjectListView(AdminRequiredMixin, ListView):
+class ProjectListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Project
     template_name = 'admin_panel/project_list.html'
     context_object_name = 'projects'
     paginate_by = 20
+    search_fields = ['title', 'description', 'short_description']
 
 
 class ProjectCreateView(AdminRequiredMixin, CreateView):
@@ -211,11 +235,12 @@ class ProjectDeleteView(AdminRequiredMixin, DeleteView):
 # Experience CRUD
 # ---------------------------------------------------------------------------
 
-class ExperienceListView(AdminRequiredMixin, ListView):
+class ExperienceListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Experience
     template_name = 'admin_panel/experience_list.html'
     context_object_name = 'experiences'
     paginate_by = 50
+    search_fields = ['position', 'company', 'description']
 
 
 class ExperienceCreateView(AdminRequiredMixin, CreateView):
@@ -254,11 +279,12 @@ class ExperienceDeleteView(AdminRequiredMixin, DeleteView):
 # Education CRUD
 # ---------------------------------------------------------------------------
 
-class EducationListView(AdminRequiredMixin, ListView):
+class EducationListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Education
     template_name = 'admin_panel/education_list.html'
     context_object_name = 'educations'
     paginate_by = 50
+    search_fields = ['degree', 'field_of_study', 'institution']
 
 
 class EducationCreateView(AdminRequiredMixin, CreateView):
@@ -297,11 +323,12 @@ class EducationDeleteView(AdminRequiredMixin, DeleteView):
 # Testimonial CRUD
 # ---------------------------------------------------------------------------
 
-class TestimonialListView(AdminRequiredMixin, ListView):
+class TestimonialListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Testimonial
     template_name = 'admin_panel/testimonial_list.html'
     context_object_name = 'testimonials'
     paginate_by = 50
+    search_fields = ['name', 'position', 'company', 'content']
 
 
 class TestimonialCreateView(AdminRequiredMixin, CreateView):
@@ -340,11 +367,12 @@ class TestimonialDeleteView(AdminRequiredMixin, DeleteView):
 # Service CRUD
 # ---------------------------------------------------------------------------
 
-class ServiceListView(AdminRequiredMixin, ListView):
+class ServiceListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = Service
     template_name = 'admin_panel/service_list.html'
     context_object_name = 'services'
     paginate_by = 50
+    search_fields = ['name', 'description']
 
 
 class ServiceCreateView(AdminRequiredMixin, CreateView):
@@ -383,11 +411,12 @@ class ServiceDeleteView(AdminRequiredMixin, DeleteView):
 # Contact Messages
 # ---------------------------------------------------------------------------
 
-class ContactMessageListView(AdminRequiredMixin, ListView):
+class ContactMessageListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     model = ContactMessage
     template_name = 'admin_panel/contactmessage_list.html'
     context_object_name = 'messages_list'
     paginate_by = 50
+    search_fields = ['name', 'email', 'subject', 'message']
 
 
 class ContactMessageDetailView(AdminRequiredMixin, DetailView):
