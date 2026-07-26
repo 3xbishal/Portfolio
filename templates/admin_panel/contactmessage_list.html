@@ -1,0 +1,60 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Messages</h1>
+</div>
+
+<div class="card card-list">
+  <div class="card-body p-3">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>From</th>
+            <th>Subject</th>
+            <th>Sent At</th>
+            <th>Read</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for msg in messages_list %}
+            <tr>
+              <td>{{ msg.name }}<br><small class="text-muted">{{ msg.email }}</small></td>
+              <td>{{ msg.subject|truncatechars:60 }}</td>
+              <td>{{ msg.sent_at|date:"M d, Y H:i" }}</td>
+              <td>{% if msg.is_read %}<span class="badge bg-success">Read</span>{% else %}<span class="badge bg-danger">New</span>{% endif %}</td>
+              <td class="text-end">
+                <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                {% if not msg.is_read %}
+                  <a href="{% url 'admin_panel:message_mark_read' msg.pk %}" class="btn btn-sm btn-outline-success">Mark Read</a>
+                {% else %}
+                  <a href="{% url 'admin_panel:message_mark_unread' msg.pk %}" class="btn btn-sm btn-outline-warning">Mark Unread</a>
+                {% endif %}
+                <a href="{% url 'admin_panel:contactmessage_delete' msg.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted">No messages yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% if is_paginated %}
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

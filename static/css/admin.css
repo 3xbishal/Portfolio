@@ -1,0 +1,82 @@
+/*
+  Professional Admin Styles
+  - Neutral surface
+  - Left navigation with clear active state
+  - Sidebar overlays content on small screens (does not shrink content)
+  - Compact collapsed sidebar for desktop
+  - Accessible focus states
+*/
+
+:root{
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #0d6efd;
+  --primary-10: rgba(13,110,253,0.08);
+  --border: #e6eef8;
+  --sidebar-w: 250px;
+  --sidebar-collapsed: 72px;
+  --topbar-h: 64px;
+}
+
+/* Base */
+html,body{height:100%}
+body.admin-body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+/* Layout */
+.admin-layout{min-height:100vh;display:flex}
+
+/* Sidebar */
+.admin-sidebar{width:var(--sidebar-w);position:fixed;left:0;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--border);z-index:2200;overflow:auto;padding:16px}
+.admin-sidebar .brand{display:flex;align-items:center;gap:10px;padding:6px 0;margin-bottom:14px}
+.admin-sidebar .brand .logo{width:40px;height:40px;border-radius:6px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.admin-sidebar .brand .title{font-weight:700;color:var(--text);font-size:1rem}
+
+.admin-sidebar .nav{margin-top:6px}
+.admin-sidebar .nav-link{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;color:var(--muted);text-decoration:none}
+.admin-sidebar .nav-link i{width:28px;text-align:center;color:var(--primary)}
+.admin-sidebar .nav-link:hover{background:var(--primary-10);color:var(--text)}
+.admin-sidebar .nav-link.active{background:var(--primary-10);color:var(--text);font-weight:600}
+.admin-sidebar .nav-link .badge{margin-left:auto}
+
+/* Collapsed sidebar on desktop */
+body.sidebar-collapsed .admin-sidebar{width:var(--sidebar-collapsed)}
+body.sidebar-collapsed .admin-sidebar .title,body.sidebar-collapsed .admin-sidebar .nav-link span{display:none}
+
+/* Main content stays full width */
+.admin-main{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));z-index:1;transition:margin-left .22s ease,width .22s ease}
+.admin-content{padding:20px}
+
+body.sidebar-collapsed .admin-main{margin-left:var(--sidebar-collapsed);width:calc(100% - var(--sidebar-collapsed))}
+
+/* Topbar */
+.admin-topbar{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 8px;border-bottom:1px solid var(--border);background:transparent}
+.admin-topbar .page-title{font-weight:700}
+.admin-topbar .search{flex:1;margin:0 12px}
+
+/* Toggle */
+#adminSidebarToggle{position:fixed;left:12px;top:12px;z-index:2300;background:#fff;border:1px solid var(--border);padding:8px;border-radius:8px;display:inline-flex;align-items:center;gap:8px}
+#adminSidebarToggle .admin-toggle-label{font-weight:600;color:var(--text)}
+
+/* Backdrop for overlay */
+.admin-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.48);opacity:0;visibility:hidden;transition:opacity .22s;z-index:2100}
+body.sidebar-open .admin-backdrop{opacity:1;visibility:visible}
+
+/* Mobile: overlay sidebar */
+@media (max-width:991.98px){
+  .admin-sidebar{transform:translateX(-110%);width:min(calc(100vw - 48px),320px);box-shadow:0 20px 80px rgba(15,23,42,0.16);transition:transform .22s ease}
+  body.sidebar-open .admin-sidebar{transform:translateX(0)}
+  #adminSidebarToggle .admin-toggle-label{display:none}
+  .admin-main{margin-left:0;width:100%}
+  body.sidebar-collapsed .admin-main{margin-left:0;width:100%}
+}
+
+/* Forms / cards */
+.form-card{padding:12px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.table-responsive{border-radius:8px;overflow:hidden}
+
+/* Accessibility */
+.admin-sidebar .nav-link:focus{outline:2px solid rgba(13,110,253,0.16);outline-offset:2px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}

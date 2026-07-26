@@ -1,0 +1,28 @@
+{% load static %}
+<!-- Footer -->
+<footer class="footer mt-5">
+    <div class="container text-center py-4">
+        {% if profile %}
+            <div class="mb-3">
+                {% if profile.linkedin_url %}
+                    <a href="{{ profile.linkedin_url }}" target="_blank" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                {% endif %}
+                {% if profile.github_url %}
+                    <a href="{{ profile.github_url }}" target="_blank" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                {% endif %}
+                {% if profile.twitter_url %}
+                    <a href="{{ profile.twitter_url }}" target="_blank" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                {% endif %}
+                {% if profile.stackoverflow_url %}
+                    <a href="{{ profile.stackoverflow_url }}" target="_blank" class="social-link" aria-label="Stack Overflow"><i class="fab fa-stack-overflow"></i></a>
+                {% endif %}
+                {% if profile.dribbble_url %}
+                    <a href="{{ profile.dribbble_url }}" target="_blank" class="social-link" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                {% endif %}
+            </div>
+            <p class="text-muted mb-0">&copy; {{ profile.name }} - {{ profile.title }}. All rights reserved.</p>
+        {% else %}
+            <p class="text-muted mb-0">&copy; My Portfolio. All rights reserved.</p>
+        {% endif %}
+    </div>
+</footer>

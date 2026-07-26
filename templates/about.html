@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About - {{ profile.name|default:'My Portfolio' }}{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-center mb-4 mb-lg-0" data-aos="fade-right">
+                {% if profile and profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid rounded-circle shadow-lg profile-image-lg">
+                {% else %}
+                    <div class="profile-image-lg-placeholder d-flex align-items-center justify-content-center rounded-circle shadow-lg mx-auto">
+                        <i class="fas fa-user fa-7x text-muted"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-8" data-aos="fade-left">
+                {% if profile %}
+                    <h1 class="fw-bold mb-3">{{ profile.name }}</h1>
+                    <p class="lead text-muted mb-4">{{ profile.title }}</p>
+                    <p class="mb-4">{{ profile.bio }}</p>
+                    {% if profile.email %}
+                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>{{ profile.email }}</p>
+                    {% endif %}
+                    {% if profile.phone %}
+                        <p class="mb-1"><i class="fas fa-phone me-2"></i>{{ profile.phone }}</p>
+                    {% endif %}
+                    {% if profile.location %}
+                        <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ profile.location }}</p>
+                    {% endif %}
+                    {% if profile.available_for_work %}
+                        <div class="mt-3">
+                            <span class="badge bg-success"><i class="fas fa-circle me-1"></i> Available for work</span>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <h1 class="fw-bold mb-3">About Me</h1>
+                    <p class="text-muted">Profile not configured. Please add a profile in the admin panel.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5 section-title">Work Experience</h2>
+        {% if experiences %}
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="experience-timeline">
+                        {% for exp in experiences %}
+                        <div class="experience-item">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span class="text-primary fw-semibold">{{ exp.duration }}</span>
+                                </div>
+                                <div class="col-md-9">
+                                    <h3 class="h5 mb-1">{{ exp.position }}</h3>
+                                    <p class="text-muted mb-2">
+                                        {{ exp.company }}
+                                        {% if exp.location %} · {{ exp.location }}{% endif %}
+                                        {% if exp.company_website %}
+                                            <a href="{{ exp.company_website }}" target="_blank" class="text-muted text-decoration-none">
+                                                <i class="fas fa-external-link-alt fa-xs ms-1"></i>
+                                            </a>
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-0">{{ exp.description|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center text-muted">
+                <p>No experience entries yet. Add them through the admin panel.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Education Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5 section-title">Education</h2>
+        {% if educations %}
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="experience-timeline">
+                        {% for edu in educations %}
+                        <div class="experience-item">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span class="text-primary fw-semibold">{{ edu.duration }}</span>
+                                </div>
+                                <div class="col-md-9">
+                                    <h3 class="h5 mb-1">{{ edu.degree }}</h3>
+                                    <p class="text-muted mb-2">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
+                                    {% if edu.field_of_study %}
+                                        <p class="text-muted small mb-2">Field: {{ edu.field_of_study }}</p>
+                                    {% endif %}
+                                    {% if edu.grade %}
+                                        <p class="text-muted small mb-2"><i class="fas fa-star me-1"></i>{{ edu.grade }}</p>
+                                    {% endif %}
+                                    {% if edu.description %}
+                                        <p class="mb-0">{{ edu.description|linebreaks }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center text-muted">
+                <p>No education entries yet. Add them through the admin panel.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Skills Section -->
+{% if skills %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5 section-title">Skills</h2>
+        <div class="row g-3 justify-content-center">
+            {% for skill in skills %}
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
+                    {% if skill.icon_class %}
+                        <i class="{{ skill.icon_class }} fa-fw me-2"></i>
+                    {% endif %}
+                    <span>{{ skill.name }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

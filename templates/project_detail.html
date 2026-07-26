@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - {{ profile.name|default:'My Portfolio' }}{% endblock %}
+
+{% block content %}
+<!-- Project Detail Hero -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                {% if project.project_image %}
+                    <img src="{{ project.project_image.url }}" alt="{{ project.title }}" class="img-fluid rounded shadow-lg project-detail-image">
+                {% else %}
+                    <div class="project-detail-image-placeholder d-flex align-items-center justify-content-center rounded shadow-lg mx-auto">
+                        <i class="fas fa-image fa-5x text-muted"></i>
+                    </div>
+                {% endif %}
+                <h1 class="fw-bold mt-4">{{ project.title }}</h1>
+                {% if project.date_completed %}
+                    <p class="text-muted"><i class="fas fa-calendar me-1"></i>{{ project.date_completed|date:"F j, Y" }}</p>
+                {% endif %}
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    {% if project.project_url %}
+                        <a href="{{ project.project_url }}" target="_blank" class="btn btn-success">
+                            <i class="fas fa-external-link-alt me-1"></i>Live Demo
+                        </a>
+                    {% endif %}
+                    {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" class="btn btn-dark">
+                            <i class="fab fa-github me-1"></i>Source Code
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-4 section-title">Project Overview</h2>
+                <p class="lead mb-4">{{ project.short_description }}</p>
+                <div class="mb-5">{{ project.description|linebreaks }}</div>
+
+                {% if project.technologies.all %}
+                    <h3 class="fw-bold mb-3">Technologies Used</h3>
+                    <div class="d-flex flex-wrap gap-2 mb-5">
+                        {% for tech in project.technologies.all %}
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                {% if tech.icon_class %}<i class="{{ tech.icon_class }} me-1"></i>{% endif %}
+                                {{ tech.name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if project.gallery_images.all %}
+                    <h3 class="fw-bold mb-3 section-title">Project Gallery</h3>
+                    <div class="row g-3 mb-5">
+                        {% for img in project.gallery_images.all %}
+                            <div class="col-6">
+                                <a href="{{ img.image.url }}" data-fancybox="gallery" data-caption="{{ img.caption }}">
+                                    <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="img-fluid rounded shadow-sm gallery-image">
+                                </a>
+                                {% if img.caption %}
+                                    <p class="small text-muted mt-1">{{ img.caption }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="text-center mt-5">
+                    <a href="{% url 'projects' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Projects
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

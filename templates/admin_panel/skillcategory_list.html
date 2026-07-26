@@ -1,0 +1,5 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Skill Categories (Removed){% endblock %}
+{% block content %}
+<div class="alert alert-warning">Skill Categories have been removed. Skills are now managed as a single flat list. Use the <a href="{% url 'admin_panel:skill_list' %}">Skills</a> page to manage skills.</div>
+{% endblock %}

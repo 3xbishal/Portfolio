@@ -1,0 +1,47 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="admin-login-container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="admin-login-card">
+        <div class="text-center mb-4">
+            <i class="fas fa-cog fa-3x text-primary mb-3"></i>
+            <h1 class="h3 fw-bold">Admin Panel</h1>
+            <p class="text-muted">Sign in to manage your portfolio</p>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>Please correct the errors below.
+            </div>
+        {% endif %}
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

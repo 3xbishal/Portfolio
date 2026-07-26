@@ -1,0 +1,117 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 fw-bold mb-0">Dashboard</h1>
+    <a href="{% url 'admin_panel:profile_edit' %}" class="btn btn-outline-primary">
+        <i class="fas fa-user me-1"></i>Edit Profile
+    </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="display-6 text-primary mb-2"><i class="fas fa-folder-open"></i></div>
+            <h3 class="h4 fw-bold mb-1">{{ stats.projects }}</h3>
+            <p class="text-muted small mb-0">Projects</p>
+            <p class="text-muted small mb-0">({{ stats.active_projects }} active)</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="display-6 text-primary mb-2"><i class="fas fa-star"></i></div>
+            <h3 class="h4 fw-bold mb-1">{{ stats.skills }}</h3>
+            <p class="text-muted small mb-0">Skills</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="display-6 text-primary mb-2"><i class="fas fa-briefcase"></i></div>
+            <h3 class="h4 fw-bold mb-1">{{ stats.experiences }}</h3>
+            <p class="text-muted small mb-0">Experience</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="display-6 text-primary mb-2"><i class="fas fa-envelope"></i></div>
+            <h3 class="h4 fw-bold mb-1">{{ stats.messages }}</h3>
+            <p class="text-muted small mb-0">Messages</p>
+            <p class="text-muted small mb-0">({{ stats.unread_messages }} unread)</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Projects -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+                <h3 class="h6 fw-semibold mb-0">Recent Projects</h3>
+                <a href="{% url 'admin_panel:project_list' %}" class="text-muted small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_projects %}
+                    <ul class="list-group list-group-flush">
+                        {% for project in recent_projects %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-medium">{{ project.title }}</span>
+                                    {% if not project.is_active %}
+                                        <span class="badge bg-secondary ms-1">Inactive</span>
+                                    {% endif %}
+                                    {% if project.is_featured %}
+                                        <span class="badge bg-warning ms-1">Featured</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{{ project.get_absolute_url }}" target="_blank" class="text-muted small">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted p-3 mb-0">No projects yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Messages -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+                <h3 class="h6 fw-semibold mb-0">Recent Messages</h3>
+                <a href="{% url 'admin_panel:contactmessage_list' %}" class="text-muted small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_messages %}
+                    <ul class="list-group list-group-flush">
+                        {% for msg in recent_messages %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-medium">{{ msg.name }}</span>
+                                    <span class="text-muted small d-block">{{ msg.subject|truncatechars:40 }}</span>
+                                    <span class="text-muted small">{{ msg.sent_at|date:"M d, Y" }}</span>
+                                </div>
+                                {% if not msg.is_read %}
+                                    <span class="badge bg-danger">New</span>
+                                {% else %}
+                                    <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="text-muted">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted p-3 mb-0">No messages yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load static %}
+<!-- Header -->
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                {% if profile and profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-pic-nav me-2">
+                {% else %}
+                    <div class="profile-pic-nav-placeholder me-2 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                {% endif %}
+                <span class="fw-bold">{{ profile.name|default:'My Portfolio' }}</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"
+                           href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}"
+                           href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'projects' or request.resolver_match.url_name == 'project_detail' %} active{% endif %}"
+                           href="{% url 'projects' %}">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
+                           href="{% url 'contact' %}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

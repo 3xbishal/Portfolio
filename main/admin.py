@@ -1,0 +1,242 @@
+"""
+Admin configuration for the portfolio application.
+All portfolio content is managed through the Django admin panel.
+"""
+
+from django.contrib import admin
+from django.utils.html import format_html
+from .models import (
+    Profile,
+    Skill,
+    Project,
+    ProjectImage,
+    Experience,
+    Education,
+    Testimonial,
+    ContactMessage,
+    Service,
+)
+
+
+# ---------------------------------------------------------------------------
+# Profile Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['name', 'title', 'email', 'location', 'is_active', 'available_for_work']
+    list_editable = ['is_active', 'available_for_work']
+    list_filter = ['is_active', 'available_for_work']
+    search_fields = ['name', 'title', 'email', 'location']
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'title', 'bio', 'email', 'phone', 'location')
+        }),
+        ('Media', {
+            'fields': ('profile_image', 'cv_file')
+        }),
+        ('Social Links', {
+            'fields': ('linkedin_url', 'github_url', 'twitter_url',
+                       'stackoverflow_url', 'dribbble_url')
+        }),
+        ('Availability', {
+            'fields': ('available_for_work', 'is_active')
+        }),
+    )
+
+    def has_add_permission(self, request):
+        """Only allow one profile instance."""
+        if self.model.objects.count() >= 1:
+            return False
+        return super().has_add_permission(request)
+
+
+# ---------------------------------------------------------------------------
+# Skill Category Admin
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Skill Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ['name', 'order']
+    list_editable = ['order']
+    search_fields = ['name']
+
+
+# ---------------------------------------------------------------------------
+# Project Image Inline
+# ---------------------------------------------------------------------------
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = ('image', 'caption', 'order')
+
+
+# ---------------------------------------------------------------------------
+# Project Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_featured', 'is_active', 'date_completed', 'tech_list']
+    list_editable = ['is_featured', 'is_active']
+    list_filter = ['is_featured', 'is_active', 'date_completed']
+    search_fields = ['title', 'description', 'short_description']
+    prepopulated_fields = {'slug': ('title',)}
+    filter_horizontal = ['technologies']
+    inlines = [ProjectImageInline]
+    fieldsets = (
+        ('Project Details', {
+            'fields': ('title', 'slug', 'short_description', 'description')
+        }),
+        ('Media & Links', {
+            'fields': ('project_image', 'project_url', 'github_url')
+        }),
+        ('Technologies', {
+            'fields': ('technologies',)
+        }),
+        ('Visibility', {
+            'fields': ('is_featured', 'is_active', 'date_completed')
+        }),
+    )
+
+    def tech_list(self, obj):
+        """Display technologies as comma-separated list."""
+        return ', '.join([s.name for s in obj.technologies.all()[:5]])
+    tech_list.short_description = 'Technologies'
+
+
+# ---------------------------------------------------------------------------
+# Experience Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Experience)
+class ExperienceAdmin(admin.ModelAdmin):
+    list_display = ['position', 'company', 'location', 'is_current', 'is_active', 'duration', 'order']
+    list_editable = ['is_current', 'is_active', 'order']
+    list_filter = ['is_current', 'is_active', 'company']
+    search_fields = ['position', 'company', 'description']
+    fieldsets = (
+        ('Company Info', {
+            'fields': ('company', 'company_website', 'position', 'location')
+        }),
+        ('Timeline', {
+            'fields': ('start_date', 'end_date', 'is_current')
+        }),
+        ('Details', {
+            'fields': ('description',)
+        }),
+        ('Visibility', {
+            'fields': ('is_active', 'order')
+        }),
+    )
+
+    def duration(self, obj):
+        return obj.duration
+    duration.short_description = 'Duration'
+
+
+# ---------------------------------------------------------------------------
+# Education Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin):
+    list_display = ['degree', 'field_of_study', 'institution', 'location', 'is_current', 'is_active', 'duration', 'order']
+    list_editable = ['is_current', 'is_active', 'order']
+    list_filter = ['is_current', 'is_active', 'institution']
+    search_fields = ['degree', 'field_of_study', 'institution']
+    fieldsets = (
+        ('Institution Info', {
+            'fields': ('institution', 'degree', 'field_of_study', 'location')
+        }),
+        ('Timeline', {
+            'fields': ('start_date', 'end_date', 'is_current')
+        }),
+        ('Details', {
+            'fields': ('grade', 'description')
+        }),
+        ('Visibility', {
+            'fields': ('is_active', 'order')
+        }),
+    )
+
+    def duration(self, obj):
+        return obj.duration
+    duration.short_description = 'Duration'
+
+
+# ---------------------------------------------------------------------------
+# Testimonial Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ['name', 'position', 'company', 'is_active', 'order']
+    list_editable = ['is_active', 'order']
+    list_filter = ['is_active', 'company']
+    search_fields = ['name', 'position', 'company', 'content']
+    fieldsets = (
+        ('Person Info', {
+            'fields': ('name', 'position', 'company', 'image')
+        }),
+        ('Testimonial', {
+            'fields': ('content',)
+        }),
+        ('Visibility', {
+            'fields': ('is_active', 'order')
+        }),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Contact Message Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'subject', 'sent_at', 'is_read']
+    list_editable = ['is_read']
+    list_filter = ['is_read', 'sent_at']
+    search_fields = ['name', 'email', 'subject', 'message']
+    readonly_fields = ['name', 'email', 'subject', 'message', 'sent_at']
+
+    actions = ['mark_as_read', 'mark_as_unread']
+
+    @admin.action(description='Mark selected messages as read')
+    def mark_as_read(self, request, queryset):
+        queryset.update(is_read=True)
+    mark_as_read.short_description = 'Mark selected messages as read'
+
+    @admin.action(description='Mark selected messages as unread')
+    def mark_as_unread(self, request, queryset):
+        queryset.update(is_read=False)
+    mark_as_unread.short_description = 'Mark selected messages as unread'
+
+    def has_add_permission(self, request):
+        """Messages are created via the contact form, not admin."""
+        return False
+
+
+# ---------------------------------------------------------------------------
+# Service Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_active', 'order']
+    list_editable = ['is_active', 'order']
+    list_filter = ['is_active']
+    search_fields = ['title', 'description']
+    fieldsets = (
+        ('Service Info', {
+            'fields': ('title', 'icon_class', 'description')
+        }),
+        ('Visibility', {
+            'fields': ('is_active', 'order')
+        }),
+    )
