@@ -30,13 +30,11 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="portfolio-body {% block body_class %}{% endblock %}">
-    <div class="page-bg"></div>
-
     <!-- Header / Navigation -->
     {% include 'partials/_header.html' %}
 
     <!-- Main Content -->
-    <main>
+    <main class="page-content-wrapper">
         {% block content %}{% endblock %}
     </main>
 

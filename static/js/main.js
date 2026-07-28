@@ -48,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 
-    // --- Navbar background on scroll ---
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
+    // --- Header background on scroll ---
+    const header = document.querySelector('.header');
+    if (header) {
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
-                navbar.classList.add('navbar-scrolled');
+                header.classList.add('scrolled');
             } else {
-                navbar.classList.remove('navbar-scrolled');
+                header.classList.remove('scrolled');
             }
         });
     }

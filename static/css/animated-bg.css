@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Animated Background CSS (simplified)
+   Retained for backwards compatibility. The complex animations (rain,
+   clouds, particles) have been removed for a cleaner, simpler experience.
+   ========================================================================== */
+
+.animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.animated-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #667eea 0%, #764ba2 40%, #f093fb 70%, #f5576c 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    z-index: 1;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 100% 50%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 50%; }
+}
+
+.page-content-wrapper {
+    position: relative;
+    z-index: 10;
+}

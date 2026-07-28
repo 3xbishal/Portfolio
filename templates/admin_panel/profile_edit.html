@@ -59,6 +59,13 @@
                     {% endif %}
                 </div>
                 <div class="col-md-6">
+                    <label for="{{ form.company.id_for_label }}" class="form-label fw-semibold">Company</label>
+                    {{ form.company }}
+                    {% if form.company.errors %}
+                        <div class="invalid-feedback d-block">{{ form.company.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
                     <label for="{{ form.profile_image.id_for_label }}" class="form-label fw-semibold">Profile Image</label>
                     {{ form.profile_image }}
                     {% if profile and profile.profile_image %}
@@ -68,6 +75,18 @@
                     {% endif %}
                     {% if form.profile_image.errors %}
                         <div class="invalid-feedback d-block">{{ form.profile_image.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.logo.id_for_label }}" class="form-label fw-semibold">Logo</label>
+                    {{ form.logo }}
+                    {% if profile and profile.logo %}
+                        <div class="mt-2">
+                            <img src="{{ profile.logo.url }}" alt="Current Logo" class="img-fluid rounded" style="max-height: 100px;">
+                        </div>
+                    {% endif %}
+                    {% if form.logo.errors %}
+                        <div class="invalid-feedback d-block">{{ form.logo.errors }}</div>
                     {% endif %}
                 </div>
                 <div class="col-md-6">

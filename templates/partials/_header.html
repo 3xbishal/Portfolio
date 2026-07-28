@@ -4,14 +4,19 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                {% if profile and profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-pic-nav me-2">
-                {% else %}
-                    <div class="profile-pic-nav-placeholder me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-user"></i>
-                    </div>
-                {% endif %}
-                <span class="fw-bold">{{ profile.name|default:'My Portfolio' }}</span>
+                <div class="brand-avatar d-flex align-items-center justify-content-center me-2">
+                    {% if profile and profile.logo %}
+                        <img src="{{ profile.logo.url }}" alt="{{ company_name }}" class="img-fluid" style="max-height: 40px; max-width: 40px; object-fit: contain;">
+                    {% else %}
+                        <i class="fas fa-building"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <span class="brand-title">{{ company_name|default:'My Portfolio' }}</span>
+                    {% if profile and profile.title %}
+                        <small class="brand-subtitle">{{ profile.title }}</small>
+                    {% endif %}
+                </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

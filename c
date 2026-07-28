@@ -1,4 +1,5 @@
 {% load static %}
+{% load main_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Animated Background CSS -->
+    <link rel="stylesheet" href="{% static 'css/animated-bg.css' %}">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin.css' %}">
@@ -22,6 +26,13 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="admin-body">
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="clouds-container"></div>
+        <div class="rain-container"></div>
+        <div class="particles-container"></div>
+    </div>
+
     {% if user.is_authenticated %}
     <div class="admin-layout">
         <!-- Sidebar -->
@@ -160,6 +171,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>
+    <!-- Animated Background JS -->
+    <script src="{% static 'js/animated-bg.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

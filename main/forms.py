@@ -35,3 +35,10 @@ class ContactForm(forms.ModelForm):
                 'required': True,
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add is-invalid class to fields with errors for Bootstrap styling
+        for field_name, field in self.fields.items():
+            if self.errors.get(field_name):
+                field.widget.attrs['class'] += ' is-invalid'

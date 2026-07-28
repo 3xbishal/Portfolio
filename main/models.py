@@ -19,11 +19,22 @@ class Profile(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=20, blank=True, help_text="Phone number")
     location = models.CharField(max_length=100, blank=True, help_text="City, Country")
+    company = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Company name (e.g. 'Acme Corp')"
+    )
     profile_image = models.ImageField(
         upload_to='profile/',
         blank=True,
         null=True,
         help_text="Profile picture"
+    )
+    logo = models.ImageField(
+        upload_to='profile/',
+        blank=True,
+        null=True,
+        help_text="Upload company logo (e.g. logo.png)"
     )
     cv_file = models.FileField(
         upload_to='profile/',

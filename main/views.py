@@ -76,14 +76,14 @@ def about(request):
 # ---------------------------------------------------------------------------
 
 class ProjectListView(ListView):
-    """List all active projects with pagination."""
+    """List all projects with pagination."""
     model = Project
     template_name = 'projects.html'
     context_object_name = 'projects'
     paginate_by = 9
 
     def get_queryset(self):
-        return Project.objects.filter(is_active=True)
+        return Project.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,7 +104,7 @@ class ProjectDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Project.objects.filter(is_active=True)
+        return Project.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

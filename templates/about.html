@@ -22,21 +22,17 @@
                     <h1 class="fw-bold mb-3">{{ profile.name }}</h1>
                     <p class="lead text-muted mb-4">{{ profile.title }}</p>
                     <p class="mb-4">{{ profile.bio }}</p>
-                    {% if profile.email %}
-                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>{{ profile.email }}</p>
-                    {% endif %}
-                    {% if profile.phone %}
-                        <p class="mb-1"><i class="fas fa-phone me-2"></i>{{ profile.phone }}</p>
-                    {% endif %}
-                    {% if profile.location %}
-                        <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>{{ profile.location }}</p>
-                    {% endif %}
-                    {% if profile.gmail_address %}
-                        <p class="mb-1"><i class="fas fa-envelope-open-text me-2"></i>{{ profile.gmail_address }}</p>
-                    {% endif %}
-                    {% if profile.whatsapp_number %}
-                        <p class="mb-0"><i class="fab fa-whatsapp me-2"></i>{{ profile.whatsapp_number }}</p>
-                    {% endif %}
+                    <div class="d-flex flex-wrap gap-4">
+                        {% if profile.email %}
+                            <p class="mb-0"><i class="fas fa-envelope me-2"></i>{{ profile.email }}</p>
+                        {% endif %}
+                        {% if profile.phone %}
+                            <p class="mb-0"><i class="fas fa-phone me-2"></i>{{ profile.phone }}</p>
+                        {% endif %}
+                        {% if profile.location %}
+                            <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ profile.location }}</p>
+                        {% endif %}
+                    </div>
                 {% else %}
                     <h1 class="fw-bold mb-3">About Me</h1>
                     <p class="text-muted">Profile not configured. Please add a profile in the admin panel.</p>
@@ -46,91 +42,70 @@
     </div>
 </section>
 
-<!-- Experience Section -->
+<!-- Experience & Education Section -->
 <section class="py-5">
     <div class="container">
-        <h2 class="fw-bold text-center mb-5 section-title">Work Experience</h2>
-        {% if experiences %}
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="experience-timeline">
-                        {% for exp in experiences %}
-                        <div class="experience-item">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span class="text-primary fw-semibold">{{ exp.duration }}</span>
-                                </div>
-                                <div class="col-md-9">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="row">
+                    <!-- Experience -->
+                    <div class="col-lg-6">
+                        <h2 class="fw-bold mb-4 section-title">Work Experience</h2>
+                        {% if experiences %}
+                            <div class="experience-timeline">
+                                {% for exp in experiences %}
+                                <div class="experience-item">
+                                    <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
                                     <h3 class="h5 mb-1">{{ exp.position }}</h3>
                                     <p class="text-muted mb-2">
                                         {{ exp.company }}
                                         {% if exp.location %} · {{ exp.location }}{% endif %}
-                                        {% if exp.company_website %}
-                                            <a href="{{ exp.company_website }}" target="_blank" class="text-muted text-decoration-none">
-                                                <i class="fas fa-external-link-alt fa-xs ms-1"></i>
-                                            </a>
-                                        {% endif %}
                                     </p>
-                                    <p class="mb-0">{{ exp.description|linebreaks }}</p>
+                                    <p class="mb-0">{{ exp.description|truncatechars:150 }}</p>
                                 </div>
+                                {% endfor %}
                             </div>
-                        </div>
-                        {% endfor %}
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <p>No experience entries yet. Add them through the admin panel.</p>
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="text-center text-muted">
-                <p>No experience entries yet. Add them through the admin panel.</p>
-            </div>
-        {% endif %}
-    </div>
-</section>
 
-<!-- Education Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="fw-bold text-center mb-5 section-title">Education</h2>
-        {% if educations %}
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="experience-timeline">
-                        {% for edu in educations %}
-                        <div class="experience-item">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span class="text-primary fw-semibold">{{ edu.duration }}</span>
-                                </div>
-                                <div class="col-md-9">
+                    <!-- Education -->
+                    <div class="col-lg-6">
+                        <h2 class="fw-bold mb-4 section-title">Education</h2>
+                        {% if educations %}
+                            <div class="experience-timeline">
+                                {% for edu in educations %}
+                                <div class="experience-item">
+                                    <span class="text-primary fw-semibold d-block mb-1">{{ edu.duration }}</span>
                                     <h3 class="h5 mb-1">{{ edu.degree }}</h3>
                                     <p class="text-muted mb-2">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
                                     {% if edu.field_of_study %}
-                                        <p class="text-muted small mb-2">Field: {{ edu.field_of_study }}</p>
+                                        <p class="text-muted small mb-1">Field: {{ edu.field_of_study }}</p>
                                     {% endif %}
                                     {% if edu.grade %}
-                                        <p class="text-muted small mb-2"><i class="fas fa-star me-1"></i>{{ edu.grade }}</p>
-                                    {% endif %}
-                                    {% if edu.description %}
-                                        <p class="mb-0">{{ edu.description|linebreaks }}</p>
+                                        <p class="text-muted small mb-0"><i class="fas fa-star me-1"></i>{{ edu.grade }}</p>
                                     {% endif %}
                                 </div>
+                                {% endfor %}
                             </div>
-                        </div>
-                        {% endfor %}
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <p>No education entries yet. Add them through the admin panel.</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        {% else %}
-            <div class="text-center text-muted">
-                <p>No education entries yet. Add them through the admin panel.</p>
-            </div>
-        {% endif %}
+        </div>
     </div>
 </section>
 
 <!-- Skills Section -->
 {% if skills %}
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container">
         <h2 class="fw-bold text-center mb-5 section-title">Skills</h2>
         <div class="row g-3 justify-content-center">

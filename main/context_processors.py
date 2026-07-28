@@ -14,4 +14,5 @@ def profile_context(request):
     return {
         'profile': profile,
         'site_name': f"{profile.name}'s Portfolio" if profile else 'My Portfolio',
+        'company_name': profile.company if profile and profile.company else 'Company Name',
     }

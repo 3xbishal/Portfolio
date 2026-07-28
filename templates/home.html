@@ -35,14 +35,16 @@
                     <p class="lead mb-5">Please configure your profile in the admin panel.</p>
                 {% endif %}
             </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                {% if profile and profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid rounded-circle shadow-lg profile-image">
-                {% else %}
-                    <div class="profile-image-placeholder d-flex align-items-center justify-content-center rounded-circle shadow-lg">
-                        <i class="fas fa-user fa-7x text-muted"></i>
-                    </div>
-                {% endif %}
+            <div class="col-lg-6 d-flex justify-content-lg-end" data-aos="fade-left">
+                <div class="hero-image-wrap">
+                    {% if profile and profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid profile-image">
+                    {% else %}
+                        <div class="profile-image-placeholder d-flex align-items-center justify-content-center">
+                            <i class="fas fa-user fa-7x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -100,10 +102,10 @@
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
             <p class="text-muted">Technologies I work with</p>
         </div>
-        <div class="row g-3">
+        <div class="row g-3 justify-content-center">
             {% for skill in skills %}
-            <div class="col-6 col-md-3">
-                <div class="skill-item d-flex align-items-center p-2 bg-light rounded">
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
                     {% if skill.icon_class %}
                         <i class="{{ skill.icon_class }} fa-fw me-2"></i>
                     {% endif %}
@@ -111,82 +113,6 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Services Section -->
-{% if services %}
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold section-title">What I Do</h2>
-            <p class="text-muted">Services I offer</p>
-        </div>
-        <div class="row g-4">
-            {% for service in services %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
-                <div class="card h-100 border-0 shadow-sm text-center p-4 service-card">
-                    {% if service.icon_class %}
-                        <div class="service-icon">
-                            <i class="{{ service.icon_class }} display-6 text-primary"></i>
-                        </div>
-                    {% endif %}
-                    <h3 class="h5 card-title">{{ service.title }}</h3>
-                    <p class="card-text text-muted small">{{ service.description|truncatechars:120 }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Testimonials Section -->
-{% if testimonials %}
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold section-title">What People Say</h2>
-            <p class="text-muted">Testimonials from clients and colleagues</p>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel">
-                    <!-- Indicators -->
-                    <div class="carousel-indicators">
-                        {% for testimonial in testimonials %}
-                            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-                                {% if forloop.first %}class="active" aria-current="true"{% endif %}
-                                aria-label="Slide {{ forloop.counter }}"></button>
-                        {% endfor %}
-                    </div>
-                    <div class="carousel-inner">
-                        {% for testimonial in testimonials %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <div class="text-center px-4">
-                                {% if testimonial.image %}
-                                    <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="testimonial-img mb-3">
-                                {% endif %}
-                                <p class="lead fst-italic">"{{ testimonial.content }}"</p>
-                                <p class="fw-semibold mb-0">{{ testimonial.name }}</p>
-                                <small class="text-muted">{{ testimonial.position }}{% if testimonial.company %}, {{ testimonial.company }}{% endif %}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <!-- Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 </section>

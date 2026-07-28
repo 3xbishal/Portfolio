@@ -35,15 +35,17 @@ class ProfileAdminForm(AdminBaseForm):
     class Meta:
         model = Profile
         fields = [
-            'name', 'title', 'bio', 'email', 'phone', 'location',
-            'profile_image', 'cv_file',
+            'name', 'title', 'bio', 'email', 'phone', 'location', 'company',
+            'profile_image', 'logo', 'cv_file',
             'linkedin_url', 'github_url',
             'instagram_url', 'facebook_url', 'leetcode_url',
             'gmail_address', 'whatsapp_number',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 5}),
+            'company': forms.TextInput(attrs={'placeholder': 'e.g. Acme Corp'}),
             'profile_image': forms.ClearableFileInput(),
+            'logo': forms.ClearableFileInput(),
             'cv_file': forms.ClearableFileInput(),
         }
 
