@@ -749,6 +749,33 @@ body.dark-mode .project-detail-content {
     background: rgba(26, 26, 26, 0.9);
 }
 
+/* ===== Project Detail Title ===== */
+.project-detail-title {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.project-detail-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(128, 0, 0, 0.3);
+}
+
 /* ===== Back to top button ===== */
 #backToTop {
     z-index: 999;
