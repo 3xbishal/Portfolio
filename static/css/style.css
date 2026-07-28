@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Clean Portfolio Theme — Maroon Accent
+   Clean Portfolio Theme — Maroon Accent with 3D Effects
    ========================================================================== */
 
 :root {
@@ -31,7 +31,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Header / Navigation */
+/* ===== Header / Navigation ===== */
 .header {
     position: sticky;
     top: 0;
@@ -61,7 +61,7 @@ body {
 .header .brand-avatar {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 12px;
     background: rgba(128, 0, 0, 0.1);
     color: var(--accent);
     display: inline-flex;
@@ -89,6 +89,7 @@ body {
     color: var(--text);
     padding: 0.5rem 0.75rem;
     font-weight: 500;
+    position: relative;
     transition: color 0.2s ease;
 }
 
@@ -97,11 +98,23 @@ body {
     color: var(--accent);
 }
 
+.header .nav-link.active::after,
+.header .nav-link:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0.85rem;
+    right: 0.85rem;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
 .header .navbar-toggler {
     border-color: var(--border);
 }
 
-/* Typography */
+/* ===== Typography ===== */
 .text-gradient {
     display: inline-block;
     background: linear-gradient(110deg, var(--accent), var(--accent-hover));
@@ -109,8 +122,10 @@ body {
     color: transparent;
 }
 
+/* Playfair Display for headings — elegant & attractive */
 h1, h2, h3, h4, h5, h6 {
     color: var(--text);
+    font-family: 'Playfair Display', Georgia, serif;
     font-weight: 700;
 }
 
@@ -127,9 +142,10 @@ a:hover {
     color: var(--accent-hover);
 }
 
-/* Sections */
+/* ===== Sections ===== */
 section {
-    padding: 4rem 0;
+    padding: 5rem 0;
+    position: relative;
 }
 
 .bg-light {
@@ -140,8 +156,10 @@ section {
     display: inline-block;
     font-size: clamp(1.75rem, 3vw, 2.5rem);
     font-weight: 700;
+    font-family: 'Playfair Display', Georgia, serif;
     margin-bottom: 1rem;
     position: relative;
+    color: var(--accent);
 }
 
 .section-title::after {
@@ -156,7 +174,7 @@ section {
     border-radius: 3px;
 }
 
-/* Hero */
+/* ===== Hero Section ===== */
 .hero-section {
     min-height: 100vh;
     display: flex;
@@ -168,6 +186,7 @@ section {
     font-size: clamp(2.5rem, 6vw, 4rem);
     line-height: 1.1;
     letter-spacing: -0.03em;
+    font-family: 'Playfair Display', Georgia, serif;
 }
 
 .hero-text {
@@ -185,13 +204,23 @@ section {
     width: 100%;
 }
 
+/* Circular profile image with 3D shadow */
 .profile-image,
-.profile-image-placeholder {
+.profile-image-placeholder,
+.profile-image-lg,
+.profile-image-lg-placeholder {
     width: 100%;
     max-width: 380px;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-image:hover,
+.profile-image-lg:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .profile-image-placeholder {
@@ -207,40 +236,49 @@ section {
     color: #9ca3af;
 }
 
-/* Cards */
+/* ===== Cards with 3D Effects ===== */
 .card,
 .glass-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: translateZ(0);
 }
 
 .card:hover,
 .glass-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-8px) translateZ(0);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .project-card {
     border-radius: 16px;
     overflow: hidden;
+    position: relative;
 }
 
+/* Circular project images with shadow */
 .project-image,
 .project-image-placeholder,
 .project-detail-image,
 .project-detail-image-placeholder {
     width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     object-fit: cover;
-    border-radius: 16px 16px 0 0;
-    border: 1px solid var(--border);
     background: #f9fafb;
 }
 
 .project-image-placeholder,
 .project-detail-image-placeholder {
     min-height: 220px;
+    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -248,19 +286,11 @@ section {
     background: #f3f4f6;
 }
 
-.project-card .card-body,
-.service-card,
-.experience-item,
-.testimonial-carousel .carousel-item,
-.contact-info-item,
-.skill-item {
+.project-card .card-body {
     transition: transform 0.2s ease;
 }
 
-.project-card:hover .card-body,
-.service-card:hover,
-.experience-item:hover,
-.skill-item:hover {
+.project-card:hover .card-body {
     transform: translateY(-3px);
 }
 
@@ -269,6 +299,7 @@ section {
 .experience-item h3,
 .section-title {
     color: var(--text);
+    font-family: 'Playfair Display', Georgia, serif;
 }
 
 .card-text,
@@ -288,12 +319,13 @@ p {
 .service-icon {
     width: 64px;
     height: 64px;
-    border-radius: 16px;
+    border-radius: 50%;
     background: rgba(128, 0, 0, 0.1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1.25rem;
+    box-shadow: 0 6px 16px rgba(128, 0, 0, 0.15);
 }
 
 .service-icon i {
@@ -310,19 +342,23 @@ p {
     align-items: center;
     gap: 0.5rem;
     width: 100%;
+    transition: all 0.2s ease;
 }
 
 .skill-item:hover {
     background: #f3f4f6 !important;
+    transform: translateX(4px);
 }
 
-/* Testimonials */
+/* ===== Testimonials ===== */
 .testimonial-img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 1rem;
+    border: 3px solid var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .testimonial-carousel .carousel-item {
@@ -350,7 +386,7 @@ p {
     background-color: var(--accent);
 }
 
-/* Experience Timeline */
+/* ===== Experience Timeline ===== */
 .experience-timeline {
     padding-left: 2rem;
     position: relative;
@@ -373,6 +409,13 @@ p {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.experience-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .experience-item::before {
@@ -387,23 +430,25 @@ p {
     box-shadow: 0 0 0 4px rgba(128, 0, 0, 0.15);
 }
 
-/* Contact Info */
+/* ===== Contact Info ===== */
 .contact-info-item {
     padding: 1.5rem;
     background: var(--surface);
     border-radius: 16px;
     border: 1px solid var(--border);
+    text-align: center;
 }
 
 .contact-info-icon {
     width: 56px;
     height: 56px;
-    border-radius: 14px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 0.75rem;
     background: rgba(128, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(128, 0, 0, 0.15);
 }
 
 .contact-info-icon i {
@@ -411,17 +456,27 @@ p {
     font-size: 1.25rem;
 }
 
-/* Buttons */
+/* ===== Buttons with 3D Effect ===== */
 .btn-primary {
     background: var(--accent);
     border: none;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.25);
+    box-shadow: 0 6px 16px rgba(128, 0, 0, 0.25);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    transform: translateZ(0);
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
     background: var(--accent-hover);
+    box-shadow: 0 10px 24px rgba(128, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
 }
 
 .btn-outline-primary,
@@ -432,6 +487,7 @@ p {
     border-color: var(--border);
     background: transparent;
     color: var(--text);
+    border-radius: 8px;
 }
 
 .btn-outline-primary:hover,
@@ -441,7 +497,7 @@ p {
     color: var(--accent);
 }
 
-/* Forms */
+/* ===== Forms ===== */
 .form-control,
 textarea.form-control,
 select.form-control {
@@ -468,7 +524,7 @@ select.form-control:focus {
     filter: none;
 }
 
-/* Footer */
+/* ===== Footer ===== */
 footer.footer {
     padding: 3rem 0;
     border-top: 1px solid var(--border);
@@ -485,7 +541,7 @@ footer.footer .social-link {
     justify-content: center;
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 50%;
     background: rgba(128, 0, 0, 0.08);
     color: var(--accent);
     margin: 0 0.35rem;
@@ -497,13 +553,13 @@ footer.footer .social-link:hover {
     background: rgba(128, 0, 0, 0.15);
 }
 
-/* Page content */
+/* ===== Page content ===== */
 .page-content-wrapper {
     position: relative;
     z-index: 10;
 }
 
-/* Responsive */
+/* ===== Responsive ===== */
 @media (max-width: 992px) {
     .hero-title { font-size: clamp(2.2rem, 7vw, 3.2rem); }
     .hero-text { font-size: 1rem; }
@@ -513,6 +569,7 @@ footer.footer .social-link:hover {
     .hero-section { padding: 3rem 0; }
     .section-title::after { width: 50px; }
     .hero-actions .btn { width: 100%; }
+    .experience-timeline { padding-left: 1.5rem; }
 }
 
 @media (max-width: 576px) {
