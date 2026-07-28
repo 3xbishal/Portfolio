@@ -4,52 +4,26 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- Custom Animated Mouse Cursor ---
-    const cursor = document.createElement('div');
-    cursor.id = 'custom-cursor';
-    cursor.style.cssText = `
-        position: fixed;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--accent);
-        pointer-events: none;
-        z-index: 9999;
-        mix-blend-mode: difference;
-        transition: transform 0.1s ease, background 0.3s ease;
-        box-shadow: 0 0 10px rgba(128, 0, 0, 0.5);
-    `;
-    document.body.appendChild(cursor);
-
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-
-    document.addEventListener('mousemove', function(e) {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.15;
-        cursorY += (mouseY - cursorY) * 0.15;
-        cursor.style.left = cursorX + 'px';
-        cursor.style.top = cursorY + 'px';
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Enlarge cursor on hover over interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .btn, .nav-link, .social-link');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', function() {
-            cursor.style.transform = 'scale(1.8)';
-            cursor.style.background = 'var(--accent-hover)';
+    // --- Click Destroy Effect (fallback for browsers without :has() support) ---
+    (function() {
+        var destroyTargets = document.querySelectorAll('.card, .project-card, .service-card, .experience-item, .contact-info-item');
+        destroyTargets.forEach(function(target) {
+            target.addEventListener('mousedown', function(e) {
+                // Skip if clicking a navigation link (href attribute)
+                var closestLink = e.target.closest('a[href]');
+                if (closestLink && closestLink.getAttribute('href') && !closestLink.getAttribute('href').startsWith('#') && closestLink.getAttribute('href') !== 'javascript:void(0)') {
+                    return;
+                }
+                // Only trigger if clicking a button or .btn inside
+                if (e.target.closest('button, .btn')) {
+                    this.style.animation = 'none';
+                    // Force reflow
+                    void this.offsetHeight;
+                    this.style.animation = 'destroyEffect 0.6s ease-out forwards';
+                }
+            });
         });
-        el.addEventListener('mouseleave', function() {
-            cursor.style.transform = 'scale(1)';
-            cursor.style.background = 'var(--accent)';
-        });
-    });
+    })();
 
     // --- Initialize AOS (Animate On Scroll) ---
     if (typeof AOS !== 'undefined') {
@@ -182,6 +156,110 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- Animated Background Toggle (Desktop + Mobile) ---
+    (function () {
+        var toggleBtns = [
+            document.getElementById('animatedBgToggle'),
+            document.getElementById('animatedBgToggleMobile')
+        ].filter(Boolean);
+
+        if (toggleBtns.length === 0) return;
+
+        var isEnabled = true;
+
+        function updateAllIcons(enabled) {
+            toggleBtns.forEach(function(btn) {
+                var icon = btn.querySelector('i');
+                if (!icon) return;
+                if (enabled) {
+                    icon.className = 'fas fa-magic';
+                    btn.title = 'Remove animated background';
+                } else {
+                    icon.className = 'fas fa-circle-xmark';
+                    btn.title = 'Enable animated background';
+                }
+                btn.setAttribute('aria-pressed', String(enabled));
+            });
+        }
+
+        function handleToggle() {
+            isEnabled = !isEnabled;
+
+            if (isEnabled) {
+                if (window.AnimatedBackground) {
+                    window.AnimatedBackground.restoreParticles();
+                }
+                var bg = document.querySelector('.animated-bg');
+                if (bg) bg.classList.remove('reduced-motion');
+            } else {
+                if (window.AnimatedBackground) {
+                    window.AnimatedBackground.clearParticles();
+                }
+            }
+
+            updateAllIcons(isEnabled);
+        }
+
+        toggleBtns.forEach(function(btn) {
+            btn.addEventListener('click', handleToggle);
+        });
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            isEnabled = false;
+            updateAllIcons(false);
+        }
+    })();
+
+    // --- Dark Mode Toggle (Desktop + Mobile) ---
+    (function () {
+        var darkModeBtns = [
+            document.getElementById('darkModeToggle'),
+            document.getElementById('darkModeToggleMobile')
+        ].filter(Boolean);
+
+        if (darkModeBtns.length === 0) return;
+
+        var isDark = localStorage.getItem('dark_mode') === 'true';
+
+        function updateDarkModeUI(enabled) {
+            darkModeBtns.forEach(function(btn) {
+                var icon = btn.querySelector('i');
+                if (!icon) return;
+                if (enabled) {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+                btn.setAttribute('aria-pressed', String(enabled));
+                btn.classList.toggle('active', enabled);
+            });
+        }
+
+        function applyDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('dark_mode', 'true');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('dark_mode', 'false');
+            }
+            updateDarkModeUI(enabled);
+
+            if (window.AnimatedBackground) {
+                window.AnimatedBackground.updateThemeColor();
+            }
+        }
+
+        applyDarkMode(isDark);
+
+        darkModeBtns.forEach(function(btn) {
+            btn.addEventListener('click', function () {
+                isDark = !isDark;
+                applyDarkMode(isDark);
+            });
+        });
+    })();
+
     // --- Admin sidebar toggle (mobile + collapse) ---
     const adminSidebarToggle = document.getElementById('adminSidebarToggle');
     const adminBackdrop = document.getElementById('adminBackdrop');
@@ -195,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
         function openSidebar() {
             document.body.classList.add('sidebar-open');
             adminSidebarToggle.setAttribute('aria-expanded', 'true');
-            // move focus into the sidebar for accessibility
             const firstLink = document.querySelector('.admin-sidebar a, .admin-sidebar button');
             if (firstLink) firstLink.focus();
         }
@@ -203,12 +280,10 @@ document.addEventListener('DOMContentLoaded', function() {
         function closeSidebar() {
             document.body.classList.remove('sidebar-open');
             adminSidebarToggle.setAttribute('aria-expanded', 'false');
-            // return focus to toggle
             adminSidebarToggle.focus();
         }
 
         adminSidebarToggle.addEventListener('click', function(e) {
-            // on small screens toggle slide-in via sidebar-open
             if (window.innerWidth < 992) {
                 if (document.body.classList.contains('sidebar-open')) {
                     closeSidebar();
@@ -217,7 +292,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 const collapsed = document.body.classList.toggle('sidebar-collapsed');
-                // reflect logical state in aria-expanded
                 adminSidebarToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
                 if (collapsed) {
                     localStorage.setItem('admin_sidebar_state', 'collapsed');
@@ -264,13 +338,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // keyboard accessibility: Esc to close, Ctrl/Cmd+M to toggle, focus trap for Tab
         document.addEventListener('keydown', function(e) {
-            // Toggle with Ctrl/Cmd+M
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'm') {
                 e.preventDefault();
                 if (document.body.classList.contains('sidebar-open')) closeSidebar(); else openSidebar();
                 return;
             }
-            // Close with Escape
             if (e.key === 'Escape' || e.key === 'Esc') {
                 if (document.body.classList.contains('sidebar-open')) {
                     closeSidebar();
@@ -278,7 +350,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Focus trap while sidebar open
             if (document.body.classList.contains('sidebar-open') && window.innerWidth < 992) {
                 if (e.key === 'Tab') {
                     const focusable = Array.from(document.querySelectorAll('.admin-sidebar a, .admin-sidebar button, #adminSidebarToggle'))
@@ -300,7 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // ensure overlay mode is cleared when resizing to desktop
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 992) {
-                // remove mobile overlay class but keep collapsed state if set by user
                 document.body.classList.remove('sidebar-open');
             }
         });
@@ -312,5 +382,5 @@ document.addEventListener('DOMContentLoaded', function() {
             card.classList.add('admin-reveal');
         });
     }
- 
+
 });

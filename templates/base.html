@@ -24,12 +24,18 @@
     <!-- Fancybox - Lightbox Gallery -->
     <link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" rel="stylesheet">
 
+    <!-- Animated Background CSS -->
+    <link rel="stylesheet" href="{% static 'css/animated-bg.css' %}">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
-<body class="portfolio-body {% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Animated Background Container -->
+    <div class="animated-bg" aria-hidden="true"></div>
+
     <!-- Header / Navigation -->
     {% include 'partials/_header.html' %}
 
@@ -49,6 +55,9 @@
 
     <!-- Fancybox - Lightbox Gallery -->
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+
+    <!-- Animated Background JS (floating particles with neural connections) -->
+    <script src="{% static 'js/animated-bg.js' %}"></script>
 
     <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>

@@ -18,12 +18,28 @@
                     {% endif %}
                 </div>
             </a>
+
+            <!-- Nav controls (particle toggle + dark mode) - visible on desktop -->
+            <div class="navbar-center d-none d-lg-flex align-items-center gap-2">
+                <button type="button" id="animatedBgToggle" class="nav-toggle-btn"
+                        aria-label="Toggle animated background" aria-pressed="true"
+                        title="Remove animated background">
+                    <i class="fas fa-magic"></i>
+                </button>
+                <button type="button" id="darkModeToggle" class="nav-toggle-btn"
+                        aria-label="Toggle dark mode" aria-pressed="false"
+                        title="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"
                            href="{% url 'home' %}">Home</a>
@@ -39,6 +55,23 @@
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
                            href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <!-- Mobile nav controls (inside collapsed menu) -->
+                    <li class="nav-item d-lg-none">
+                        <hr class="dropdown-divider my-2">
+                        <div class="d-flex gap-2 px-3 py-2">
+                            <button type="button" id="animatedBgToggleMobile" class="nav-toggle-btn"
+                                    aria-label="Toggle animated background" aria-pressed="true"
+                                    title="Remove animated background">
+                                <i class="fas fa-magic"></i>
+                            </button>
+                            <button type="button" id="darkModeToggleMobile" class="nav-toggle-btn"
+                                    aria-label="Toggle dark mode" aria-pressed="false"
+                                    title="Toggle dark mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                            <span class="small text-muted align-self-center ms-1">Toggle background & dark mode</span>
+                        </div>
                     </li>
                 </ul>
             </div>

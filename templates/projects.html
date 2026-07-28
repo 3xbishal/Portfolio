@@ -28,7 +28,7 @@
                                     Your browser does not support the video tag.
                                 </video>
                             {% else %}
-                                <img src="{{ project.project_media.url }}" class="card-img-top project-image" alt="{{ project.title }}">
+                            <img src="{{ project.project_media.url }}" class="card-img-top project-image lazy" alt="{{ project.title }}">
                             {% endif %}
                         {% else %}
                             <div class="card-img-top project-image-placeholder d-flex align-items-center justify-content-center">

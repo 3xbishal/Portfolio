@@ -10,7 +10,7 @@
         <div class="row align-items-center">
             <div class="col-lg-4 text-center mb-4 mb-lg-0" data-aos="fade-right">
                 {% if profile and profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid rounded-circle shadow-lg profile-image-lg">
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid rounded-circle shadow-lg profile-image-lg lazy">
                 {% else %}
                     <div class="profile-image-lg-placeholder d-flex align-items-center justify-content-center rounded-circle shadow-lg mx-auto">
                         <i class="fas fa-user fa-7x text-muted"></i>
