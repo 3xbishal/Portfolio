@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Clean Portfolio Theme — Maroon Accent with 3D Effects
+   Clean Portfolio Theme — Maroon Accent with 3D & Animation
    ========================================================================== */
 
 :root {
@@ -29,6 +29,55 @@ body {
     color: var(--text);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     overflow-x: hidden;
+}
+
+/* ===== Custom Animated Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+    transform: scale(1.1);
+}
+
+/* ===== Animated Section Entrance ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); }
+    50% { box-shadow: 0 20px 40px rgba(128, 0, 0, 0.25); }
+}
+
+section {
+    padding: 5rem 0;
+    position: relative;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.bg-light {
+    background: #f9fafb !important;
 }
 
 /* ===== Header / Navigation ===== */
@@ -143,15 +192,6 @@ a:hover {
 }
 
 /* ===== Sections ===== */
-section {
-    padding: 5rem 0;
-    position: relative;
-}
-
-.bg-light {
-    background: #f9fafb !important;
-}
-
 .section-title {
     display: inline-block;
     font-size: clamp(1.75rem, 3vw, 2.5rem);
@@ -172,6 +212,7 @@ section {
     height: 3px;
     background: var(--accent);
     border-radius: 3px;
+    animation: pulseGlow 3s ease-in-out infinite;
 }
 
 /* ===== Hero Section ===== */
@@ -204,27 +245,30 @@ section {
     width: 100%;
 }
 
-/* Circular profile image with 3D shadow */
+/* Big circular profile image with 3D shadow */
 .profile-image,
 .profile-image-placeholder,
 .profile-image-lg,
 .profile-image-lg-placeholder {
     width: 100%;
-    max-width: 380px;
+    max-width: 480px;
     border-radius: 50%;
-    border: 3px solid var(--accent);
+    border: 4px solid var(--accent);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: all 0.4s ease;
+    animation: pulseGlow 4s ease-in-out infinite;
 }
 
 .profile-image:hover,
 .profile-image-lg:hover {
     transform: scale(1.03);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    border-width: 6px;
 }
 
 .profile-image-placeholder {
-    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,7 +276,7 @@ section {
 }
 
 .profile-image-placeholder i {
-    font-size: 3rem;
+    font-size: 4rem;
     color: #9ca3af;
 }
 
@@ -243,7 +287,7 @@ section {
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     transform: translateZ(0);
 }
 
@@ -410,7 +454,7 @@ p {
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .experience-item:hover {
@@ -545,11 +589,11 @@ footer.footer .social-link {
     background: rgba(128, 0, 0, 0.08);
     color: var(--accent);
     margin: 0 0.35rem;
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 footer.footer .social-link:hover {
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.1);
     background: rgba(128, 0, 0, 0.15);
 }
 

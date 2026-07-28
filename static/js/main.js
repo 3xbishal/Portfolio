@@ -4,6 +4,53 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+    // --- Custom Animated Mouse Cursor ---
+    const cursor = document.createElement('div');
+    cursor.id = 'custom-cursor';
+    cursor.style.cssText = `
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--accent);
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
+        transition: transform 0.1s ease, background 0.3s ease;
+        box-shadow: 0 0 10px rgba(128, 0, 0, 0.5);
+    `;
+    document.body.appendChild(cursor);
+
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+        cursor.style.left = cursorX + 'px';
+        cursor.style.top = cursorY + 'px';
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Enlarge cursor on hover over interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .btn, .nav-link, .social-link');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', function() {
+            cursor.style.transform = 'scale(1.8)';
+            cursor.style.background = 'var(--accent-hover)';
+        });
+        el.addEventListener('mouseleave', function() {
+            cursor.style.transform = 'scale(1)';
+            cursor.style.background = 'var(--accent)';
+        });
+    });
+
     // --- Initialize AOS (Animate On Scroll) ---
     if (typeof AOS !== 'undefined') {
         AOS.init({
