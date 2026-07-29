@@ -2,6 +2,12 @@
    Portfolio Custom JavaScript
    ========================================================================== */
 
+// Prevent browser from auto-restoring scroll position on reload (causes a
+// visible "scroll down one step" jump because html { scroll-behavior: smooth })
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- Page Loader ---
