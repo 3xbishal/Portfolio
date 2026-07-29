@@ -14,3 +14,19 @@ def mul(value, arg):
         return int(value) * int(arg)
     except (ValueError, TypeError):
         return 0
+
+
+@register.filter
+def split(value, delimiter=","):
+    """Split a string by delimiter and return a list."""
+    if not value:
+        return []
+    return [item.strip() for item in value.split(delimiter)]
+
+
+@register.filter
+def strip(value):
+    """Strip whitespace from a string."""
+    if not value:
+        return ""
+    return value.strip()

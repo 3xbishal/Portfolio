@@ -5,39 +5,94 @@
 {% block title %}About - {{ profile.name|default:'My Portfolio' }}{% endblock %}
 
 {% block content %}
-<!-- About Hero -->
+<!-- About Hero - Terminal Style -->
 <section class="py-5">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-4 text-center mb-4 mb-lg-0" data-aos="fade-right">
-                {% if profile and profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-image-lg lazy">
-                {% else %}
-                    <div class="profile-image-lg-placeholder d-flex align-items-center justify-content-center mx-auto">
-                        <i class="fas fa-user fa-7x text-muted"></i>
+        <div class="row justify-content-center">
+            <div class="col-lg-10" data-aos="fade-up">
+                <div class="about-hero-card">
+                    <!-- Terminal header bar -->
+                    <div class="about-header-bar">
+                        <div class="about-dots">
+                            <span class="about-dot red"></span>
+                            <span class="about-dot yellow"></span>
+                            <span class="about-dot green"></span>
+                        </div>
+                        <span class="about-path"><i class="fas fa-folder-open"></i> ~/about/developer.sh</span>
                     </div>
-                {% endif %}
-            </div>
-            <div class="col-lg-8" data-aos="fade-left">
-                {% if profile %}
-                    <h1 class="fw-bold mb-3">{{ profile.name }}</h1>
-                    <p class="lead text-muted mb-4">{{ profile.title }}</p>
-                    <p class="mb-4">{{ profile.bio }}</p>
-                    <div class="d-flex flex-wrap gap-4">
-                        {% if profile.email %}
-                            <p class="mb-0"><i class="fas fa-envelope me-2"></i>{{ profile.email }}</p>
-                        {% endif %}
-                        {% if profile.phone %}
-                            <p class="mb-0"><i class="fas fa-phone me-2"></i>{{ profile.phone }}</p>
-                        {% endif %}
-                        {% if profile.location %}
-                            <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ profile.location }}</p>
-                        {% endif %}
+                    <!-- Terminal body -->
+                    <div class="about-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-4 text-center mb-4 mb-lg-0">
+                                <div class="about-profile-wrap">
+                                    {% if profile and profile.profile_image %}
+                                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="lazy">
+                                    {% else %}
+                                        <div class="profile-image-lg-placeholder d-flex align-items-center justify-content-center mx-auto">
+                                            <i class="fas fa-user fa-7x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                {% if profile %}
+                                    <div class="about-info-line">
+                                        <span class="info-prompt">$</span>
+                                        <span class="info-label">cat</span>
+                                        <span class="info-value">/home/developer/name.txt</span>
+                                    </div>
+                                    <div class="about-info-line">
+                                        <span class="info-prompt">></span>
+                                        <span class="info-label">name:</span>
+                                        <span class="info-value" style="font-size: 1.3rem; font-weight: 700;">{{ profile.name }}</span>
+                                    </div>
+
+                                    <div class="about-info-line">
+                                        <span class="info-prompt">$</span>
+                                        <span class="info-label">cat</span>
+                                        <span class="info-value">/home/developer/role.txt</span>
+                                    </div>
+                                    <div class="about-info-line">
+                                        <span class="info-prompt">></span>
+                                        <span class="info-label">role:</span>
+                                        <span class="info-value" style="color: var(--accent); font-weight: 600;">{{ profile.title }}</span>
+                                    </div>
+
+                                    <div class="about-bio-terminal">
+                                        {{ profile.bio|linebreaks }}
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-3 mt-3">
+                                        {% if profile.email %}
+                                            <div class="about-info-line">
+                                                <span class="info-prompt">@</span>
+                                                <span class="info-value">{{ profile.email }}</span>
+                                            </div>
+                                        {% endif %}
+                                        {% if profile.phone %}
+                                            <div class="about-info-line">
+                                                <span class="info-prompt">#</span>
+                                                <span class="info-value">{{ profile.phone }}</span>
+                                            </div>
+                                        {% endif %}
+                                        {% if profile.location %}
+                                            <div class="about-info-line">
+                                                <span class="info-prompt">~</span>
+                                                <span class="info-value">{{ profile.location }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="about-info-line">
+                                        <span class="info-prompt">$</span>
+                                        <span class="info-label">echo</span>
+                                        <span class="info-value">"Profile not configured. Please add a profile in the admin panel."</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                {% else %}
-                    <h1 class="fw-bold mb-3">About Me</h1>
-                    <p class="text-muted">Profile not configured. Please add a profile in the admin panel.</p>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -110,26 +165,68 @@
     </div>
 </section>
 
-<!-- Skills Section -->
+<!-- Skills Section - Terminal Progress Bars -->
 {% if skills %}
-<section class="py-5 bg-light">
+<section class="py-5 bg-light skills-terminal-section">
     <div class="container">
-        <h2 class="fw-bold text-center mb-5 section-title" data-aos="fade-up">Skills</h2>
-        <div class="row g-3 justify-content-center">
-            {% for skill in skills %}
-            <div class="col-6 col-md-3 col-lg-2"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}zoom-in{% else %}flip-left{% endif %}"
-                 data-aos-delay="{{ forloop.counter|mul:50 }}">
-                <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
-                    {% if skill.icon_class %}
-                        <i class="{{ skill.icon_class }} fa-fw me-2"></i>
-                    {% endif %}
-                    <span>{{ skill.name }}</span>
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="fw-bold section-title">Skills & Expertise</h2>
+            <p class="text-muted">// Proficiency levels</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="row g-3">
+                    {% for skill in skills %}
+                    <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:50 }}">
+                        <div class="skill-terminal-card">
+                            <div class="skill-terminal-header">
+                                <div class="skill-terminal-name">
+                                    {% if skill.icon_class %}
+                                        <i class="{{ skill.icon_class }}"></i>
+                                    {% else %}
+                                        <i class="fas fa-code"></i>
+                                    {% endif %}
+                                    {{ skill.name }}
+                                </div>
+                                <span class="skill-terminal-percent">{{ forloop.counter|add:80 }}%</span>
+                            </div>
+                            <div class="skill-terminal-bar">
+                                <div class="skill-terminal-fill" data-width="{{ forloop.counter|add:80 }}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Animate skill bars on scroll
+document.addEventListener('DOMContentLoaded', function() {
+    var skillFills = document.querySelectorAll('.skill-terminal-fill');
+    if (skillFills.length === 0) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var fill = entry.target;
+                var width = fill.getAttribute('data-width') || 85;
+                setTimeout(function() {
+                    fill.style.width = width + '%';
+                }, 200);
+                observer.unobserve(fill);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    skillFills.forEach(function(fill) {
+        observer.observe(fill);
+    });
+});
+</script>
 {% endblock %}
