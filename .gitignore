@@ -20,6 +20,9 @@ staticfiles/
 *.css.map
 *.js.map
 
+# Environment variables
+.env
+
 # IDE
 .vscode/
 .idea/
@@ -30,3 +33,7 @@ staticfiles/
 # OS
 .DS_Store
 Thumbs.db
+
+# Temporary files
+tmp_*.py
+*.bak
