@@ -171,13 +171,34 @@ body {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     overflow-x: hidden;
     line-height: 1.7;
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23800000' stroke-width='2' opacity='0.8'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23800000' opacity='0.9'/%3E%3C/svg%3E") 16 16, auto;
+    /* Neon HUD crosshair cursor for mouse/trackpad users. */
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cg fill='none' stroke='%23800000' stroke-linecap='round'%3E%3Ccircle cx='18' cy='18' r='10' stroke-width='1.5'/%3E%3Cpath d='M18 2v8M18 26v8M2 18h8M26 18h8' stroke-width='2'/%3E%3Cpath d='M18 14v8M14 18h8' stroke-width='1.5'/%3E%3C/g%3E%3Ccircle cx='18' cy='18' r='2' fill='%23ff4d4d'/%3E%3C/svg%3E") 18 18, crosshair;
 }
 
-/* Hide custom cursor JS elements - using real cursor instead */
-#custom-cursor,
-#custom-cursor-dot {
-    display: none !important;
+/* Actionable elements switch to a targeting reticle with an arrowhead. */
+@media (pointer: fine) {
+    a,
+    button,
+    [role="button"],
+    input[type="submit"],
+    input[type="button"],
+    input[type="reset"],
+    select,
+    label[for] {
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M5 3 29 17 18 20 14 31 5 3Z' fill='%23800000' stroke='%23ffb3b3' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='m15 20 7 7' stroke='%23fff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") 5 3, pointer;
+    }
+
+    input:not([type]),
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    [contenteditable="true"] {
+        cursor: text;
+    }
 }
 
 /* ===== Custom Animated Scrollbar ===== */
