@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load main_tags %}
+
+{% block title %}Parallax Portfolio - {{ profile.name|default:'My Portfolio' }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/parallax.css' %}">
+{% endblock %}
+
+{% block body_class %}parallax-page{% endblock %}
+
+{% block content %}
+<!-- ===== Parallax Hero Section ===== -->
+<section class="parallax-hero">
+    <!-- Decorative parallax background layers -->
+    <div class="parallax-bg-layer parallax-bg-layer-1" aria-hidden="true"></div>
+    <div class="parallax-bg-layer parallax-bg-layer-2" aria-hidden="true"></div>
+    <div class="parallax-bg-layer parallax-bg-layer-3" aria-hidden="true"></div>
+    <div class="parallax-geo parallax-geo-1" aria-hidden="true"></div>
+    <div class="parallax-geo parallax-geo-2" aria-hidden="true"></div>
+
+    <div class="parallax-hero-content">
+        {% if profile %}
+            <h1 class="parallax-hero-title">
+                I'm <span class="text-gradient">{{ profile.name }}</span>
+            </h1>
+            <p class="parallax-hero-subtitle">{{ profile.title }}</p>
+            <p class="parallax-hero-bio">{{ profile.bio|truncatewords:40 }}</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#projects" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-folder-open me-2"></i>View My Work
+                </a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="fas fa-envelope me-2"></i>Get In Touch
+                </a>
+                {% if profile.cv_file %}
+                    <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4" download>
+                        <i class="fas fa-download me-2"></i>Download CV
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <h1 class="parallax-hero-title">Welcome to My Portfolio</h1>
+            <p class="parallax-hero-subtitle">Web Developer</p>
+            <p class="parallax-hero-bio">Please configure your profile in the admin panel.</p>
+        {% endif %}
+    </div>
+
+    <div class="parallax-scroll-hint">
+        Scroll to Explore
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
+
+<!-- ===== About Parallax Section ===== -->
+{% if profile %}
+<section class="parallax-section" style="background-image: linear-gradient(135deg, rgba(128,0,0,0.85), rgba(107,0,0,0.75)), url('https://images.unsplash.com/photo-1451187580459-9546f8937317?w=1600&q=80');">
+    <div class="parallax-section-content" data-aos="fade-up">
+        <h2>About Me</h2>
+        <p>{{ profile.bio }}</p>
+        <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+            {% if profile.email %}
+                <span><i class="fas fa-envelope me-2"></i>{{ profile.email }}</span>
+            {% endif %}
+            {% if profile.phone %}
+                <span><i class="fas fa-phone me-2"></i>{{ profile.phone }}</span>
+            {% endif %}
+            {% if profile.location %}
+                <span><i class="fas fa-map-marker-alt me-2"></i>{{ profile.location }}</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Services Section ===== -->
+{% if services %}
+<section class="parallax-content-section">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>What I Do</h2>
+            <p>Services I offer</p>
+        </div>
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                <div class="parallax-service">
+                    {% if service.icon_class %}
+                        <div class="parallax-service-icon">
+                            <i class="{{ service.icon_class }}"></i>
+                        </div>
+                    {% endif %}
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description|truncatechars:150 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Projects Parallax Divider ===== -->
+<section class="parallax-section" style="background-image: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(128,0,0,0.6)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80');">
+    <div class="parallax-section-content" data-aos="fade-up">
+        <h2>My Projects</h2>
+        <p>A collection of my work, built with passion and precision</p>
+    </div>
+</section>
+
+<!-- ===== Projects Grid Section ===== -->
+{% if projects %}
+<section class="parallax-content-section alt" id="projects">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>Featured Work</h2>
+            <p>Explore my recent projects</p>
+        </div>
+        <div class="row g-4">
+            {% for project in projects %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                <div class="parallax-card">
+                    <div class="parallax-card-media">
+                        {% if project.project_media %}
+                            {% if project.media_type == 'video' %}
+                                <video controls preload="metadata">
+                                    <source src="{{ project.project_media.url }}" type="video/{{ project.project_media.name|slice:'-3:' }}">
+                                </video>
+                            {% else %}
+                                <img src="{{ project.project_media.url }}" alt="{{ project.title }}" class="lazy">
+                            {% endif %}
+                        {% else %}
+                            <div class="parallax-card-media-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="parallax-card-body">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.technologies_used|truncatechars:120 }}</p>
+                        <div class="parallax-card-actions">
+                            <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-arrow-right me-1"></i>Details
+                            </a>
+                            {% if project.project_url %}
+                                <a href="{{ project.project_url }}" target="_blank" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                                <a href="{{ project.github_url }}" target="_blank" class="btn btn-outline-dark btn-sm">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Experience Parallax Divider ===== -->
+{% if experiences %}
+<section class="parallax-section" style="background-image: linear-gradient(135deg, rgba(128,0,0,0.85), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=80');">
+    <div class="parallax-section-content" data-aos="fade-up">
+        <h2>My Journey</h2>
+        <p>Professional experience and career milestones</p>
+    </div>
+</section>
+
+<!-- ===== Experience Timeline Section ===== -->
+<section class="parallax-content-section">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>Work Experience</h2>
+            <p>My professional background</p>
+        </div>
+        <div class="parallax-timeline">
+            {% for exp in experiences %}
+            <div class="parallax-timeline-item" data-aos="fade-left" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                <span class="duration">{{ exp.duration }}</span>
+                <h3>{{ exp.position }}</h3>
+                <p class="company">
+                    {{ exp.company }}
+                    {% if exp.location %} · {{ exp.location }}{% endif %}
+                </p>
+                <p class="description">{{ exp.description|truncatechars:200 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Education Section ===== -->
+{% if educations %}
+<section class="parallax-content-section alt">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>Education</h2>
+            <p>My academic background</p>
+        </div>
+        <div class="parallax-timeline">
+            {% for edu in educations %}
+            <div class="parallax-timeline-item" data-aos="fade-right" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                <span class="duration">{{ edu.duration }}</span>
+                <h3>{{ edu.degree }}</h3>
+                <p class="company">
+                    {{ edu.institution }}
+                    {% if edu.location %} · {{ edu.location }}{% endif %}
+                </p>
+                {% if edu.field_of_study %}
+                    <p class="description">Field: {{ edu.field_of_study }}</p>
+                {% endif %}
+                {% if edu.grade %}
+                    <p class="description"><i class="fas fa-star me-1"></i>{{ edu.grade }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Skills Parallax Divider ===== -->
+{% if skills %}
+<section class="parallax-section" style="background-image: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(128,0,0,0.5)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80');">
+    <div class="parallax-section-content" data-aos="fade-up">
+        <h2>Skills & Expertise</h2>
+        <p>Technologies and tools I work with</p>
+    </div>
+</section>
+
+<!-- ===== Skills Grid Section ===== -->
+<section class="parallax-content-section">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>Technical Skills</h2>
+            <p>My toolkit for building great products</p>
+        </div>
+        <div class="parallax-skills-grid">
+            {% for skill in skills %}
+            <div data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:50 }}">
+                <div class="parallax-skill-chip">
+                    {% if skill.icon_class %}
+                        <i class="{{ skill.icon_class }}"></i>
+                    {% endif %}
+                    <span>{{ skill.name }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== Testimonials Section ===== -->
+{% if testimonials %}
+<section class="parallax-content-section alt">
+    <div class="container">
+        <div class="parallax-section-heading" data-aos="fade-up">
+            <h2>What People Say</h2>
+            <p>Testimonials from clients and colleagues</p>
+        </div>
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                <div class="parallax-testimonial">
+                    <p class="parallax-testimonial-content">"{{ testimonial.content }}"</p>
+                    <div class="parallax-testimonial-author">
+                        {% if testimonial.image %}
+                            <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                <i class="fas fa-user text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="parallax-testimonial-author-info">
+                            <strong>{{ testimonial.name }}</strong>
+                            <span>{{ testimonial.position }}{% if testimonial.company %} — {{ testimonial.company }}{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== CTA Section ===== -->
+<section class="parallax-cta">
+    <div class="parallax-cta-content" data-aos="zoom-in">
+        <h2>Let's Work Together</h2>
+        <p>Have a project in mind? Let's create something amazing.</p>
+        <a href="{% url 'contact' %}" class="btn btn-lg">
+            <i class="fas fa-paper-plane me-2"></i>Get In Touch
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/parallax.js' %}"></script>
+{% endblock %}

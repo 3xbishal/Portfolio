@@ -22,6 +22,32 @@ from .models import (
 from .forms import ContactForm
 
 
+# ---------------------------------------------------------------------------
+# Parallax Portfolio Page
+# ---------------------------------------------------------------------------
+
+def parallax(request):
+    """Full portfolio page with parallax scrolling effects."""
+    profile = get_active_profile()
+    projects = Project.objects.all()
+    experiences = Experience.objects.all()
+    educations = Education.objects.filter(is_active=True)
+    skills = Skill.objects.all()
+    services = Service.objects.filter(is_active=True)
+    testimonials = Testimonial.objects.filter(is_active=True)
+
+    context = {
+        'profile': profile,
+        'projects': projects,
+        'experiences': experiences,
+        'educations': educations,
+        'skills': skills,
+        'services': services,
+        'testimonials': testimonials,
+    }
+    return render(request, 'parallax.html', context)
+
+
 def get_active_profile():
     """Return the active profile or the first profile if none are active."""
     return Profile.objects.filter(is_active=True).first() or Profile.objects.first()

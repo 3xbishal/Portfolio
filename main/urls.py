@@ -12,4 +12,5 @@ urlpatterns = [
     path('projects/<slug:slug>/', views.ProjectDetailView.as_view(), name='project_detail'),
     path('experience/<slug:slug>/', views.ExperienceDetailView.as_view(), name='experience_detail'),
     path('contact/', views.contact, name='contact'),
+    path('parallax/', views.parallax, name='parallax'),
 ]
