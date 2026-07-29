@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.db.models import Count, Q
+from django.db.models import Q
 
 from .models import (
     Profile,
@@ -197,7 +197,7 @@ class ProjectListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     template_name = 'admin_panel/project_list.html'
     context_object_name = 'projects'
     paginate_by = 20
-    search_fields = ['title', 'description', 'short_description']
+    search_fields = ['title', 'description', 'technologies_used']
 
 
 class ProjectCreateView(AdminRequiredMixin, CreateView):
