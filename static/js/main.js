@@ -4,22 +4,164 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- Click Destroy Effect (fallback for browsers without :has() support) ---
+    // --- Click Destroy Effect with particles ---
     (function() {
-        var destroyTargets = document.querySelectorAll('.card, .project-card, .service-card, .experience-item, .contact-info-item');
-        destroyTargets.forEach(function(target) {
-            target.addEventListener('mousedown', function(e) {
-                // Skip if clicking a navigation link (href attribute)
-                var closestLink = e.target.closest('a[href]');
-                if (closestLink && closestLink.getAttribute('href') && !closestLink.getAttribute('href').startsWith('#') && closestLink.getAttribute('href') !== 'javascript:void(0)') {
-                    return;
+        // Add destroy effect keyframes
+        var style = document.createElement('style');
+        style.textContent = `
+            @keyframes destroyEffect {
+                0% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(0.95); opacity: 0.8; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            .destroy-particle {
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #800000;
+                pointer-events: none;
+                z-index: 9999;
+                box-shadow: 0 0 6px rgba(128, 0, 0, 0.8);
+            }
+        `;
+        document.head.appendChild(style);
+
+        function createParticles(element, x, y) {
+            var particleCount = 25;
+            for (var i = 0; i < particleCount; i++) {
+                var particle = document.createElement('div');
+                particle.className = 'destroy-particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                element.appendChild(particle);
+
+                var angle = (Math.PI * 2 * i) / particleCount;
+                var velocity = 80 + Math.random() * 120;
+                var tx = Math.cos(angle) * velocity;
+                var ty = Math.sin(angle) * velocity;
+
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 900,
+                    easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
+                }).onfinish = function() {
+                    particle.remove();
+                };
+            }
+        }
+
+        function destroyCardParticleByParticle(card, linkHref) {
+            // Get card dimensions
+            var rect = card.getBoundingClientRect();
+            var width = rect.width;
+            var height = rect.height;
+            
+            // Create many particles across the entire card
+            var particleCount = 60;
+            var particles = [];
+            
+            for (var i = 0; i < particleCount; i++) {
+                var particle = document.createElement('div');
+                particle.className = 'destroy-particle';
+                
+                // Random position within card
+                var px = Math.random() * width;
+                var py = Math.random() * height;
+                particle.style.left = px + 'px';
+                particle.style.top = py + 'px';
+                
+                // Random size variation
+                var size = 4 + Math.random() * 8;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                card.appendChild(particle);
+                particles.push(particle);
+                
+                // Random direction and velocity
+                var angle = Math.random() * Math.PI * 2;
+                var velocity = 100 + Math.random() * 200;
+                var tx = Math.cos(angle) * velocity;
+                var ty = Math.sin(angle) * velocity;
+                
+                // Staggered animation
+                var delay = Math.random() * 200;
+                
+                setTimeout(function() {
+                    particle.animate([
+                        { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
+                        { transform: `translate(${tx}px, ${ty}px) scale(0) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 500,
+                        easing: 'cubic-bezier(0, 0.5, 0.2, 1)'
+                    }).onfinish = function() {
+                        particle.remove();
+                    };
+                }, delay);
+            }
+            
+            // Fade out card content
+            card.style.transition = 'all 0.3s ease-out';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            
+            // Remove card after particles finish
+            setTimeout(function() {
+                card.style.display = 'none';
+                
+                // Navigate to project details
+                if (linkHref) {
+                    window.location.href = linkHref;
                 }
-                // Only trigger if clicking a button or .btn inside
-                if (e.target.closest('button, .btn')) {
-                    this.style.animation = 'none';
-                    // Force reflow
-                    void this.offsetHeight;
-                    this.style.animation = 'destroyEffect 0.6s ease-out forwards';
+            }, 1200);
+        }
+
+        // Apply to all clickable elements - destroy parent card with delay for navigation
+        document.querySelectorAll('button, .btn, a, .card, .project-card, .service-card, .experience-item, .contact-info-item').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                // Find parent card to destroy
+                var parentCard = this.closest('.card, .project-card, .service-card, .experience-item, .contact-info-item');
+                var targetElement = parentCard || this;
+                var isProjectCard = parentCard && parentCard.classList.contains('project-card');
+                
+                var rect = targetElement.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                
+                targetElement.style.position = 'relative';
+                createParticles(targetElement, x, y);
+
+                // Crush effect on parent - stronger for project cards
+                var crushScale = isProjectCard ? '0.85' : '0.92';
+                var crushBrightness = isProjectCard ? '1.6' : '1.4';
+                
+                targetElement.style.transition = 'all 0.12s cubic-bezier(0.4, 0, 0.2, 1)';
+                targetElement.style.transform = 'scale(' + crushScale + ')';
+                targetElement.style.filter = 'brightness(' + crushBrightness + ') saturate(1.3)';
+                targetElement.style.boxShadow = '0 0 30px rgba(128, 0, 0, 0.6)';
+
+                // Delay navigation for project cards to show crush effect
+                if (isProjectCard) {
+                    var link = this.closest('a');
+                    var href = link ? link.getAttribute('href') : null;
+                    
+                    e.preventDefault();
+                    
+                    // Destroy card particle by particle
+                    destroyCardParticleByParticle(targetElement, href);
+                } else {
+                    setTimeout(() => {
+                        targetElement.style.transform = 'scale(1.03)';
+                        targetElement.style.filter = 'brightness(0.95)';
+                        
+                        setTimeout(() => {
+                            targetElement.style.transform = '';
+                            targetElement.style.filter = '';
+                        }, 150);
+                    }, 150);
                 }
             });
         });
