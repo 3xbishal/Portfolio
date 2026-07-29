@@ -172,24 +172,33 @@
 </section>
 {% endif %}
 
-<!-- Skills Section -->
+<!-- Skills Section - Interactive Skill Cards -->
 {% if skills %}
-<section class="py-5 bg-light">
+<section class="py-5 skills-showcase-section">
     <div class="container">
-        <div class="text-center mb-5" data-aos="zoom-in-down">
+        <div class="text-center mb-5" data-aos="fade-down">
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
-            <p class="text-muted">Technologies I work with</p>
+            <p class="text-muted">// Technologies I work with</p>
         </div>
-        <div class="row g-3 justify-content-center">
+        <div class="row g-4 justify-content-center">
             {% for skill in skills %}
-            <div class="col-6 col-md-3 col-lg-2"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-left{% elif forloop.counter|divisibleby:2 %}zoom-in{% else %}flip-right{% endif %}"
-                 data-aos-delay="{{ forloop.counter|mul:50 }}">
-                <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
-                    {% if skill.icon_class %}
-                        <i class="{{ skill.icon_class }} fa-fw me-2"></i>
-                    {% endif %}
-                    <span>{{ skill.name }}</span>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2"
+                 data-aos="zoom-in"
+                 data-aos-delay="{{ forloop.counter|mul:60 }}">
+                <div class="skill-showcase-card">
+                    <div class="skill-showcase-inner">
+                        {% if skill.icon_class %}
+                            <div class="skill-showcase-icon">
+                                <i class="{{ skill.icon_class }}"></i>
+                            </div>
+                        {% else %}
+                            <div class="skill-showcase-icon">
+                                <i class="fas fa-terminal"></i>
+                            </div>
+                        {% endif %}
+                        <h3 class="skill-showcase-name">{{ skill.name }}</h3>
+                    </div>
+                    <div class="skill-showcase-glow"></div>
                 </div>
             </div>
             {% endfor %}

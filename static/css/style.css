@@ -1927,6 +1927,245 @@ footer.footer .social-link.whatsapp { color: #25D366; }
     .hero-title { font-size: 2rem; }
 }
 
+/* ==========================================================================
+   Skills Showcase — Interactive Card Design (Home Page)
+   ========================================================================== */
+
+.skills-showcase-section {
+    position: relative;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.skills-showcase-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.2;
+}
+
+.skills-showcase-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.2;
+}
+
+.skill-showcase-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+}
+
+.skill-showcase-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--accent-light) 0%, transparent 50%, var(--accent-light) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 16px;
+}
+
+.skill-showcase-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(128, 0, 0, 0.15), 0 0 0 1px var(--accent);
+}
+
+.skill-showcase-card:hover::before {
+    opacity: 1;
+}
+
+.skill-showcase-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.skill-showcase-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--accent);
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.1);
+}
+
+.skill-showcase-card:hover .skill-showcase-icon {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 8px 24px rgba(128, 0, 0, 0.25);
+}
+
+.skill-showcase-name {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+}
+
+.skill-showcase-card:hover .skill-showcase-name {
+    color: var(--accent);
+}
+
+/* Glow effect on hover */
+.skill-showcase-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-light), transparent);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.skill-showcase-card:hover .skill-showcase-glow {
+    width: 200px;
+    height: 200px;
+    opacity: 0.4;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .skill-showcase-card {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .skill-showcase-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(212, 74, 74, 0.2), 0 0 0 1px var(--accent);
+}
+
+/* ===== Skill Tags (About Page) ===== */
+
+.skill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    margin: 0.35rem;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--accent-light), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50px;
+}
+
+.skill-tag:hover {
+    transform: translateY(-3px) scale(1.05);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 8px 20px rgba(128, 0, 0, 0.12);
+}
+
+.skill-tag:hover::before {
+    opacity: 1;
+}
+
+.skill-tag i {
+    font-size: 1rem;
+    color: var(--accent);
+    transition: transform 0.3s ease;
+}
+
+.skill-tag:hover i {
+    transform: scale(1.2);
+}
+
+/* Dark mode */
+body.dark-mode .skill-tag {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .skill-tag:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(212, 74, 74, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .skill-showcase-card {
+        min-height: 120px;
+        padding: 1rem 0.75rem;
+    }
+
+    .skill-showcase-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+        border-radius: 12px;
+    }
+
+    .skill-showcase-name {
+        font-size: 0.78rem;
+    }
+
+    .skill-tag {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.78rem;
+        margin: 0.25rem;
+    }
+}
+
 /* ===== Home Page Motion Enhancements ===== */
 .home-page .artistic-hero::after {
     content: '';

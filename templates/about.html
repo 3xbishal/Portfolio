@@ -165,36 +165,24 @@
     </div>
 </section>
 
-<!-- Skills Section - Terminal Progress Bars -->
+<!-- Skills Section - Clean Tag Cloud -->
 {% if skills %}
-<section class="py-5 bg-light skills-terminal-section">
+<section class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5" data-aos="fade-down">
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
-            <p class="text-muted">// Proficiency levels</p>
+            <p class="text-muted">// Technologies I work with</p>
         </div>
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="row g-3">
+            <div class="col-lg-10">
+                <div class="text-center">
                     {% for skill in skills %}
-                    <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:50 }}">
-                        <div class="skill-terminal-card">
-                            <div class="skill-terminal-header">
-                                <div class="skill-terminal-name">
-                                    {% if skill.icon_class %}
-                                        <i class="{{ skill.icon_class }}"></i>
-                                    {% else %}
-                                        <i class="fas fa-code"></i>
-                                    {% endif %}
-                                    {{ skill.name }}
-                                </div>
-                                <span class="skill-terminal-percent">{{ forloop.counter|add:80 }}%</span>
-                            </div>
-                            <div class="skill-terminal-bar">
-                                <div class="skill-terminal-fill" data-width="{{ forloop.counter|add:80 }}"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <span class="skill-tag" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:30 }}">
+                        {% if skill.icon_class %}
+                            <i class="{{ skill.icon_class }}"></i>
+                        {% endif %}
+                        {{ skill.name }}
+                    </span>
                     {% endfor %}
                 </div>
             </div>
@@ -202,31 +190,4 @@
     </div>
 </section>
 {% endif %}
-{% endblock %}
-
-{% block extra_js %}
-<script>
-// Animate skill bars on scroll
-document.addEventListener('DOMContentLoaded', function() {
-    var skillFills = document.querySelectorAll('.skill-terminal-fill');
-    if (skillFills.length === 0) return;
-
-    var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                var fill = entry.target;
-                var width = fill.getAttribute('data-width') || 85;
-                setTimeout(function() {
-                    fill.style.width = width + '%';
-                }, 200);
-                observer.unobserve(fill);
-            }
-        });
-    }, { threshold: 0.3 });
-
-    skillFills.forEach(function(fill) {
-        observer.observe(fill);
-    });
-});
-</script>
 {% endblock %}
