@@ -13,4 +13,5 @@ urlpatterns = [
     path('experience/<slug:slug>/', views.ExperienceDetailView.as_view(), name='experience_detail'),
     path('contact/', views.contact, name='contact'),
     path('parallax/', views.parallax, name='parallax'),
+    path('gaming-zone/', views.gaming_zone, name='gaming_zone'),
 ]

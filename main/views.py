@@ -48,6 +48,11 @@ def parallax(request):
     return render(request, 'parallax.html', context)
 
 
+def gaming_zone(request):
+    """A lightweight collection of browser games for visitors."""
+    return render(request, 'gaming_zone.html', {'profile': get_active_profile()})
+
+
 def get_active_profile():
     """Return the active profile or the first profile if none are active."""
     return Profile.objects.filter(is_active=True).first() or Profile.objects.first()

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gaming Zone | {{ site_name|default:'My Portfolio' }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gaming-zone.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="gaming-zone py-5">
+    <div class="container">
+        <header class="gaming-hero text-center" data-aos="zoom-in">
+            <span class="gaming-kicker"><i class="fas fa-gamepad"></i> BREAK MODE ACTIVATED</span>
+            <h1>Gaming <span>Zone</span></h1>
+            <p>Take a quick break. Explore, escape, and beat the challenge.</p>
+        </header>
+
+        <div class="row g-4">
+            <div class="col-lg-4" data-aos="fade-up">
+                <article class="game-card h-100">
+                    <div class="game-card-heading">
+                        <div class="game-icon"><i class="fas fa-gem"></i></div>
+                        <div>
+                            <span class="game-number">01 / DISCOVER</span>
+                            <h2>Treasure Hunt</h2>
+                        </div>
+                    </div>
+                    <p>Search the ancient map. Find the hidden treasure before your three turns run out.</p>
+                    <div id="treasureMap" class="treasure-map" role="grid" aria-label="Treasure Hunt map"></div>
+                    <div class="game-footer"><span id="treasureStatus" class="game-status" aria-live="polite">Three searches remain.</span><button id="treasureReset" class="reset-button" type="button">New map</button></div>
+                </article>
+            </div>
+
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <article class="game-card h-100">
+                    <div class="game-card-heading">
+                        <div class="game-icon"><i class="fas fa-person-running"></i></div>
+                        <div>
+                            <span class="game-number">02 / SURVIVE</span>
+                            <h2>Trail Runner</h2>
+                        </div>
+                    </div>
+                    <p>Cross the wilderness. Jump every obstacle and keep the run alive.</p>
+                    <div id="runnerTrack" class="runner-track" role="application" aria-label="Trail Runner game. Press space to jump.">
+                        <span id="runnerPlayer" class="runner-player"><i class="fas fa-person-running"></i></span>
+                        <span id="runnerObstacle" class="runner-obstacle"><i class="fas fa-mountain"></i></span>
+                    </div>
+                    <div class="game-stats"><span>Distance <strong id="runnerScore">0 m</strong></span><span>Best <strong id="runnerBest">0 m</strong></span></div>
+                    <button id="runnerStart" class="game-button" type="button">Start expedition</button>
+                    <p id="runnerStatus" class="game-status" aria-live="polite">Press Space or jump to begin.</p>
+                </article>
+            </div>
+
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <article class="game-card h-100">
+                    <div class="game-card-heading">
+                        <div class="game-icon"><i class="fas fa-hashtag"></i></div>
+                        <div>
+                            <span class="game-number">03 / STRATEGY</span>
+                            <h2>Grid Clash</h2>
+                        </div>
+                    </div>
+                    <p>Classic tic-tac-toe. You are <b>X</b>; the challenger is <b>O</b>.</p>
+                    <div id="ticTacToeBoard" class="tic-tac-toe" role="grid" aria-label="Tic tac toe board">
+                        <button type="button" data-cell="0" aria-label="Top left"></button><button type="button" data-cell="1" aria-label="Top center"></button><button type="button" data-cell="2" aria-label="Top right"></button>
+                        <button type="button" data-cell="3" aria-label="Middle left"></button><button type="button" data-cell="4" aria-label="Middle center"></button><button type="button" data-cell="5" aria-label="Middle right"></button>
+                        <button type="button" data-cell="6" aria-label="Bottom left"></button><button type="button" data-cell="7" aria-label="Bottom center"></button><button type="button" data-cell="8" aria-label="Bottom right"></button>
+                    </div>
+                    <div class="game-footer"><span id="tttStatus" class="game-status" aria-live="polite">Your move, commander.</span><button id="tttReset" class="reset-button" type="button">Reset</button></div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/gaming-zone.js' %}"></script>
+{% endblock %}
