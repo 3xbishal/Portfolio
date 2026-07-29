@@ -4,6 +4,8 @@
 
 {% block title %}{{ profile.name|default:'Developer' }} - {{ profile.title|default:'Portfolio' }}{% endblock %}
 
+{% block body_class %}home-page{% endblock %}
+
 {% block content %}
     <!-- Hero Section - Artistic Top Section -->
     <section class="hero-section artistic-hero min-vh-100 d-flex align-items-center">
@@ -25,24 +27,24 @@
 
         <div class="container">
             <div class="row align-items-start">
-                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                <div class="col-lg-6 hero-content">
                     {% if profile %}
-                        <div class="hero-greeting mb-3">
+                        <div class="hero-greeting mb-3" data-aos="fade-down" data-aos-delay="100">
                             <span class="greeting-badge">
                                 <i class="fas fa-hand-sparkles me-2"></i>Hello
                             </span>
                         </div>
-                        <h1 class="hero-title artistic-title mb-4">
+                        <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">
                             I'm <span class="text-gradient name-highlight">{{ profile.name }}</span>
                         </h1>
-                        <div class="hero-subtitle-wrapper mb-4">
+                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-left" data-aos-delay="340">
                             <p class="hero-subtitle">{{ profile.title }}</p>
                             <div class="subtitle-underline"></div>
                         </div>
-                        <div class="hero-bio-wrapper mb-5">
+                        <div class="hero-bio-wrapper mb-5" data-aos="fade-up" data-aos-delay="430">
                             <p class="hero-bio">{{ profile.bio|truncatewords:30 }}</p>
                         </div>
-                        <div class="hero-actions d-flex flex-wrap gap-3">
+                        <div class="hero-actions d-flex flex-wrap gap-3" data-aos="zoom-in-up" data-aos-delay="540">
                             <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4 artistic-btn">
                                 <i class="fas fa-folder-open me-2"></i>View My Work
                             </a>
@@ -56,22 +58,22 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="hero-greeting mb-3">
+                        <div class="hero-greeting mb-3" data-aos="fade-down" data-aos-delay="100">
                             <span class="greeting-badge">
                                 <i class="fas fa-hand-sparkles me-2"></i>Hello
                             </span>
                         </div>
-                        <h1 class="hero-title artistic-title mb-4">Welcome to My Portfolio</h1>
-                        <div class="hero-subtitle-wrapper mb-4">
+                        <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">Welcome to My Portfolio</h1>
+                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-left" data-aos-delay="340">
                             <p class="hero-subtitle">Web Developer</p>
                             <div class="subtitle-underline"></div>
                         </div>
-                        <div class="hero-bio-wrapper mb-5">
+                        <div class="hero-bio-wrapper mb-5" data-aos="fade-up" data-aos-delay="430">
                             <p class="hero-bio">Please configure your profile in the admin panel.</p>
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-lg-6 hero-visual d-flex justify-content-center" data-aos="fade-left">
+                <div class="col-lg-6 hero-visual d-flex justify-content-center" data-aos="zoom-in-left" data-aos-delay="280">
                     <div class="hero-image-wrapper">
                         {% if profile and profile.profile_image %}
                             <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-image lazy">
@@ -90,13 +92,15 @@
 {% if featured_projects %}
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <div class="text-center mb-5" data-aos="fade-down">
             <h2 class="fw-bold section-title">Featured Projects</h2>
             <p class="text-muted">Some of my recent work</p>
         </div>
         <div class="row g-4">
             {% for project in featured_projects %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+            <div class="col-md-6 col-lg-4"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                 data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm project-card">
                     {% if project.project_media %}
                         {% if project.media_type == 'video' %}
@@ -123,7 +127,7 @@
             </div>
             {% endfor %}
         </div>
-        <div class="text-center mt-5" data-aos="fade-up">
+        <div class="text-center mt-5" data-aos="zoom-in">
             <a href="{% url 'projects' %}" class="btn btn-primary px-5">View All Projects</a>
         </div>
     </div>
@@ -134,13 +138,15 @@
 {% if services %}
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <div class="text-center mb-5" data-aos="fade-left">
             <h2 class="fw-bold section-title">What I Do</h2>
             <p class="text-muted">Services I offer</p>
         </div>
         <div class="row g-4">
             {% for service in services %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+            <div class="col-md-6 col-lg-4"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                 data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm service-card text-center p-4">
                     {% if service.icon_class %}
                         <div class="service-icon mx-auto">
@@ -161,13 +167,15 @@
 {% if skills %}
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <div class="text-center mb-5" data-aos="zoom-in-down">
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
             <p class="text-muted">Technologies I work with</p>
         </div>
         <div class="row g-3 justify-content-center">
             {% for skill in skills %}
-            <div class="col-6 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:50 }}">
+            <div class="col-6 col-md-3 col-lg-2"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-left{% elif forloop.counter|divisibleby:2 %}zoom-in{% else %}flip-right{% endif %}"
+                 data-aos-delay="{{ forloop.counter|mul:50 }}">
                 <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
                     {% if skill.icon_class %}
                         <i class="{{ skill.icon_class }} fa-fw me-2"></i>
@@ -185,7 +193,7 @@
 {% if experiences %}
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <div class="text-center mb-5" data-aos="fade-right">
             <h2 class="fw-bold section-title">Recent Experience</h2>
             <p class="text-muted">My professional background</p>
         </div>
@@ -193,7 +201,9 @@
             <div class="col-lg-8">
                 <div class="experience-timeline">
                     {% for exp in experiences %}
-                    <a href="{{ exp.get_absolute_url }}" class="text-decoration-none" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                    <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
+                       data-aos="{% if forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                       data-aos-delay="{{ forloop.counter|mul:100 }}">
                         <div class="experience-item">
                             <div class="d-flex justify-content-between">
                                 <h3 class="h5 mb-1 text-decoration-none">{{ exp.position }}</h3>
@@ -205,7 +215,7 @@
                     </a>
                     {% endfor %}
                 </div>
-                <div class="text-center mt-4" data-aos="fade-up">
+                <div class="text-center mt-4" data-aos="zoom-in">
                     <a href="{% url 'about' %}" class="btn btn-outline-primary">View Full Experience</a>
                 </div>
             </div>
@@ -218,7 +228,7 @@
 {% if testimonials %}
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <div class="text-center mb-5" data-aos="fade-down">
             <h2 class="fw-bold section-title">What People Say</h2>
             <p class="text-muted">Testimonials from clients and colleagues</p>
         </div>

@@ -55,7 +55,9 @@
                         {% if experiences %}
                             <div class="experience-timeline">
                                 {% for exp in experiences %}
-                                <a href="{{ exp.get_absolute_url }}" class="text-decoration-none" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                                <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
+                                   data-aos="{% if forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                                   data-aos-delay="{{ forloop.counter|mul:100 }}">
                                     <div class="experience-item">
                                         <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
                                         <h3 class="h5 mb-1">{{ exp.position }}</h3>
@@ -81,7 +83,9 @@
                         {% if educations %}
                             <div class="experience-timeline">
                                 {% for edu in educations %}
-                                <div class="experience-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter|mul:100 }}">
+                                <div class="experience-item"
+                                     data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-left{% endif %}"
+                                     data-aos-delay="{{ forloop.counter|mul:100 }}">
                                     <span class="text-primary fw-semibold d-block mb-1">{{ edu.duration }}</span>
                                     <h3 class="h5 mb-1">{{ edu.degree }}</h3>
                                     <p class="text-muted mb-2">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
@@ -113,7 +117,9 @@
         <h2 class="fw-bold text-center mb-5 section-title" data-aos="fade-up">Skills</h2>
         <div class="row g-3 justify-content-center">
             {% for skill in skills %}
-            <div class="col-6 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:50 }}">
+            <div class="col-6 col-md-3 col-lg-2"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}zoom-in{% else %}flip-left{% endif %}"
+                 data-aos-delay="{{ forloop.counter|mul:50 }}">
                 <div class="skill-item d-flex align-items-center p-2 bg-light rounded justify-content-center">
                     {% if skill.icon_class %}
                         <i class="{{ skill.icon_class }} fa-fw me-2"></i>

@@ -48,7 +48,7 @@
             <div class="col-lg-6 hero-visual" data-aos="fade-left">
                 <div class="row g-4 mt-1 text-center text-md-start">
                     {% if profile.email %}
-                    <div class="col-6" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="col-6" data-aos="fade-right" data-aos-delay="0">
                         <div class="contact-info-item h-100">
                             <div class="contact-info-icon mx-auto">
                                 <i class="fas fa-envelope"></i>
@@ -70,7 +70,7 @@
                     </div>
                     {% endif %}
                     {% if profile.location %}
-                    <div class="col-12" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="col-12" data-aos="fade-left" data-aos-delay="200">
                         <div class="contact-info-item">
                             <div class="contact-info-icon mx-auto">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -100,7 +100,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <div class="card border-0 shadow" data-aos="fade-up">
+                <div class="card border-0 shadow" data-aos="flip-up">
                     <div class="card-body p-4 p-md-5">
                         <h2 class="fw-bold mb-4 section-title">Send Me a Message</h2>
                         <form method="post" action="{% url 'contact' %}">

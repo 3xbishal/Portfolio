@@ -57,6 +57,10 @@
                            href="{% url 'parallax' %}">Parallax</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'gaming_zone' %} active{% endif %}"
+                           href="{% url 'gaming_zone' %}">Gaming Zone</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
                            href="{% url 'contact' %}">Contact</a>
                     </li>

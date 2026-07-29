@@ -1698,3 +1698,54 @@ footer.footer .social-link.whatsapp { color: #25D366; }
 @media (max-width: 576px) {
     .hero-title { font-size: 2rem; }
 }
+
+/* ===== Home Page Motion Enhancements ===== */
+.home-page .artistic-hero::after {
+    content: '';
+    position: absolute;
+    inset: 10% 6%;
+    border: 1px solid var(--accent-light);
+    border-radius: 32px;
+    pointer-events: none;
+    opacity: .55;
+    animation: homeFramePulse 7s ease-in-out infinite;
+}
+
+.home-page .hero-image-wrapper {
+    animation: homeImageDrift 9s ease-in-out infinite;
+}
+
+.home-page .project-card,
+.home-page .service-card,
+.home-page .skill-item,
+.home-page .experience-item {
+    transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease;
+}
+
+.home-page .project-card:hover,
+.home-page .service-card:hover {
+    transform: translateY(-10px) rotate(-.7deg);
+}
+
+.home-page .skill-item:hover {
+    transform: translateY(-5px) scale(1.04);
+}
+
+.home-page .experience-item:hover {
+    transform: translateX(10px);
+}
+
+@keyframes homeFramePulse {
+    0%, 100% { transform: scale(.97); opacity: .22; }
+    50% { transform: scale(1); opacity: .58; }
+}
+
+@keyframes homeImageDrift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(0, -12px, 0) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-page .artistic-hero::after,
+    .home-page .hero-image-wrapper { animation: none; }
+}
