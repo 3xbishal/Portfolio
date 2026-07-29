@@ -4,6 +4,33 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+    // --- Page Loader ---
+    (function() {
+        var loader = document.getElementById('pageLoader');
+        if (loader) {
+            // Hide loader when everything is loaded
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    loader.classList.add('hidden');
+                    // Remove loader from DOM after animation
+                    setTimeout(function() {
+                        loader.remove();
+                    }, 600);
+                }, 800);
+            });
+
+            // Fallback: hide after 3 seconds even if load event hasn't fired
+            setTimeout(function() {
+                if (loader && !loader.classList.contains('hidden')) {
+                    loader.classList.add('hidden');
+                    setTimeout(function() {
+                        loader.remove();
+                    }, 600);
+                }
+            }, 3000);
+        }
+    })();
+
     // --- Click Destroy Effect with particles ---
     (function() {
         // Add destroy effect keyframes
