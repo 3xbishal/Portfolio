@@ -5,50 +5,86 @@
 {% block title %}{{ profile.name|default:'Developer' }} - {{ profile.title|default:'Portfolio' }}{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section min-vh-100 d-flex align-items-center">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
-                {% if profile %}
-                    <h1 class="hero-title display-4 fw-bold mb-3">
-                        Hi, I'm <span class="text-gradient">{{ profile.name }}</span>
-                    </h1>
-                    <p class="lead text-muted mb-4">{{ profile.title }}</p>
-                    <p class="lead mb-5">{{ profile.bio|truncatewords:30 }}</p>
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4">
-                            <i class="fas fa-folder-open me-2"></i>View My Work
-                        </a>
-                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4">
-                            <i class="fas fa-envelope me-2"></i>Get In Touch
-                        </a>
-                        {% if profile.cv_file %}
-                            <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4" download>
-                                <i class="fas fa-download me-2"></i>Download CV
+    <!-- Hero Section - Artistic Top Section -->
+    <section class="hero-section artistic-hero min-vh-100 d-flex align-items-center">
+        <!-- Artistic decorative elements -->
+        <div class="hero-decorations" aria-hidden="true">
+            <div class="deco-circle deco-circle-1"></div>
+            <div class="deco-circle deco-circle-2"></div>
+            <div class="deco-circle deco-circle-3"></div>
+            <div class="deco-line deco-line-1"></div>
+            <div class="deco-line deco-line-2"></div>
+            <div class="deco-dot deco-dot-1"></div>
+            <div class="deco-dot deco-dot-2"></div>
+            <div class="deco-dot deco-dot-3"></div>
+            <div class="deco-dot deco-dot-4"></div>
+            <div class="deco-geo deco-geo-1"></div>
+            <div class="deco-geo deco-geo-2"></div>
+            <div class="hero-signature">{{ profile.name|default:'Artist' }}</div>
+        </div>
+
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                    {% if profile %}
+                        <div class="hero-greeting mb-3">
+                            <span class="greeting-badge">
+                                <i class="fas fa-hand-sparkles me-2"></i>Hello
+                            </span>
+                        </div>
+                        <h1 class="hero-title artistic-title mb-4">
+                            I'm <span class="text-gradient name-highlight">{{ profile.name }}</span>
+                        </h1>
+                        <div class="hero-subtitle-wrapper mb-4">
+                            <p class="hero-subtitle">{{ profile.title }}</p>
+                            <div class="subtitle-underline"></div>
+                        </div>
+                        <div class="hero-bio-wrapper mb-5">
+                            <p class="hero-bio">{{ profile.bio|truncatewords:30 }}</p>
+                        </div>
+                        <div class="hero-actions d-flex flex-wrap gap-3">
+                            <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4 artistic-btn">
+                                <i class="fas fa-folder-open me-2"></i>View My Work
                             </a>
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <h1 class="hero-title display-4 fw-bold mb-3">Welcome to My Portfolio</h1>
-                    <p class="lead text-muted mb-4">Web Developer</p>
-                    <p class="lead mb-5">Please configure your profile in the admin panel.</p>
-                {% endif %}
-            </div>
-            <div class="col-lg-6 d-flex justify-content-lg-end" data-aos="fade-left">
-                <div class="hero-image-wrap">
-                    {% if profile and profile.profile_image %}
-                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid profile-image lazy">
+                            <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4 artistic-btn-outline">
+                                <i class="fas fa-envelope me-2"></i>Get In Touch
+                            </a>
+                            {% if profile.cv_file %}
+                                <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4 artistic-btn-outline" download>
+                                    <i class="fas fa-download me-2"></i>Download CV
+                                </a>
+                            {% endif %}
+                        </div>
                     {% else %}
-                        <div class="profile-image-placeholder d-flex align-items-center justify-content-center">
-                            <i class="fas fa-user fa-7x text-muted"></i>
+                        <div class="hero-greeting mb-3">
+                            <span class="greeting-badge">
+                                <i class="fas fa-hand-sparkles me-2"></i>Hello
+                            </span>
+                        </div>
+                        <h1 class="hero-title artistic-title mb-4">Welcome to My Portfolio</h1>
+                        <div class="hero-subtitle-wrapper mb-4">
+                            <p class="hero-subtitle">Web Developer</p>
+                            <div class="subtitle-underline"></div>
+                        </div>
+                        <div class="hero-bio-wrapper mb-5">
+                            <p class="hero-bio">Please configure your profile in the admin panel.</p>
                         </div>
                     {% endif %}
                 </div>
+                <div class="col-lg-6 hero-visual" data-aos="fade-left">
+                    <div class="hero-image-wrapper">
+                        {% if profile and profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid profile-image lazy">
+                        {% else %}
+                            <div class="profile-image-placeholder d-flex align-items-center justify-content-center">
+                                <i class="fas fa-user fa-7x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <!-- Featured Projects Section -->
 {% if featured_projects %}
