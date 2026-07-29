@@ -32,6 +32,7 @@
         var heroStage = document.getElementById('hero3dStage');
         var heroLayers = document.querySelectorAll('.hero-layer');
         var heroContent = document.getElementById('heroContent');
+        var heroEyebrow = document.getElementById('heroEyebrow');
         var heroScrollCue = document.getElementById('heroScrollCue');
 
         // Build
@@ -57,7 +58,6 @@
         // Journey
         var journeyTimeline = document.getElementById('journeyTimeline');
         var journeyItems = document.querySelectorAll('[data-journey-item]');
-        var journeyFillInner = null;
 
         // Reveal cards
         var serviceCards = document.querySelectorAll('[data-service-card]');
@@ -74,35 +74,42 @@
             return a + (b - a) * t;
         }
 
+        // Map a value from one range to another
         function mapRange(value, inMin, inMax, outMin, outMax) {
-            if (inMax === inMin) return outMin;
             return outMin + ((value - inMin) * (outMax - outMin)) / (inMax - inMin);
         }
 
-        // Progress of scroll within a section (0 = section top at viewport top,
-        // 1 = section bottom at viewport bottom)
+        // Progress of scroll within a section (0 = top of section hits top of viewport,
+        // 1 = bottom of section hits bottom of viewport)
         function sectionProgress(section) {
             if (!section) return 0;
             var rect = section.getBoundingClientRect();
-            var scrollable = section.offsetHeight - window.innerHeight;
+            var sectionHeight = section.offsetHeight;
+            var viewportHeight = window.innerHeight;
+            // How far the section top has scrolled past the viewport top
+            var scrolled = -rect.top;
+            // Total scrollable distance for this section
+            var scrollable = sectionHeight - viewportHeight;
             if (scrollable <= 0) return 0;
-            return clamp(-rect.top / scrollable, 0, 1);
+            return clamp(scrolled / scrollable, 0, 1);
         }
 
         // ------------------------------------------------------------------
-        // Position skill orbit items in two concentric rings
+        // Position skill orbit items in a circle
         // ------------------------------------------------------------------
         function positionSkillItems() {
-            if (!skillItems.length || !skillsStage) return;
+            if (!skillItems.length) return;
             var stageRect = skillsStage.getBoundingClientRect();
             var centerX = stageRect.width / 2;
             var centerY = stageRect.height / 2;
             var total = skillItems.length;
 
+            // Determine ring radii based on stage size
             var minDim = Math.min(stageRect.width, stageRect.height);
-            var radius1 = minDim * 0.28;
-            var radius2 = minDim * 0.45;
+            var radius1 = minDim * 0.28; // inner ring
+            var radius2 = minDim * 0.45; // outer ring
 
+            // Update ring sizes to match
             if (orbitRing1) {
                 orbitRing1.style.width = (radius1 * 2) + 'px';
                 orbitRing1.style.height = (radius1 * 2) + 'px';
@@ -112,6 +119,7 @@
                 orbitRing2.style.height = (radius2 * 2) + 'px';
             }
 
+            // Split items between two rings
             var half = Math.ceil(total / 2);
 
             skillItems.forEach(function (item, i) {
@@ -126,7 +134,208 @@
 
                 item.style.left = x + 'px';
                 item.style.top = y + 'px';
+                item.dataset.ring = ring;
             });
+        }
+
+        // ------------------------------------------------------------------
+        // Main scroll update function
+        // ------------------------------------------------------------------
+        var ticking = false;
+        var mouseX = 0, mouseY = 0; // normalized -1..1
+        var targetMouseX = 0, targetMouseY = 0;
+
+        function updateScroll() {
+            var scrollY = window.pageYOffset;
+            var viewportH = window.innerHeight;
+            var docHeight = document.documentElement.scrollHeight - viewportH;
+
+            // --- Scroll progress bar ---
+            if (progressFill) {
+                var docProgress = docHeight > 0 ? clamp(scrollY / docHeight, 0, 1) : 0;
+                progressFill.style.width = (docProgress * 100) + '%';
+            }
+
+            // --- Scene nav active dot ---
+            updateActiveScene();
+
+            // --- Hero 3D parallax (scroll + mouse) ---
+            if (heroStage && !prefersReducedMotion) {
+                var heroProgress = sectionProgress(scenes.hero);
+                // Smooth mouse interpolation
+                mouseX = lerp(mouseX, targetMouseX, 0.08);
+                mouseY = lerp(mouseY, targetMouseY, 0.08);
+
+                heroLayers.forEach(function (layer) {
+                    var depth = parseFloat(layer.dataset.depth) || 0.05;
+                    var scrollOffset = heroProgress * 100 * depth * 10;
+                    var mouseOffsetX = mouseX * 40 * depth * 10;
+                    var mouseOffsetY = mouseY * 40 * depth * 10;
+                    layer.style.transform =
+                        'translate3d(' + (mouseOffsetX - scrollOffset * 0.3) + 'px, ' +
+                        (mouseOffsetY + scrollOffset) + 'px, 0)';
+                });
+
+                // Hero content fades & moves up as you scroll past
+                if (heroContent) {
+                    var heroFade = clamp(1 - heroProgress * 1.8, 0, 1);
+                    var heroY = heroProgress * -80;
+                    heroContent.style.opacity = heroFade;
+                    heroContent.style.transform = 'translate3d(0, ' + heroY + 'px, 0)';
+                }
+                if (heroScrollCue) {
+                    heroScrollCue.style.opacity = clamp(1 - heroProgress * 3, 0, 1);
+                }
+            }
+
+            // --- Build scene: blocks rise & stack ---
+            if (scenes.build && buildBlocks.length && !prefersReducedMotion) {
+                var buildProg = sectionProgress(scenes.build);
+                // Use the first ~80% of scroll for building, last 20% settles
+                var buildActive = clamp(buildProg / 0.8, 0, 1);
+
+                buildBlocks.forEach(function (block) {
+                    var riseAt = parseFloat(block.dataset.rise) || 0;
+                    // Each block has a window of ~0.2 progress to rise
+                    var blockStart = riseAt;
+                    var blockEnd = riseAt + 0.2;
+                    var blockProg = clamp(mapRange(buildActive, blockStart, blockEnd, 0, 1), 0, 1);
+
+                    // Rise from below + rotate to straight + fade in
+                    var yOffset = (1 - blockProg) * 120; // vh-ish px
+                    var rotation = (1 - blockProg) * -8;
+                    var opacity = blockProg;
+                    block.style.transform = 'translateY(' + yOffset + 'vh) rotate(' + rotation + 'deg)';
+                    block.style.opacity = opacity;
+                });
+
+                if (buildProgressLabel) {
+                    buildProgressLabel.textContent = Math.round(buildActive * 100) + '%';
+                }
+            }
+
+            // --- Open scene: doors split ---
+            if (scenes.open && doorLeft && doorRight && !prefersReducedMotion) {
+                var openProg = sectionProgress(scenes.open);
+                // Doors open in the first 60% of scroll, content reveals after 30%
+                var doorProg = clamp(openProg / 0.6, 0, 1);
+                // Easing for smoother door movement
+                var easedDoor = doorProg < 0.5
+                    ? 2 * doorProg * doorProg
+                    : 1 - Math.pow(-2 * doorProg + 2, 2) / 2;
+
+                doorLeft.style.transform = 'translateX(' + (-easedDoor * 100) + '%)';
+                doorRight.style.transform = 'translateX(' + (easedDoor * 100) + '%)';
+
+                if (openRevealContent) {
+                    var revealProg = clamp(mapRange(openProg, 0.3, 0.8, 0, 1), 0, 1);
+                    openRevealContent.style.opacity = revealProg;
+                    openRevealContent.style.transform = 'scale(' + lerp(0.9, 1, revealProg) + ')';
+                }
+            }
+
+            // --- Visit scene: horizontal scroll ---
+            if (scenes.visit && visitTrack && !prefersReducedMotion) {
+                var visitProg = sectionProgress(scenes.visit);
+                // Track scroll width minus viewport
+                var trackWidth = visitTrack.scrollWidth;
+                var viewportWidth = window.innerWidth;
+                var maxTranslate = trackWidth - viewportWidth + (viewportWidth * 0.1);
+                var translateX = -visitProg * maxTranslate;
+                visitTrack.style.transform = 'translate3d(' + translateX + 'px, 0, 0)';
+
+                if (visitProgressFill) {
+                    visitProgressFill.style.width = (visitProg * 100) + '%';
+                }
+            }
+
+            // --- Skills orbit: assemble on scroll into view ---
+            if (skillsStage && !prefersReducedMotion) {
+                var skillsRect = skillsStage.getBoundingClientRect();
+                var skillsCenterY = skillsRect.top + skillsRect.height / 2;
+                var viewportCenter = viewportH / 2;
+                // Progress based on how close the stage center is to viewport center
+                var distFromCenter = Math.abs(skillsCenterY - viewportCenter);
+                var maxDist = viewportH * 0.8;
+                var skillsProg = clamp(1 - distFromCenter / maxDist, 0, 1);
+
+                // Core scales in
+                if (skillsCore) {
+                    skillsCore.style.transform = 'scale(' + skillsProg + ')';
+                }
+
+                // Rings fade in
+                if (orbitRing1) {
+                    orbitRing1.style.opacity = skillsProg * 0.4;
+                    orbitRing1.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
+                }
+                if (orbitRing2) {
+                    orbitRing2.style.opacity = skillsProg * 0.3;
+                    orbitRing2.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
+                }
+
+                // Items pop in with stagger
+                skillItems.forEach(function (item, i) {
+                    var itemStart = (i / skillItems.length) * 0.5;
+                    var itemEnd = itemStart + 0.4;
+                    var itemProg = clamp(mapRange(skillsProg, itemStart, itemEnd, 0, 1), 0, 1);
+                    var scale = itemProg;
+                    var opacity = itemProg;
+                    // Keep the translate(-50%, -50%) for centering
+                    item.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+                    item.style.opacity = opacity;
+                });
+            }
+
+            // --- Journey timeline: progress line + item reveals ---
+            if (journeyTimeline && !prefersReducedMotion) {
+                var journeyRect = journeyTimeline.getBoundingClientRect();
+                var journeyTop = journeyRect.top;
+                var journeyBottom = journeyRect.bottom;
+                // Progress: 0 when timeline top is at viewport bottom,
+                // 1 when timeline bottom is at viewport top
+                var journeyProg = clamp(
+                    mapRange(journeyTop, viewportH, -journeyRect.height * 0.3, 0, 1),
+                    0, 1
+                );
+
+                // Update progress line fill
+                var progressLine = journeyTimeline.querySelector('.journey-progress-line');
+                if (progressLine) {
+                    var fill = progressLine.querySelector('::after');
+                    progressLine.style.setProperty('--journey-progress', (journeyProg * 100) + '%');
+                    // Use inline style on the pseudo via a CSS variable workaround
+                    // We'll set height directly on a child instead — but we used ::after.
+                    // Workaround: set a custom property and use it in CSS.
+                }
+
+                // Reveal journey items
+                journeyItems.forEach(function (item) {
+                    var itemRect = item.getBoundingClientRect();
+                    if (itemRect.top < viewportH * 0.85) {
+                        item.classList.add('in-view');
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    }
+                });
+            }
+
+            // --- Services & Testimonials reveal ---
+            serviceCards.forEach(function (card) {
+                var rect = card.getBoundingClientRect();
+                if (rect.top < viewportH * 0.85) {
+                    card.classList.add('in-view');
+                }
+            });
+
+            testimonialCards.forEach(function (card) {
+                var rect = card.getBoundingClientRect();
+                if (rect.top < viewportH * 0.85) {
+                    card.classList.add('in-view');
+                }
+            });
+
+            ticking = false;
         }
 
         // ------------------------------------------------------------------
@@ -155,175 +364,7 @@
         }
 
         // ------------------------------------------------------------------
-        // Main scroll update (rAF throttled)
-        // ------------------------------------------------------------------
-        var ticking = false;
-        var mouseX = 0, mouseY = 0;
-        var targetMouseX = 0, targetMouseY = 0;
-
-        function updateScroll() {
-            var scrollY = window.pageYOffset;
-            var viewportH = window.innerHeight;
-            var docHeight = document.documentElement.scrollHeight - viewportH;
-
-            // --- Scroll progress bar ---
-            if (progressFill) {
-                var docProgress = docHeight > 0 ? clamp(scrollY / docHeight, 0, 1) : 0;
-                progressFill.style.width = (docProgress * 100) + '%';
-            }
-
-            // --- Scene nav active dot ---
-            updateActiveScene();
-
-            // --- Hero 3D parallax (scroll + mouse) ---
-            if (heroStage && !prefersReducedMotion) {
-                var heroProgress = sectionProgress(scenes.hero);
-                mouseX = lerp(mouseX, targetMouseX, 0.08);
-                mouseY = lerp(mouseY, targetMouseY, 0.08);
-
-                heroLayers.forEach(function (layer) {
-                    var depth = parseFloat(layer.dataset.depth) || 0.05;
-                    var scrollOffset = heroProgress * 100 * depth * 10;
-                    var mouseOffsetX = mouseX * 40 * depth * 10;
-                    var mouseOffsetY = mouseY * 40 * depth * 10;
-                    layer.style.transform =
-                        'translate3d(' + (mouseOffsetX - scrollOffset * 0.3) + 'px, ' +
-                        (mouseOffsetY + scrollOffset) + 'px, 0)';
-                });
-
-                if (heroContent) {
-                    var heroFade = clamp(1 - heroProgress * 1.8, 0, 1);
-                    var heroY = heroProgress * -80;
-                    heroContent.style.opacity = heroFade;
-                    heroContent.style.transform = 'translate3d(0, ' + heroY + 'px, 0)';
-                }
-                if (heroScrollCue) {
-                    heroScrollCue.style.opacity = clamp(1 - heroProgress * 3, 0, 1);
-                }
-            }
-
-            // --- Build scene: blocks rise & stack ---
-            if (scenes.build && buildBlocks.length && !prefersReducedMotion) {
-                var buildProg = sectionProgress(scenes.build);
-                var buildActive = clamp(buildProg / 0.8, 0, 1);
-
-                buildBlocks.forEach(function (block) {
-                    var riseAt = parseFloat(block.dataset.rise) || 0;
-                    var blockProg = clamp(mapRange(buildActive, riseAt, riseAt + 0.2, 0, 1), 0, 1);
-                    var yOffset = (1 - blockProg) * 120;
-                    var rotation = (1 - blockProg) * -8;
-                    block.style.transform = 'translateY(' + yOffset + 'vh) rotate(' + rotation + 'deg)';
-                    block.style.opacity = blockProg;
-                });
-
-                if (buildProgressLabel) {
-                    buildProgressLabel.textContent = Math.round(buildActive * 100) + '%';
-                }
-            }
-
-            // --- Open scene: doors split ---
-            if (scenes.open && doorLeft && doorRight && !prefersReducedMotion) {
-                var openProg = sectionProgress(scenes.open);
-                var doorProg = clamp(openProg / 0.6, 0, 1);
-                // Ease-in-out for smoother door movement
-                var easedDoor = doorProg < 0.5
-                    ? 2 * doorProg * doorProg
-                    : 1 - Math.pow(-2 * doorProg + 2, 2) / 2;
-
-                doorLeft.style.transform = 'translateX(' + (-easedDoor * 100) + '%)';
-                doorRight.style.transform = 'translateX(' + (easedDoor * 100) + '%)';
-
-                if (openRevealContent) {
-                    var revealProg = clamp(mapRange(openProg, 0.3, 0.8, 0, 1), 0, 1);
-                    openRevealContent.style.opacity = revealProg;
-                    openRevealContent.style.transform = 'scale(' + lerp(0.9, 1, revealProg) + ')';
-                }
-            }
-
-            // --- Visit scene: horizontal scroll ---
-            if (scenes.visit && visitTrack && !prefersReducedMotion) {
-                var visitProg = sectionProgress(scenes.visit);
-                var trackWidth = visitTrack.scrollWidth;
-                var viewportWidth = window.innerWidth;
-                var maxTranslate = trackWidth - viewportWidth + (viewportWidth * 0.1);
-                if (maxTranslate < 0) maxTranslate = 0;
-                var translateX = -visitProg * maxTranslate;
-                visitTrack.style.transform = 'translate3d(' + translateX + 'px, 0, 0)';
-
-                if (visitProgressFill) {
-                    visitProgressFill.style.width = (visitProg * 100) + '%';
-                }
-            }
-
-            // --- Skills orbit: assemble on scroll into view ---
-            if (skillsStage && !prefersReducedMotion) {
-                var skillsRect = skillsStage.getBoundingClientRect();
-                var skillsCenterY = skillsRect.top + skillsRect.height / 2;
-                var viewportCenter = viewportH / 2;
-                var distFromCenter = Math.abs(skillsCenterY - viewportCenter);
-                var maxDist = viewportH * 0.8;
-                var skillsProg = clamp(1 - distFromCenter / maxDist, 0, 1);
-
-                if (skillsCore) {
-                    skillsCore.style.transform = 'scale(' + skillsProg + ')';
-                }
-                if (orbitRing1) {
-                    orbitRing1.style.opacity = skillsProg * 0.4;
-                    orbitRing1.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
-                }
-                if (orbitRing2) {
-                    orbitRing2.style.opacity = skillsProg * 0.3;
-                    orbitRing2.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
-                }
-
-                skillItems.forEach(function (item, i) {
-                    var itemStart = (i / skillItems.length) * 0.5;
-                    var itemProg = clamp(mapRange(skillsProg, itemStart, itemStart + 0.4, 0, 1), 0, 1);
-                    item.style.transform = 'translate(-50%, -50%) scale(' + itemProg + ')';
-                    item.style.opacity = itemProg;
-                });
-            }
-
-            // --- Journey timeline: progress line fill + item reveals ---
-            if (journeyTimeline && !prefersReducedMotion) {
-                var journeyRect = journeyTimeline.getBoundingClientRect();
-                var journeyProg = clamp(
-                    mapRange(journeyRect.top, viewportH, -journeyRect.height * 0.3, 0, 1),
-                    0, 1
-                );
-
-                if (journeyFillInner) {
-                    journeyFillInner.style.height = (journeyProg * 100) + '%';
-                }
-
-                journeyItems.forEach(function (item) {
-                    var itemRect = item.getBoundingClientRect();
-                    if (itemRect.top < viewportH * 0.85) {
-                        item.classList.add('in-view');
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateX(0)';
-                    }
-                });
-            }
-
-            // --- Services & Testimonials reveal ---
-            serviceCards.forEach(function (card) {
-                if (card.getBoundingClientRect().top < viewportH * 0.85) {
-                    card.classList.add('in-view');
-                }
-            });
-
-            testimonialCards.forEach(function (card) {
-                if (card.getBoundingClientRect().top < viewportH * 0.85) {
-                    card.classList.add('in-view');
-                }
-            });
-
-            ticking = false;
-        }
-
-        // ------------------------------------------------------------------
-        // Scroll & mouse handlers
+        // Scroll handler (rAF throttled)
         // ------------------------------------------------------------------
         function onScroll() {
             if (!ticking) {
@@ -332,6 +373,9 @@
             }
         }
 
+        // ------------------------------------------------------------------
+        // Mouse move handler for hero 3D
+        // ------------------------------------------------------------------
         function onMouseMove(e) {
             if (prefersReducedMotion) return;
             targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -344,7 +388,8 @@
         sceneNavDots.forEach(function (dot) {
             dot.addEventListener('click', function (e) {
                 e.preventDefault();
-                var target = document.querySelector(dot.getAttribute('href'));
+                var targetId = dot.getAttribute('href');
+                var target = document.querySelector(targetId);
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
@@ -352,29 +397,40 @@
         });
 
         // ------------------------------------------------------------------
-        // Journey progress line — inject fill element (can't style ::after via JS)
+        // Journey progress line — use direct child element approach
+        // Since ::after can't be set via JS easily, we add a fill element
         // ------------------------------------------------------------------
         if (journeyTimeline) {
             var progressLineEl = journeyTimeline.querySelector('.journey-progress-line');
-            if (progressLineEl) {
-                journeyFillInner = document.createElement('div');
-                journeyFillInner.className = 'journey-progress-fill-inner';
-                journeyFillInner.style.cssText =
+            if (progressLineEl && !progressLineEl.querySelector('.journey-progress-fill-inner')) {
+                var fillInner = document.createElement('div');
+                fillInner.className = 'journey-progress-fill-inner';
+                fillInner.style.cssText =
                     'position:absolute;top:0;left:0;width:100%;height:0%;' +
                     'background:linear-gradient(180deg,var(--accent),var(--accent-hover));' +
                     'border-radius:2px;transition:height 0.1s linear;will-change:height;';
-                progressLineEl.appendChild(journeyFillInner);
+                progressLineEl.appendChild(fillInner);
             }
         }
 
-        // ------------------------------------------------------------------
-        // Move fixed elements to <body> to escape page-content-wrapper
-        // stacking context (z-index:10) so they sit above the header (z-index:100)
-        // ------------------------------------------------------------------
-        var progressBar = document.getElementById('scrollProgressBar');
-        var sceneNav = document.getElementById('sceneNav');
-        if (progressBar) document.body.appendChild(progressBar);
-        if (sceneNav) document.body.appendChild(sceneNav);
+        // Override journey progress update to use the fill element
+        var originalUpdateScroll = updateScroll;
+        updateScroll = function () {
+            originalUpdateScroll();
+
+            if (journeyTimeline && !prefersReducedMotion) {
+                var journeyRect = journeyTimeline.getBoundingClientRect();
+                var viewportH = window.innerHeight;
+                var journeyProg = clamp(
+                    mapRange(journeyRect.top, viewportH, -journeyRect.height * 0.3, 0, 1),
+                    0, 1
+                );
+                var fillInner = journeyTimeline.querySelector('.journey-progress-fill-inner');
+                if (fillInner) {
+                    fillInner.style.height = (journeyProg * 100) + '%';
+                }
+            }
+        };
 
         // ------------------------------------------------------------------
         // Initialize
@@ -382,6 +438,7 @@
         positionSkillItems();
         updateScroll();
 
+        // Event listeners
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('mousemove', onMouseMove, { passive: true });
         window.addEventListener('resize', function () {

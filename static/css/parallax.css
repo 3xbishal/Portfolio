@@ -1,11 +1,14 @@
 /* ==========================================================================
-   Parallax Portfolio Page — Layered Depth Scrolling
+   Parallax Portfolio Page — Advanced Scroll-Driven Interactive Experience
+   Scenes: Hero (3D) → Build (stack blocks) → Open (doors) → Visit (horizontal)
+           → Skills (orbit) → Journey (timeline) → Services → Testimonials → CTA
    ========================================================================== */
 
-/* Page wrapper - override default section padding for parallax sections */
+/* Page wrapper */
 .parallax-page {
     position: relative;
     overflow-x: hidden;
+    background: var(--bg);
 }
 
 .parallax-page section {
@@ -13,87 +16,221 @@
     animation: none;
 }
 
-/* ===== Parallax Hero Section ===== */
-.parallax-hero {
+/* ===== Scroll Progress Bar (top of page) ===== */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.scroll-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 0.05s linear;
+    will-change: width;
+}
+
+/* ===== Scene Navigation Dots (right side) ===== */
+.scene-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.scene-nav-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.scene-nav-dot span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: all 0.3s ease;
+}
+
+.scene-nav-dot.active {
+    border-color: var(--accent);
+    transform: scale(1.2);
+}
+
+.scene-nav-dot.active span {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.scene-nav-dot:hover {
+    border-color: var(--accent);
+}
+
+/* ===== Shared scene tag ===== */
+.scene-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0.4rem 1rem;
+    background: var(--accent-light);
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+}
+
+.scene-tag-light {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   SCENE 1: Hero with 3D Parallax (mouse + scroll)
+   ========================================================================== */
+.scene-hero {
     position: relative;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--bg) 0%, var(--section-alt) 100%);
+    background: radial-gradient(ellipse at center, var(--section-alt) 0%, var(--bg) 70%);
+    perspective: 1000px;
 }
 
-/* Layered background shapes that move at different speeds */
-.parallax-bg-layer {
+.hero-3d-stage {
     position: absolute;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    opacity: 0.12;
+    inset: 0;
+    transform-style: preserve-3d;
     will-change: transform;
 }
 
-.parallax-bg-layer-1 {
-    width: 500px;
-    height: 500px;
+.hero-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+    transform-style: preserve-3d;
+}
+
+/* Far layer — orbs */
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-hover));
+    opacity: 0.15;
+    filter: blur(2px);
+}
+
+.hero-orb-1 {
+    width: 400px;
+    height: 400px;
     top: -100px;
-    right: -150px;
-    border-width: 3px;
+    right: -100px;
+}
+
+.hero-orb-2 {
+    width: 250px;
+    height: 250px;
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.1;
+}
+
+.hero-orb-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 60%;
     opacity: 0.08;
 }
 
-.parallax-bg-layer-2 {
-    width: 350px;
-    height: 350px;
-    bottom: -80px;
-    left: -100px;
-    opacity: 0.1;
-}
-
-.parallax-bg-layer-3 {
-    width: 200px;
-    height: 200px;
-    top: 40%;
-    left: 20%;
-    border-style: dashed;
-    border-width: 1px;
-    opacity: 0.06;
-}
-
-/* Floating geometric accents */
-.parallax-geo {
+/* Mid layer — grid pattern */
+.hero-grid-pattern {
     position: absolute;
-    border: 1px solid var(--accent);
-    opacity: 0.1;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.4;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* Near layer — shapes */
+.hero-shape {
+    position: absolute;
+    border: 2px solid var(--accent);
+    opacity: 0.2;
     will-change: transform;
 }
 
-.parallax-geo-1 {
-    width: 80px;
-    height: 80px;
-    top: 20%;
-    right: 15%;
+.hero-shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 15%;
+    right: 12%;
     transform: rotate(45deg);
+    border-radius: 12px;
 }
 
-.parallax-geo-2 {
-    width: 50px;
-    height: 50px;
-    bottom: 25%;
-    left: 10%;
+.hero-shape-2 {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 8%;
     border-radius: 50%;
+    border-style: dashed;
+}
+
+.hero-shape-3 {
+    width: 80px;
+    height: 80px;
+    top: 60%;
+    right: 25%;
+    border-width: 1px;
+    transform: rotate(15deg);
 }
 
 /* Hero content */
-.parallax-hero-content {
+.hero-content {
     position: relative;
     z-index: 5;
     text-align: center;
     padding: 4rem 1rem;
-    will-change: transform;
+    will-change: transform, opacity;
 }
 
-.parallax-hero-title {
+.hero-eyebrow {
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
     font-size: clamp(3rem, 8vw, 6rem);
     font-family: 'Playfair Display', Georgia, serif;
     font-weight: 800;
@@ -103,156 +240,400 @@
     color: var(--text);
 }
 
-.parallax-hero-subtitle {
+.hero-subtitle {
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     color: var(--text-secondary);
     font-weight: 500;
     margin-bottom: 2rem;
 }
 
-.parallax-hero-bio {
+.hero-bio {
     font-size: 1.1rem;
     max-width: 640px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto;
     color: var(--text-secondary);
     line-height: 1.8;
 }
 
-.parallax-scroll-hint {
+/* Scroll cue */
+.hero-scroll-cue {
     position: absolute;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--accent);
-    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-size: 0.8rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    animation: scrollHintBounce 2s ease-in-out infinite;
     z-index: 5;
 }
 
-.parallax-scroll-hint i {
-    display: block;
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
-}
-
-@keyframes scrollHintBounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
-    50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
-}
-
-/* ===== Parallax Section (fixed background) ===== */
-.parallax-section {
-    position: relative;
-    min-height: 60vh;
+.scroll-cue-mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid var(--accent);
+    border-radius: 14px;
     display: flex;
-    align-items: center;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow: hidden;
+    justify-content: center;
+    padding-top: 6px;
 }
 
-.parallax-section::before {
-    content: '';
-    position: absolute;
+.scroll-cue-wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: scrollWheel 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollWheel {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* ==========================================================================
+   Pinned Scene Base (scroll-jacking)
+   ========================================================================== */
+.scene-pin {
+    position: relative;
+}
+
+.scene-pin-sticky {
+    position: sticky;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
-    z-index: 1;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.parallax-section-content {
-    position: relative;
-    z-index: 2;
+/* ==========================================================================
+   SCENE 2: "Build" — Blocks assemble as you scroll
+   ========================================================================== */
+.scene-build {
+    height: 300vh; /* extra scroll height for the pin */
+}
+
+.scene-build .scene-pin-sticky {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--section-alt) 100%);
+}
+
+.scene-build-intro {
+    position: absolute;
+    top: 12vh;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
-    color: #fff;
-    padding: 4rem 1rem;
-    width: 100%;
-}
-
-.parallax-section-content h2 {
-    color: #fff;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    margin-bottom: 1rem;
-}
-
-.parallax-section-content p {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 1.15rem;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-/* ===== Content Sections (between parallax layers) ===== */
-.parallax-content-section {
-    position: relative;
-    padding: 6rem 0;
-    background: var(--bg);
     z-index: 2;
 }
 
-.parallax-content-section.alt {
-    background: var(--section-alt);
-}
-
-.parallax-section-heading {
-    text-align: center;
-    margin-bottom: 4rem;
-}
-
-.parallax-section-heading h2 {
+.scene-build-intro h2 {
     font-size: clamp(2rem, 4vw, 3rem);
-    color: var(--accent);
+    color: var(--text);
     margin-bottom: 0.5rem;
 }
 
-.parallax-section-heading p {
+.scene-build-intro p {
     color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.build-stage {
+    position: relative;
+    width: 280px;
+    height: 420px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 60px;
+}
+
+.build-block {
+    width: 100%;
+    max-width: 260px;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    transform: translateY(120vh) rotate(-8deg);
+    opacity: 0;
+    transition: none;
+    will-change: transform, opacity;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.build-block i {
+    font-size: 1.5rem;
+    color: var(--accent);
+    width: 32px;
+    text-align: center;
+}
+
+.build-block span {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.build-block-cap {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    border-color: var(--accent);
+}
+
+.build-block-cap i,
+.build-block-cap span {
+    color: #fff;
+}
+
+.build-foundation {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 6px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 3px;
+    opacity: 0.5;
+}
+
+.build-progress-label {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--accent);
+    opacity: 0.3;
+}
+
+/* ==========================================================================
+   SCENE 3: "Open" — Doors split to reveal About
+   ========================================================================== */
+.scene-open {
+    height: 250vh;
+}
+
+.scene-open .scene-pin-sticky {
+    background: var(--bg);
+}
+
+.open-reveal-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+    transform: scale(0.9);
+    will-change: transform, opacity;
+}
+
+.open-reveal-content h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--text);
+    margin-bottom: 1.5rem;
+}
+
+.open-bio {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.open-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.open-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.open-info-item i {
+    color: var(--accent);
     font-size: 1.1rem;
 }
 
-/* ===== Parallax Cards (projects) ===== */
-.parallax-card {
+/* Doors */
+.open-door {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 5;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.open-door-left {
+    left: 0;
+    transform: translateX(0);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.open-door-right {
+    right: 0;
+    transform: translateX(0);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.open-door-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
+}
+
+.open-door-right .open-door-inner {
+    background: linear-gradient(225deg, var(--accent) 0%, var(--accent-hover) 100%);
+}
+
+.open-door-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%);
+    background-size: 30px 30px;
+}
+
+.open-door-label {
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.open-door-left .open-door-label {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   SCENE 4: "Visit" — Horizontal scroll through projects
+   ========================================================================== */
+.scene-visit {
+    height: 400vh;
+}
+
+.scene-visit .scene-pin-sticky {
+    background: linear-gradient(180deg, var(--section-alt) 0%, var(--bg) 100%);
+}
+
+.visit-header {
+    position: absolute;
+    top: 10vh;
+    left: 5vw;
+    z-index: 2;
+}
+
+.visit-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.visit-header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.visit-track-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    overflow: hidden;
+}
+
+.visit-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 5vw;
+    will-change: transform;
+}
+
+.visit-card {
+    flex: 0 0 auto;
+    width: 340px;
+    height: 460px;
+    will-change: transform;
+}
+
+.visit-card-inner {
+    width: 100%;
+    height: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 10px 40px var(--shadow);
+    display: flex;
+    flex-direction: column;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    will-change: transform;
-    height: 100%;
 }
 
-.parallax-card:hover {
+.visit-card-inner:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px var(--shadow);
+    box-shadow: 0 20px 60px var(--shadow);
 }
 
-.parallax-card-media {
-    position: relative;
+.visit-card-media {
     height: 220px;
     overflow: hidden;
     background: var(--placeholder-bg);
+    position: relative;
 }
 
-.parallax-card-media img,
-.parallax-card-media video {
+.visit-card-media img,
+.visit-card-media video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease;
 }
 
-.parallax-card:hover .parallax-card-media img {
+.visit-card-inner:hover .visit-card-media img {
     transform: scale(1.08);
 }
 
-.parallax-card-media-placeholder {
+.visit-card-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -261,190 +642,412 @@
     font-size: 3rem;
 }
 
-.parallax-card-body {
+.visit-card-body {
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
 }
 
-.parallax-card-body h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
+.visit-card-number {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--accent);
+    opacity: 0.15;
+    position: absolute;
+    top: 0.5rem;
+    right: 1.5rem;
+    line-height: 1;
+}
+
+.visit-card-body h3 {
+    font-size: 1.3rem;
     color: var(--text);
+    margin-bottom: 0.5rem;
+    padding-right: 3rem;
 }
 
-.parallax-card-body p {
+.visit-card-body p {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.visit-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.visit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.1rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.visit-btn:hover {
+    background: var(--accent-hover);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.visit-btn-alt {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.8rem;
+}
+
+.visit-btn-alt:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.visit-card-end {
+    width: 380px;
+}
+
+.visit-card-end-inner {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.visit-card-end-inner h3 {
+    color: #fff;
+    font-size: 1.8rem;
     margin-bottom: 1rem;
 }
 
-.parallax-card-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+.visit-card-end-inner p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
 }
 
-/* ===== Parallax Timeline (experience) ===== */
-.parallax-timeline {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-    padding-left: 2rem;
-}
-
-.parallax-timeline::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--accent), transparent);
-}
-
-.parallax-timeline-item {
-    position: relative;
-    padding-bottom: 2.5rem;
-    will-change: transform;
-}
-
-.parallax-timeline-item:last-child {
-    padding-bottom: 0;
-}
-
-.parallax-timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -2.4rem;
-    top: 0.3rem;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: 3px solid var(--bg);
-    box-shadow: 0 0 0 2px var(--accent);
-}
-
-.parallax-timeline-item .duration {
-    display: inline-block;
+.visit-btn-lg {
+    background: #fff;
     color: var(--accent);
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
 }
 
-.parallax-timeline-item h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.25rem;
+.visit-btn-lg:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--accent-hover);
+}
+
+.visit-progress {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.visit-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    border-radius: 2px;
+    will-change: width;
+}
+
+/* ==========================================================================
+   SCENE 5: Skills "Assemble" — Orbit
+   ========================================================================== */
+.scene-skills {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.scene-skills-heading {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.scene-skills-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
     color: var(--text);
-}
-
-.parallax-timeline-item .company {
-    color: var(--muted);
-    font-size: 0.95rem;
     margin-bottom: 0.5rem;
 }
 
-.parallax-timeline-item .description {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
+.scene-skills-heading p {
+    color: var(--muted);
 }
 
-/* ===== Parallax Skills Grid ===== */
-.parallax-skills-grid {
+.skills-orbit-stage {
+    position: relative;
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    align-items: center;
     justify-content: center;
 }
 
-.parallax-skill-chip {
-    display: inline-flex;
+.skills-orbit-core {
+    position: relative;
+    z-index: 5;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 40px var(--accent-light);
+    transform: scale(0);
+    will-change: transform;
+}
+
+.skills-orbit-core i {
+    font-size: 2rem;
+}
+
+.skills-orbit-core span {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.skills-orbit-ring {
+    position: absolute;
+    border: 1px dashed var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.skills-orbit-ring-1 {
+    width: 300px;
+    height: 300px;
+}
+
+.skills-orbit-ring-2 {
+    width: 500px;
+    height: 500px;
+}
+
+.skill-orbit-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 1.25rem;
+    padding: 0.6rem 1.1rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 50px;
     font-weight: 500;
     color: var(--text);
-    transition: all 0.3s ease;
-    will-change: transform;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px var(--shadow);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.parallax-skill-chip:hover {
-    transform: translateY(-4px) scale(1.05);
+.skill-orbit-item:hover {
     border-color: var(--accent);
     color: var(--accent);
-    box-shadow: 0 8px 20px var(--shadow);
 }
 
-.parallax-skill-chip i {
+.skill-orbit-item i {
     color: var(--accent);
 }
 
-/* ===== Parallax Testimonials ===== */
-.parallax-testimonial {
+/* ==========================================================================
+   SCENE 6: Journey Timeline with scroll-driven progress
+   ========================================================================== */
+.scene-journey {
     position: relative;
+    padding: 6rem 0;
+    background: var(--section-alt);
+}
+
+.scene-journey-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 0 1rem;
+}
+
+.scene-journey-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.scene-journey-heading p {
+    color: var(--muted);
+}
+
+.journey-timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem 0 3rem;
+}
+
+.journey-progress-line {
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.journey-progress-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+    border-radius: 2px;
+    transition: height 0.1s linear;
+    will-change: height;
+}
+
+.journey-item {
+    position: relative;
+    padding-bottom: 3rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    will-change: transform, opacity;
+}
+
+.journey-item:last-child {
+    padding-bottom: 0;
+}
+
+.journey-marker {
+    position: absolute;
+    left: -2.4rem;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 3px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.journey-item.in-view .journey-marker {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    box-shadow: 0 0 0 4px var(--accent-light);
+}
+
+.journey-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    will-change: transform;
-    transition: transform 0.4s ease;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px var(--shadow);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.parallax-testimonial:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px var(--shadow);
+.journey-card:hover {
+    transform: translateX(6px);
+    box-shadow: 0 10px 30px var(--shadow);
 }
 
-.parallax-testimonial::before {
-    content: '\201C';
-    position: absolute;
-    top: -10px;
-    left: 1.5rem;
-    font-size: 4rem;
+.journey-duration {
+    display: inline-block;
     color: var(--accent);
-    opacity: 0.2;
-    font-family: 'Playfair Display', Georgia, serif;
-    line-height: 1;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
 }
 
-.parallax-testimonial-content {
-    font-style: italic;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 1;
-}
-
-.parallax-testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.parallax-testimonial-author img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--accent);
-}
-
-.parallax-testimonial-author-info strong {
-    display: block;
+.journey-card h3 {
+    font-size: 1.3rem;
     color: var(--text);
+    margin-bottom: 0.25rem;
 }
 
-.parallax-testimonial-author-info span {
+.journey-company {
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
 }
 
-/* ===== Parallax Services ===== */
-.parallax-service {
+.journey-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.journey-link {
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.journey-link:hover {
+    color: var(--accent-hover);
+}
+
+/* ==========================================================================
+   Services Section
+   ========================================================================== */
+.scene-services {
+    padding: 6rem 0;
+    background: var(--bg);
+}
+
+.scene-services-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.scene-services-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.service-card {
     text-align: center;
     padding: 2rem 1.5rem;
     background: var(--surface);
@@ -452,15 +1055,22 @@
     border-radius: 16px;
     height: 100%;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    will-change: transform;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
 }
 
-.parallax-service:hover {
-    transform: translateY(-6px);
+.service-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-card:hover {
+    transform: translateY(-6px) !important;
     box-shadow: 0 15px 35px var(--shadow);
 }
 
-.parallax-service-icon {
+.service-card-icon {
     width: 70px;
     height: 70px;
     margin: 0 auto 1.5rem;
@@ -473,19 +1083,112 @@
     font-size: 1.8rem;
 }
 
-.parallax-service h3 {
+.service-card h3 {
     font-size: 1.25rem;
-    margin-bottom: 0.75rem;
     color: var(--text);
+    margin-bottom: 0.75rem;
 }
 
-.parallax-service p {
+.service-card p {
     color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
-/* ===== Parallax CTA Section ===== */
-.parallax-cta {
+/* ==========================================================================
+   Testimonials Section
+   ========================================================================== */
+.scene-testimonials {
+    padding: 6rem 0;
+    background: var(--section-alt);
+}
+
+.scene-testimonials-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.scene-testimonials-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.testimonial-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    height: 100%;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.testimonial-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 15px 30px var(--shadow);
+}
+
+.testimonial-quote-icon {
+    color: var(--accent);
+    opacity: 0.2;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.testimonial-author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+}
+
+.testimonial-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.testimonial-author-info strong {
+    display: block;
+    color: var(--text);
+}
+
+.testimonial-author-info span {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Final CTA
+   ========================================================================== */
+.scene-cta {
     position: relative;
     padding: 6rem 0;
     text-align: center;
@@ -494,14 +1197,14 @@
     overflow: hidden;
 }
 
-.parallax-cta::before {
+.scene-cta::before {
     content: '';
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
     animation: ctaGlow 8s ease-in-out infinite;
 }
 
@@ -510,74 +1213,174 @@
     50% { transform: scale(1.2); opacity: 0.8; }
 }
 
-.parallax-cta-content {
+.scene-cta-content {
     position: relative;
     z-index: 2;
 }
 
-.parallax-cta h2 {
+.scene-cta h2 {
     color: #fff;
     font-size: clamp(2rem, 5vw, 3.5rem);
     margin-bottom: 1rem;
 }
 
-.parallax-cta p {
+.scene-cta p {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.2rem;
     margin-bottom: 2rem;
 }
 
-.parallax-cta .btn {
+.scene-cta-btn {
     background: #fff;
     color: var(--accent);
     border: none;
     padding: 0.8rem 2.5rem;
     font-weight: 600;
     border-radius: 50px;
+    text-decoration: none;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
 }
 
-.parallax-cta .btn:hover {
+.scene-cta-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     color: var(--accent-hover);
 }
 
-/* ===== Responsive Adjustments ===== */
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 992px) {
+    .scene-nav {
+        right: 0.75rem;
+    }
+}
+
 @media (max-width: 768px) {
-    .parallax-section {
-        background-attachment: scroll;
-        min-height: 50vh;
+    .scene-nav {
+        display: none;
     }
 
-    .parallax-content-section {
-        padding: 4rem 0;
+    .scene-build {
+        height: 250vh;
     }
 
-    .parallax-bg-layer-1 {
-        width: 300px;
-        height: 300px;
+    .scene-open {
+        height: 200vh;
     }
 
-    .parallax-bg-layer-2 {
-        width: 200px;
-        height: 200px;
+    .scene-visit {
+        height: 350vh;
+    }
+
+    .build-stage {
+        width: 240px;
+        height: 380px;
+    }
+
+    .build-block {
+        max-width: 220px;
+        padding: 0.8rem 1.2rem;
+    }
+
+    .visit-card {
+        width: 280px;
+        height: 400px;
+    }
+
+    .visit-card-end {
+        width: 280px;
+    }
+
+    .visit-header {
+        left: 1rem;
+        right: 1rem;
+        text-align: center;
+    }
+
+    .open-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skills-orbit-stage {
+        width: 90vw;
+        height: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+
+    .skills-orbit-ring-1 {
+        width: 220px;
+        height: 220px;
+    }
+
+    .skills-orbit-ring-2 {
+        width: 360px;
+        height: 360px;
+    }
+
+    .skill-orbit-item {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .journey-timeline {
+        padding-left: 2.5rem;
     }
 }
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-    .parallax-section {
-        background-attachment: scroll;
+    .scene-pin-sticky {
+        position: relative;
+        height: auto;
     }
 
-    .parallax-bg-layer,
-    .parallax-geo,
-    .parallax-card,
-    .parallax-skill-chip,
-    .parallax-testimonial,
-    .parallax-service,
-    .parallax-timeline-item {
-        will-change: auto;
+    .scene-build,
+    .scene-open,
+    .scene-visit {
+        height: auto;
+    }
+
+    .build-block {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    .open-door {
+        display: none;
+    }
+
+    .open-reveal-content {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .visit-track-wrapper {
+        overflow-x: auto;
+    }
+
+    .visit-track {
+        transform: none !important;
+    }
+
+    .skill-orbit-item,
+    .skills-orbit-core,
+    .skills-orbit-ring {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .journey-item,
+    .service-card,
+    .testimonial-card {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .scroll-cue-wheel {
+        animation: none;
     }
 }
