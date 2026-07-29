@@ -298,24 +298,36 @@
 
                 journeyItems.forEach(function (item) {
                     var itemRect = item.getBoundingClientRect();
-                    if (itemRect.top < viewportH * 0.85) {
+                    // Toggle so items re-animate when scrolled back into view
+                    if (itemRect.top < viewportH * 0.85 && itemRect.bottom > 0) {
                         item.classList.add('in-view');
                         item.style.opacity = '1';
                         item.style.transform = 'translateX(0)';
+                    } else {
+                        item.classList.remove('in-view');
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateX(-30px)';
                     }
                 });
             }
 
             // --- Services & Testimonials reveal ---
             serviceCards.forEach(function (card) {
-                if (card.getBoundingClientRect().top < viewportH * 0.85) {
+                var cardRect = card.getBoundingClientRect();
+                // Toggle so cards re-animate when scrolled back into view
+                if (cardRect.top < viewportH * 0.85 && cardRect.bottom > 0) {
                     card.classList.add('in-view');
+                } else {
+                    card.classList.remove('in-view');
                 }
             });
 
             testimonialCards.forEach(function (card) {
-                if (card.getBoundingClientRect().top < viewportH * 0.85) {
+                var cardRect = card.getBoundingClientRect();
+                if (cardRect.top < viewportH * 0.85 && cardRect.bottom > 0) {
                     card.classList.add('in-view');
+                } else {
+                    card.classList.remove('in-view');
                 }
             });
 
@@ -375,6 +387,31 @@
         var sceneNav = document.getElementById('sceneNav');
         if (progressBar) document.body.appendChild(progressBar);
         if (sceneNav) document.body.appendChild(sceneNav);
+
+        // ------------------------------------------------------------------
+        // Generic scroll reveal — re-triggers every time elements enter/leave
+        // Apply [data-reveal] to any content element for a scroll-in animation.
+        // Variants: data-reveal="left|right|scale|fade"
+        // Stagger:  data-reveal-delay="1..6"
+        // ------------------------------------------------------------------
+        var revealEls = document.querySelectorAll('[data-reveal]');
+        if (revealEls.length) {
+            if ('IntersectionObserver' in window && !prefersReducedMotion) {
+                var revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                        } else {
+                            entry.target.classList.remove('is-visible');
+                        }
+                    });
+                }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+                revealEls.forEach(function (el) { revealObserver.observe(el); });
+            } else {
+                // Reduced motion / no observer support: show immediately
+                revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+            }
+        }
 
         // ------------------------------------------------------------------
         // Initialize

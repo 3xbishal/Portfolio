@@ -8,7 +8,7 @@
 <section class="py-5">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
+            <div class="col-lg-8 mx-auto text-center" data-aos="zoom-in">
                 {% if project.project_media %}
                     {% if project.media_type == 'video' %}
                         <video controls class="img-fluid rounded shadow-lg project-detail-image" preload="metadata">
@@ -23,8 +23,8 @@
                         <i class="fas fa-image fa-5x text-muted"></i>
                     </div>
                 {% endif %}
-                <h1 class="fw-bold mt-4 project-detail-title">{{ project.title }}</h1>
-                <div class="d-flex justify-content-center gap-2 mb-3">
+                <h1 class="fw-bold mt-4 project-detail-title" data-aos="fade-up" data-aos-delay="100">{{ project.title }}</h1>
+                <div class="d-flex justify-content-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="200">
                     {% if project.project_url %}
                         <a href="{{ project.project_url }}" target="_blank" class="btn btn-success">
                             <i class="fas fa-external-link-alt me-1"></i>Live Demo
@@ -46,21 +46,21 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 project-detail-content">
-                <h2 class="fw-bold mb-4 section-title">Project Overview</h2>
-                <div class="mb-5">{{ project.description|linebreaks }}</div>
+                <h2 class="fw-bold mb-4 section-title" data-aos="fade-up">Project Overview</h2>
+                <div class="mb-5" data-aos="fade-up" data-aos-delay="100">{{ project.description|linebreaks }}</div>
 
                 {% if project.technologies_used %}
-                    <h3 class="fw-bold mb-3">Technologies Used</h3>
-                    <div class="mb-5">
+                    <h3 class="fw-bold mb-3" data-aos="fade-up">Technologies Used</h3>
+                    <div class="mb-5" data-aos="fade-up" data-aos-delay="100">
                         <p>{{ project.technologies_used|linebreaks }}</p>
                     </div>
                 {% endif %}
 
                 {% if project.gallery_images.all %}
-                    <h3 class="fw-bold mb-3 section-title">Project Gallery</h3>
+                    <h3 class="fw-bold mb-3 section-title" data-aos="fade-up">Project Gallery</h3>
                     <div class="row g-3 mb-5">
                         {% for img in project.gallery_images.all %}
-                            <div class="col-6">
+                            <div class="col-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:100 }}">
                                 <a href="{{ img.image.url }}" data-fancybox="gallery" data-caption="{{ img.caption }}">
                                     <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="img-fluid rounded shadow-sm gallery-image">
                                 </a>
@@ -72,7 +72,7 @@
                     </div>
                 {% endif %}
 
-                <div class="text-center mt-5">
+                <div class="text-center mt-5" data-aos="fade-up">
                     <a href="{% url 'projects' %}" class="btn btn-outline-primary">
                         <i class="fas fa-arrow-left me-1"></i>Back to Projects
                     </a>

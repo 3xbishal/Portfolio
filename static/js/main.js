@@ -133,12 +133,17 @@ document.addEventListener('DOMContentLoaded', function() {
     })();
 
     // --- Initialize AOS (Animate On Scroll) ---
+    // once:false  → animations re-trigger every time elements enter view
+    // mirror:true → elements animate back out when scrolled above viewport,
+    //                so they're ready to animate in again on next scroll down
     if (typeof AOS !== 'undefined') {
         AOS.init({
-            once: true,
+            once: false,
             duration: 800,
             easing: 'ease-out-cubic',
-            mirror: false,
+            mirror: true,
+            offset: 80,
+            delay: 0,
         });
     }
 

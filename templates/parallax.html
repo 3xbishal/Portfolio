@@ -47,16 +47,16 @@
 
     <div class="hero-content" id="heroContent">
         {% if profile %}
-            <div class="hero-eyebrow" id="heroEyebrow">Welcome to my world</div>
-            <h1 class="hero-title">
+            <div class="hero-eyebrow" id="heroEyebrow" data-reveal="up" data-reveal-delay="1">Welcome to my world</div>
+            <h1 class="hero-title" data-reveal="up" data-reveal-delay="2">
                 I'm <span class="text-gradient">{{ profile.name }}</span>
             </h1>
-            <p class="hero-subtitle">{{ profile.title }}</p>
-            <p class="hero-bio">{{ profile.bio|truncatewords:30 }}</p>
+            <p class="hero-subtitle" data-reveal="up" data-reveal-delay="3">{{ profile.title }}</p>
+            <p class="hero-bio" data-reveal="up" data-reveal-delay="4">{{ profile.bio|truncatewords:30 }}</p>
         {% else %}
-            <h1 class="hero-title">Welcome to My Portfolio</h1>
-            <p class="hero-subtitle">Web Developer</p>
-            <p class="hero-bio">Please configure your profile in the admin panel.</p>
+            <h1 class="hero-title" data-reveal="up" data-reveal-delay="2">Welcome to My Portfolio</h1>
+            <p class="hero-subtitle" data-reveal="up" data-reveal-delay="3">Web Developer</p>
+            <p class="hero-bio" data-reveal="up" data-reveal-delay="4">Please configure your profile in the admin panel.</p>
         {% endif %}
     </div>
 
@@ -72,9 +72,9 @@
 <section class="scene-pin scene-build" id="scene-build" data-pin="build">
     <div class="scene-pin-sticky">
         <div class="scene-build-intro">
-            <span class="scene-tag">01 — Build</span>
-            <h2>Watch It Come Together</h2>
-            <p>Scroll to assemble the structure block by block</p>
+            <span class="scene-tag" data-reveal="up" data-reveal-delay="1">01 — Build</span>
+            <h2 data-reveal="up" data-reveal-delay="2">Watch It Come Together</h2>
+            <p data-reveal="up" data-reveal-delay="3">Scroll to assemble the structure block by block</p>
         </div>
 
         <div class="build-stage" id="buildStage">
@@ -117,38 +117,38 @@
     <div class="scene-pin-sticky">
         <!-- Content revealed behind the doors -->
         <div class="open-reveal-content">
-            <span class="scene-tag scene-tag-light">02 — Open</span>
-            <h2>About Me</h2>
+            <span class="scene-tag scene-tag-light" data-reveal="up" data-reveal-delay="1">02 — Open</span>
+            <h2 data-reveal="up" data-reveal-delay="2">About Me</h2>
             {% if profile %}
-                <p class="open-bio">{{ profile.bio }}</p>
+                <p class="open-bio" data-reveal="up" data-reveal-delay="3">{{ profile.bio }}</p>
                 <div class="open-info-grid">
                     {% if profile.email %}
-                        <div class="open-info-item">
+                        <div class="open-info-item" data-reveal="scale" data-reveal-delay="1">
                             <i class="fas fa-envelope"></i>
                             <span>{{ profile.email }}</span>
                         </div>
                     {% endif %}
                     {% if profile.phone %}
-                        <div class="open-info-item">
+                        <div class="open-info-item" data-reveal="scale" data-reveal-delay="2">
                             <i class="fas fa-phone"></i>
                             <span>{{ profile.phone }}</span>
                         </div>
                     {% endif %}
                     {% if profile.location %}
-                        <div class="open-info-item">
+                        <div class="open-info-item" data-reveal="scale" data-reveal-delay="3">
                             <i class="fas fa-map-marker-alt"></i>
                             <span>{{ profile.location }}</span>
                         </div>
                     {% endif %}
                     {% if profile.company %}
-                        <div class="open-info-item">
+                        <div class="open-info-item" data-reveal="scale" data-reveal-delay="4">
                             <i class="fas fa-building"></i>
                             <span>{{ profile.company }}</span>
                         </div>
                     {% endif %}
                 </div>
             {% else %}
-                <p class="open-bio">Configure your profile in the admin panel.</p>
+                <p class="open-bio" data-reveal="up" data-reveal-delay="3">Configure your profile in the admin panel.</p>
             {% endif %}
         </div>
 
@@ -173,9 +173,9 @@
 <section class="scene-pin scene-visit" id="scene-visit" data-pin="visit">
     <div class="scene-pin-sticky">
         <div class="visit-header">
-            <span class="scene-tag">03 — Visit</span>
-            <h2>Travel Through My Work</h2>
-            <p>Scroll to move sideways through projects</p>
+            <span class="scene-tag" data-reveal="left" data-reveal-delay="1">03 — Visit</span>
+            <h2 data-reveal="left" data-reveal-delay="2">Travel Through My Work</h2>
+            <p data-reveal="left" data-reveal-delay="3">Scroll to move sideways through projects</p>
         </div>
 
         <div class="visit-track-wrapper">
@@ -256,9 +256,9 @@
 {% if skills %}
 <section class="scene-skills" id="scene-skills">
     <div class="scene-skills-heading">
-        <span class="scene-tag">04 — Assemble</span>
-        <h2>Skills That Come Together</h2>
-        <p>Scroll to watch skills orbit into place</p>
+        <span class="scene-tag" data-reveal="up" data-reveal-delay="1">04 — Assemble</span>
+        <h2 data-reveal="up" data-reveal-delay="2">Skills That Come Together</h2>
+        <p data-reveal="up" data-reveal-delay="3">Scroll to watch skills orbit into place</p>
     </div>
 
     <div class="skills-orbit-stage" id="skillsOrbitStage">
@@ -286,9 +286,9 @@
 {% if experiences %}
 <section class="scene-journey" id="scene-journey">
     <div class="scene-journey-heading">
-        <span class="scene-tag">05 — Journey</span>
-        <h2>My Career Path</h2>
-        <p>Scroll to walk through my experience</p>
+        <span class="scene-tag" data-reveal="up" data-reveal-delay="1">05 — Journey</span>
+        <h2 data-reveal="up" data-reveal-delay="2">My Career Path</h2>
+        <p data-reveal="up" data-reveal-delay="3">Scroll to walk through my experience</p>
     </div>
 
     <div class="journey-timeline" id="journeyTimeline">
@@ -325,8 +325,8 @@
 <section class="scene-services">
     <div class="container">
         <div class="scene-services-heading">
-            <span class="scene-tag">06 — Services</span>
-            <h2>What I Do</h2>
+            <span class="scene-tag" data-reveal="up" data-reveal-delay="1">06 — Services</span>
+            <h2 data-reveal="up" data-reveal-delay="2">What I Do</h2>
         </div>
         <div class="row g-4">
             {% for service in services %}
@@ -350,8 +350,8 @@
 <section class="scene-testimonials">
     <div class="container">
         <div class="scene-testimonials-heading">
-            <span class="scene-tag">07 — Voices</span>
-            <h2>What People Say</h2>
+            <span class="scene-tag" data-reveal="up" data-reveal-delay="1">07 — Voices</span>
+            <h2 data-reveal="up" data-reveal-delay="2">What People Say</h2>
         </div>
         <div class="row g-4">
             {% for testimonial in testimonials %}
@@ -385,9 +385,9 @@
 <!-- ===== Final CTA ===== -->
 <section class="scene-cta">
     <div class="scene-cta-content">
-        <h2>Let's Build Something Together</h2>
-        <p>Have a project in mind? Let's create something amazing.</p>
-        <a href="{% url 'contact' %}" class="scene-cta-btn">
+        <h2 data-reveal="up" data-reveal-delay="1">Let's Build Something Together</h2>
+        <p data-reveal="up" data-reveal-delay="2">Have a project in mind? Let's create something amazing.</p>
+        <a href="{% url 'contact' %}" class="scene-cta-btn" data-reveal="up" data-reveal-delay="3">
             <i class="fas fa-paper-plane me-2"></i>Get In Touch
         </a>
     </div>
