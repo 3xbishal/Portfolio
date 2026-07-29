@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/parallax.css' %}">
 {% endblock %}
 
-{% block body_class %}parallax-page{% endblock %}
+{% block body_class %}parallax-page parallax-layout{% endblock %}
 
 {% block content %}
 <!-- ===== Scroll Progress Indicator ===== -->
@@ -58,6 +58,11 @@
             <p class="hero-subtitle" data-reveal="up" data-reveal-delay="3">Web Developer</p>
             <p class="hero-bio" data-reveal="up" data-reveal-delay="4">Please configure your profile in the admin panel.</p>
         {% endif %}
+    </div>
+
+    <div class="hero-frame-label" aria-hidden="true">
+        <span>PORTFOLIO</span>
+        <span>SCROLL / EXPLORE</span>
     </div>
 
     <div class="hero-scroll-cue" id="heroScrollCue">

@@ -1471,3 +1471,48 @@
 .parallax-blueprint .journey-marker { border-radius: 2px; background: var(--accent); color: #06101d; }.parallax-blueprint .scene-services, .parallax-blueprint .scene-testimonials { background: #081624; }.parallax-blueprint .scene-cta { background: linear-gradient(135deg, #06101d, #0e3550); }.parallax-blueprint .scene-cta::before { background-image: linear-gradient(rgba(88, 215, 255, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(88, 215, 255, .12) 1px, transparent 1px); }
 .parallax-blueprint .scroll-progress-fill { background: var(--accent); box-shadow: 0 0 14px var(--accent); }.parallax-blueprint .scene-nav-dot { border-radius: 2px; border-color: rgba(142, 220, 255, .4); }.parallax-blueprint .scene-nav-dot span { border-radius: 0; background: transparent; }.parallax-blueprint .scene-nav-dot.active { border-color: var(--accent); transform: scale(1.25); }.parallax-blueprint .scene-nav-dot.active span { background: var(--accent); box-shadow: none; }
 @media (max-width: 768px) { .parallax-blueprint .hero-content { margin: 1rem; padding: 2rem 1.25rem; } }
+
+/* Alternate page structure: rearranges scenes while retaining the site theme. */
+.parallax-layout .scene-nav { left: 1.5rem; right: auto; }
+.parallax-layout .scene-hero { justify-content: flex-start; }
+.parallax-layout .hero-content { width: min(680px, 55vw); margin-left: 10vw; text-align: left; padding: 3rem 0; }
+.parallax-layout .hero-bio { margin-left: 0; }
+.parallax-layout .hero-frame-label { position: absolute; top: 7rem; right: 5vw; z-index: 5; display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; color: var(--muted); font-size: .7rem; font-weight: 700; letter-spacing: .2em; writing-mode: vertical-rl; }
+.parallax-layout .hero-frame-label span:last-child { color: var(--accent); }
+.parallax-layout .hero-scroll-cue { left: auto; right: 8vw; transform: none; align-items: flex-end; }
+
+.parallax-layout .scene-build-intro { top: 50%; left: 10vw; width: min(360px, 32vw); transform: translateY(-50%); text-align: left; }
+.parallax-layout .build-stage { position: absolute; right: 16vw; bottom: 13vh; }
+.parallax-layout .build-progress-label { left: auto; right: 10vw; transform: none; bottom: 10vh; }
+
+.parallax-layout .open-reveal-content { width: min(900px, 74vw); margin-left: 20vw; text-align: left; }
+.parallax-layout .open-bio { margin-left: 0; margin-right: 0; }
+.parallax-layout .open-info-grid { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; }
+.parallax-layout .open-door-left { width: 34%; }.parallax-layout .open-door-right { width: 66%; }
+
+.parallax-layout .visit-header { top: 14vh; left: auto; right: 9vw; width: min(410px, 35vw); text-align: right; }
+.parallax-layout .visit-track { padding-left: 10vw; padding-right: 10vw; gap: 1.25rem; }
+.parallax-layout .visit-card:nth-child(even) { margin-top: 4rem; }.parallax-layout .visit-card:nth-child(odd) { margin-bottom: 4rem; }
+.parallax-layout .visit-progress { left: 10vw; transform: none; width: min(280px, 38vw); }
+
+.parallax-layout .scene-skills { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(360px, 1.2fr); align-content: center; gap: 3rem; padding: 7rem 10vw; }
+.parallax-layout .scene-skills-heading { text-align: left; margin: 0; }.parallax-layout .skills-orbit-stage { justify-self: center; }
+
+.parallax-layout .scene-journey { padding: 7rem 10vw; }.parallax-layout .scene-journey-heading { max-width: 440px; margin: 0 0 4rem; padding: 0; text-align: left; }
+.parallax-layout .journey-timeline { max-width: none; padding: 0 0 0 50%; }.parallax-layout .journey-progress-line { left: calc(50% - 1px); }
+.parallax-layout .journey-item { width: 100%; }.parallax-layout .journey-item:nth-child(odd) { transform: translateX(30px); margin-left: -100%; padding-right: 4rem; text-align: right; }.parallax-layout .journey-item:nth-child(even) { padding-left: 4rem; }
+.parallax-layout .journey-item:nth-child(odd).in-view { transform: translateX(0); }.parallax-layout .journey-marker { left: -1.25rem; }.parallax-layout .journey-item:nth-child(odd) .journey-marker { left: auto; right: -1.25rem; }
+.parallax-layout .scene-services .container, .parallax-layout .scene-testimonials .container { max-width: 1180px; }.parallax-layout .scene-services-heading, .parallax-layout .scene-testimonials-heading { text-align: left; max-width: 450px; }
+
+@media (max-width: 992px) {
+    .parallax-layout .hero-content { width: min(700px, 76vw); margin-left: 12vw; }.parallax-layout .hero-frame-label { display: none; }
+    .parallax-layout .scene-build-intro { left: 8vw; }.parallax-layout .build-stage { right: 8vw; }.parallax-layout .open-reveal-content { margin-left: 12vw; }
+    .parallax-layout .scene-skills { grid-template-columns: 1fr; padding: 6rem 1rem; }.parallax-layout .scene-skills-heading { text-align: center; margin-bottom: 2rem; }
+}
+@media (max-width: 768px) {
+    .parallax-layout .scene-nav { left: auto; right: 1rem; }.parallax-layout .hero-content { width: auto; margin: 0 2rem; text-align: center; }.parallax-layout .hero-bio { margin-right: auto; }.parallax-layout .hero-scroll-cue { right: 50%; transform: translateX(50%); align-items: center; }
+    .parallax-layout .scene-build-intro { top: 12vh; left: 50%; width: 90%; transform: translateX(-50%); text-align: center; }.parallax-layout .build-stage { right: 50%; bottom: 10vh; transform: translateX(50%); }.parallax-layout .build-progress-label { right: 1.5rem; bottom: 4vh; }
+    .parallax-layout .open-reveal-content { width: 86vw; margin: 0; text-align: center; }.parallax-layout .open-bio { margin-left: auto; margin-right: auto; }.parallax-layout .open-info-grid { grid-template-columns: 1fr; }.parallax-layout .open-door-left, .parallax-layout .open-door-right { width: 50%; }
+    .parallax-layout .visit-header { left: 7vw; right: auto; width: 86vw; text-align: left; }.parallax-layout .visit-card:nth-child(even), .parallax-layout .visit-card:nth-child(odd) { margin-top: 0; margin-bottom: 0; }.parallax-layout .visit-progress { left: 50%; transform: translateX(-50%); }
+    .parallax-layout .scene-journey { padding: 5rem 1.25rem; }.parallax-layout .journey-timeline { padding: 0 0 0 3rem; }.parallax-layout .journey-progress-line { left: 1rem; }.parallax-layout .journey-item:nth-child(odd) { margin-left: 0; padding-right: 0; padding-left: 0; text-align: left; transform: translateX(-30px); }.parallax-layout .journey-item:nth-child(odd) .journey-marker { left: -2.4rem; right: auto; }
+}
