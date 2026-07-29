@@ -1503,6 +1503,7 @@
 .parallax-layout .journey-item { width: 100%; }.parallax-layout .journey-item:nth-child(odd) { transform: translateX(30px); margin-left: -100%; padding-right: 4rem; text-align: right; }.parallax-layout .journey-item:nth-child(even) { padding-left: 4rem; }
 .parallax-layout .journey-item:nth-child(odd).in-view { transform: translateX(0); }.parallax-layout .journey-marker { left: -1.25rem; }.parallax-layout .journey-item:nth-child(odd) .journey-marker { left: auto; right: -1.25rem; }
 .parallax-layout .scene-services .container, .parallax-layout .scene-testimonials .container { max-width: 1180px; }.parallax-layout .scene-services-heading, .parallax-layout .scene-testimonials-heading { text-align: left; max-width: 450px; }
+.parallax-layout .visit-card { transition: transform .16s linear, opacity .16s linear; transform-origin: center center; }
 
 @media (max-width: 992px) {
     .parallax-layout .hero-content { width: min(700px, 76vw); margin-left: 12vw; }.parallax-layout .hero-frame-label { display: none; }

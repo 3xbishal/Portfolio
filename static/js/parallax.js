@@ -46,6 +46,7 @@
         // Visit
         var visitTrack = document.getElementById('visitTrack');
         var visitProgressFill = document.getElementById('visitProgressFill');
+        var visitCards = document.querySelectorAll('.visit-card');
 
         // Skills orbit
         var skillsStage = document.getElementById('skillsOrbitStage');
@@ -253,6 +254,19 @@
                 if (visitProgressFill) {
                     visitProgressFill.style.width = (visitProg * 100) + '%';
                 }
+
+                // Cards nearest the viewport centre become the focal point
+                // while the track moves horizontally.
+                visitCards.forEach(function (card) {
+                    var cardRect = card.getBoundingClientRect();
+                    var cardCenter = cardRect.left + cardRect.width / 2;
+                    var distance = Math.abs(cardCenter - viewportWidth / 2);
+                    var proximity = clamp(1 - distance / (viewportWidth * 0.72), 0, 1);
+                    var scale = lerp(0.86, 1, proximity);
+                    var tilt = mapRange(cardCenter, 0, viewportWidth, 5, -5);
+                    card.style.transform = 'scale(' + scale + ') rotate(' + tilt + 'deg)';
+                    card.style.opacity = lerp(0.48, 1, proximity);
+                });
             }
 
             // --- Skills orbit: assemble on scroll into view ---
@@ -269,11 +283,11 @@
                 }
                 if (orbitRing1) {
                     orbitRing1.style.opacity = skillsProg * 0.4;
-                    orbitRing1.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
+                    orbitRing1.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ') rotate(' + (scrollY * 0.025) + 'deg)';
                 }
                 if (orbitRing2) {
                     orbitRing2.style.opacity = skillsProg * 0.3;
-                    orbitRing2.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ')';
+                    orbitRing2.style.transform = 'scale(' + lerp(0.7, 1, skillsProg) + ') rotate(' + (-scrollY * 0.017) + 'deg)';
                 }
 
                 skillItems.forEach(function (item, i) {
