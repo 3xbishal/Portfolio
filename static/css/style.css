@@ -359,9 +359,156 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
 }
 
+/* Coding vibe: headings get a subtle terminal prompt accent */
+h2.section-title {
+    position: relative;
+    display: inline-block;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding-left: 1.2rem;
+}
+
+h2.section-title::before {
+    content: '// ';
+    color: var(--accent);
+    font-weight: 700;
+    opacity: 0.6;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+h2.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 3px;
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* Coding vibe: paragraph text with terminal output styling */
 p, li {
     color: var(--text-secondary);
     line-height: 1.7;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Coding vibe: lead paragraphs get a code-like prefix */
+.lead {
+    font-size: 1.15rem;
+    color: var(--text-secondary) !important;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 400;
+    position: relative;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--accent);
+    opacity: 0.9;
+}
+
+/* Coding vibe: section subtitle text */
+section .text-muted {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+}
+
+/* Coding vibe: card titles get a subtle code accent */
+.card-title {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Coding vibe: skill items with terminal style */
+.skill-item {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+/* Coding vibe: experience item headings */
+.experience-item h3 {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
+}
+
+/* Coding vibe: service card titles */
+.service-card .card-title {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
+}
+
+/* Coding vibe: project card titles */
+.project-card .card-title {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
+}
+
+/* Coding vibe: testimonial text */
+.testimonial-carousel .blockquote p {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.95rem;
+    font-style: normal;
+}
+
+/* Coding vibe: nav links */
+.header .nav-link {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+/* Coding vibe: buttons */
+.btn {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* Coding vibe: form labels and inputs */
+.form-label {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.form-control {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* Coding vibe: footer text */
+footer.footer p {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.82rem;
+}
+
+/* Coding vibe: greeting badge */
+.greeting-badge {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Coding vibe: hero subtitle */
+.hero-subtitle {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+/* Coding vibe: hero bio */
+.hero-bio {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
 }
 
 small, span {
@@ -375,11 +522,6 @@ a {
 
 a:hover {
     color: var(--accent-hover);
-}
-
-.lead {
-    font-size: 1.15rem;
-    color: var(--text-secondary) !important;
 }
 
 /* ===== Sections ===== */
@@ -1749,3 +1891,266 @@ footer.footer .social-link.whatsapp { color: #25D366; }
     .home-page .artistic-hero::after,
     .home-page .hero-image-wrapper { animation: none; }
 }
+
+/* ==========================================================================
+   Coding Vibe Elements — Terminal Heading & Dev Card
+   Uses the same maroon accent (#800000 / #d44a4a dark mode)
+   ========================================================================== */
+
+/* ===== Terminal-Style Section Heading ===== */
+.coding-heading {
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    margin-bottom: 2rem;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px var(--shadow);
+    overflow: hidden;
+}
+
+.coding-heading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+}
+
+.coding-heading .prompt {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 0.5rem;
+    opacity: 0.85;
+}
+
+.coding-heading .typing-text {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid var(--accent);
+    padding-right: 3px;
+    animation: typingCursor 1.4s step-end infinite;
+}
+
+@keyframes typingCursor {
+    0%, 100% { border-color: var(--accent); }
+    50% { border-color: transparent; }
+}
+
+/* ===== Dev Card — Terminal Window Style ===== */
+.dev-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 12px 35px var(--shadow);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    transform: translateZ(0);
+}
+
+.dev-card:hover {
+    transform: translateY(-8px) translateZ(0);
+    box-shadow: 0 20px 45px var(--shadow);
+}
+
+/* Terminal window header with traffic-light buttons */
+.dev-card-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: var(--section-alt);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    position: relative;
+}
+
+.dev-card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    opacity: 0.5;
+}
+
+/* Traffic light buttons */
+.dev-card-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: auto;
+}
+
+.dev-card-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.dev-card-btn.red { background: #ff5f57; box-shadow: 0 0 0 2px #ff5f57; }
+.dev-card-btn.yellow { background: #ffbd2e; box-shadow: 0 0 0 2px #ffbd2e; }
+.dev-card-btn.green { background: #28c840; box-shadow: 0 0 0 2px #28c840; }
+
+.dev-card-header .dev-card-title {
+    margin-left: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.dev-card-header .dev-card-title i {
+    color: var(--accent);
+    font-size: 0.9rem;
+}
+
+/* Terminal body content */
+.dev-card-body {
+    padding: 1.5rem;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.dev-card-body .dev-name {
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+.dev-card-body .dev-title {
+    font-size: 1rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dev-card-body .dev-title::before {
+    content: '///';
+    opacity: 0.5;
+}
+
+/* Terminal command lines */
+.dev-command {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.dev-command .cmd-prompt {
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.dev-command .cmd-output {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.dev-command .cmd-label {
+    color: var(--muted);
+    opacity: 0.7;
+}
+
+/* Skill tags in terminal style */
+.dev-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+}
+
+.dev-skill-tag {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.dev-skill-tag:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Terminal bottom bar */
+.dev-card-footer {
+    padding: 0.6rem 1.25rem;
+    background: var(--section-alt);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dev-card-footer .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .dev-card-header {
+        padding: 0.6rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .dev-card-body {
+        padding: 1.25rem;
+    }
+
+    .dev-card-footer {
+        padding: 0.5rem 1rem;
+        font-size: 0.72rem;
+    }
+
+    .coding-heading {
+        font-size: 1.1rem;
+        padding: 0.4rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dev-card-body .dev-name {
+        font-size: 1.3rem;
+    }
+}
+
+
+

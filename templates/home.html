@@ -88,6 +88,100 @@
         </div>
     </section>
 
+<!-- ===== Coding Vibe Section ===== -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h2 class="coding-heading">
+                <span class="prompt">$</span>
+                <span class="typing-text" id="typingHeading">./about-developer.sh</span>
+            </h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="zoom-in-up" data-aos-delay="100">
+                <div class="dev-card">
+                    <!-- Terminal window header -->
+                    <div class="dev-card-header">
+                        <div class="dev-card-controls">
+                            <span class="dev-card-btn red"></span>
+                            <span class="dev-card-btn yellow"></span>
+                            <span class="dev-card-btn green"></span>
+                        </div>
+                        <div class="dev-card-title">
+                            <i class="fas fa-terminal"></i>
+                            <span>developer@portfolio:~$</span>
+                        </div>
+                    </div>
+                    <!-- Terminal body -->
+                    <div class="dev-card-body">
+                        {% if profile %}
+                            <div class="dev-name">{{ profile.name }}</div>
+                            <div class="dev-title">{{ profile.title }}</div>
+                        {% else %}
+                            <div class="dev-name">Developer</div>
+                            <div class="dev-title">Full-Stack Developer</div>
+                        {% endif %}
+
+                        <div class="dev-command">
+                            <span class="cmd-prompt">$</span>
+                            <span class="cmd-label">cat</span>
+                            <span class="cmd-output">/home/developer/bio.txt</span>
+                        </div>
+                        <div class="dev-command">
+                            <span class="cmd-prompt">></span>
+                            <span class="cmd-label">output:</span>
+                            <span class="cmd-output">{{ profile.bio|truncatewords:20|default:'Passionate developer crafting digital experiences.' }}</span>
+                        </div>
+
+                        <div class="dev-command">
+                            <span class="cmd-prompt">$</span>
+                            <span class="cmd-label">ls</span>
+                            <span class="cmd-output">--skills --format=tags</span>
+                        </div>
+                        <div class="dev-skills">
+                            {% if skills %}
+                                {% for skill in skills|slice:":8" %}
+                                    <span class="dev-skill-tag">{{ skill.name }}</span>
+                                {% endfor %}
+                                {% if skills|length > 8 %}
+                                    <span class="dev-skill-tag">+{{ skills|length|add:"-8" }} more</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="dev-skill-tag">Python</span>
+                                <span class="dev-skill-tag">Django</span>
+                                <span class="dev-skill-tag">JavaScript</span>
+                                <span class="dev-skill-tag">React</span>
+                                <span class="dev-skill-tag">HTML/CSS</span>
+                                <span class="dev-skill-tag">Git</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="dev-command mt-3">
+                            <span class="cmd-prompt">$</span>
+                            <span class="cmd-label">echo</span>
+                            <span class="cmd-output">$STATUS</span>
+                        </div>
+                        <div class="dev-command">
+                            <span class="cmd-prompt">></span>
+                            <span class="cmd-label">output:</span>
+                            <span class="cmd-output" style="color: var(--accent); font-weight: 600;">
+                                <i class="fas fa-circle" style="font-size: 0.5rem; vertical-align: middle; margin-right: 0.3rem;"></i>
+                                Available for new projects
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Terminal footer -->
+                    <div class="dev-card-footer">
+                        <span class="status-dot"></span>
+                        <span>NORMAL</span>
+                        <span style="margin-left: auto;">dev@portfolio:~/about</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Featured Projects Section -->
 {% if featured_projects %}
 <section class="py-5">

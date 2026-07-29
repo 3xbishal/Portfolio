@@ -268,6 +268,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- Coding Vibe: Typing Animation for Terminal Heading ---
+    (function() {
+        var headingEl = document.getElementById('typingHeading');
+        if (!headingEl) return;
+
+        var commands = [
+            './about-developer.sh',
+            'cat /home/dev/profile.json',
+            'npm run whoami',
+            'git log --oneline -1',
+            'python about.py',
+            'curl -s localhost:3000/about',
+            'docker exec dev-portfolio whoami',
+            'ssh developer@portfolio',
+            'systemctl status developer.service',
+            'echo $DEVELOPER_PROFILE'
+        ];
+
+        var cmdIndex = 0;
+        var charIndex = 0;
+        var isDeleting = false;
+        var typeSpeed = 80;
+        var deleteSpeed = 40;
+        var pauseTime = 2500;
+
+        function typeEffect() {
+            var currentCmd = commands[cmdIndex];
+
+            if (!isDeleting) {
+                // Typing
+                headingEl.textContent = currentCmd.substring(0, charIndex + 1);
+                charIndex++;
+                if (charIndex === currentCmd.length) {
+                    isDeleting = true;
+                    setTimeout(typeEffect, pauseTime);
+                    return;
+                }
+                setTimeout(typeEffect, typeSpeed);
+            } else {
+                // Deleting
+                headingEl.textContent = currentCmd.substring(0, charIndex - 1);
+                charIndex--;
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    cmdIndex = (cmdIndex + 1) % commands.length;
+                    setTimeout(typeEffect, typeSpeed);
+                    return;
+                }
+                setTimeout(typeEffect, deleteSpeed);
+            }
+        }
+
+        // Start typing after a short delay
+        setTimeout(typeEffect, 1500);
+    })();
+
     // --- Animated Background Toggle (Desktop + Mobile) ---
     (function () {
         var toggleBtns = [
