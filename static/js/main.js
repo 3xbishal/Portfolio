@@ -71,13 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add destroy effect keyframes
         var style = document.createElement('style');
         style.textContent = `
-            @keyframes destroyEffect {
-                0% { transform: scale(1); opacity: 1; }
-                50% { transform: scale(0.95); opacity: 0.8; }
-                100% { transform: scale(1); opacity: 1; }
-            }
             .destroy-particle {
-                position: absolute;
+                position: fixed;
                 width: 6px;
                 height: 6px;
                 border-radius: 50%;
@@ -89,17 +84,17 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
 
-        function createParticles(element, x, y) {
-            var particleCount = 25;
+        function createParticles(x, y) {
+            var particleCount = 12;
             for (var i = 0; i < particleCount; i++) {
                 var particle = document.createElement('div');
                 particle.className = 'destroy-particle';
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
-                element.appendChild(particle);
+                document.body.appendChild(particle);
 
                 var angle = (Math.PI * 2 * i) / particleCount;
-                var velocity = 80 + Math.random() * 120;
+                var velocity = 60 + Math.random() * 80;
                 var tx = Math.cos(angle) * velocity;
                 var ty = Math.sin(angle) * velocity;
 
@@ -107,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { transform: 'translate(0, 0) scale(1)', opacity: 1 },
                     { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
                 ], {
-                    duration: 900,
+                    duration: 700,
                     easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
                 }).onfinish = function() {
                     particle.remove();
@@ -115,106 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        function destroyCardParticleByParticle(card, linkHref) {
-            // Get card dimensions
-            var rect = card.getBoundingClientRect();
-            var width = rect.width;
-            var height = rect.height;
-            
-            // Create many particles across the entire card
-            var particleCount = 60;
-            var particles = [];
-            
-            for (var i = 0; i < particleCount; i++) {
-                var particle = document.createElement('div');
-                particle.className = 'destroy-particle';
-                
-                // Random position within card
-                var px = Math.random() * width;
-                var py = Math.random() * height;
-                particle.style.left = px + 'px';
-                particle.style.top = py + 'px';
-                
-                // Random size variation
-                var size = 4 + Math.random() * 8;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                card.appendChild(particle);
-                particles.push(particle);
-                
-                // Random direction and velocity
-                var angle = Math.random() * Math.PI * 2;
-                var velocity = 100 + Math.random() * 200;
-                var tx = Math.cos(angle) * velocity;
-                var ty = Math.sin(angle) * velocity;
-                
-                // Staggered animation
-                var delay = Math.random() * 200;
-                
-                setTimeout(function() {
-                    particle.animate([
-                        { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
-                        { transform: `translate(${tx}px, ${ty}px) scale(0) rotate(${Math.random() * 720}deg)`, opacity: 0 }
-                    ], {
-                        duration: 1000 + Math.random() * 500,
-                        easing: 'cubic-bezier(0, 0.5, 0.2, 1)'
-                    }).onfinish = function() {
-                        particle.remove();
-                    };
-                }, delay);
-            }
-            
-            // Fade out card content
-            card.style.transition = 'all 0.3s ease-out';
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.9)';
-            
-            // Remove card after particles finish
-            setTimeout(function() {
-                card.style.display = 'none';
-                
-                // Navigate to project details
-                if (linkHref) {
-                    window.location.href = linkHref;
-                }
-            }, 1200);
-        }
-
-        // Apply to all clickable elements - destroy parent card (excluding project cards)
-        document.querySelectorAll('button, .btn, a, .card, .project-card, .service-card, .experience-item, .contact-info-item').forEach(function(el) {
+        // Apply to all clickable elements - particles only, no parent effect
+        document.querySelectorAll('button, .btn, a').forEach(function(el) {
             el.addEventListener('click', function(e) {
-                // Skip destroy effect for project cards - let them navigate normally
-                var parentCard = this.closest('.project-card');
-                if (parentCard) {
-                    return; // Allow normal navigation for project cards
-                }
-                
-                // Find parent card to destroy (excluding project cards)
-                var targetElement = this.closest('.card, .service-card, .experience-item, .contact-info-item') || this;
-                
-                var rect = targetElement.getBoundingClientRect();
+                var rect = this.getBoundingClientRect();
                 var x = e.clientX - rect.left;
                 var y = e.clientY - rect.top;
                 
-                targetElement.style.position = 'relative';
-                createParticles(targetElement, x, y);
-
-                // Crush effect on parent
-                targetElement.style.transition = 'all 0.12s cubic-bezier(0.4, 0, 0.2, 1)';
-                targetElement.style.transform = 'scale(0.92)';
-                targetElement.style.filter = 'brightness(1.4) saturate(1.3)';
-                targetElement.style.boxShadow = '0 0 30px rgba(128, 0, 0, 0.6)';
-
-                setTimeout(() => {
-                    targetElement.style.transform = 'scale(1.03)';
-                    targetElement.style.filter = 'brightness(0.95)';
-                    
-                    setTimeout(() => {
-                        targetElement.style.transform = '';
-                        targetElement.style.filter = '';
-                    }, 150);
-                }, 150);
+                // Create particles at click position
+                createParticles(
+                    e.clientX,
+                    e.clientY
+                );
             });
         });
     })();

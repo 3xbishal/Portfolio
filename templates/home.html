@@ -71,10 +71,10 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-lg-6 hero-visual align-self-start" data-aos="fade-left">
+                <div class="col-lg-6 hero-visual d-flex justify-content-center" data-aos="fade-left">
                     <div class="hero-image-wrapper">
                         {% if profile and profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="img-fluid profile-image lazy">
+                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-image lazy">
                         {% else %}
                             <div class="profile-image-placeholder d-flex align-items-center justify-content-center">
                                 <i class="fas fa-user fa-7x text-muted"></i>
