@@ -193,14 +193,16 @@
             <div class="col-lg-8">
                 <div class="experience-timeline">
                     {% for exp in experiences %}
-                    <div class="experience-item">
-                        <div class="d-flex justify-content-between">
-                            <h3 class="h5 mb-1">{{ exp.position }}</h3>
-                            <span class="text-muted small">{{ exp.duration }}</span>
+                    <a href="{{ exp.get_absolute_url }}" class="text-decoration-none">
+                        <div class="experience-item">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="h5 mb-1 text-decoration-none">{{ exp.position }}</h3>
+                                <span class="text-muted small">{{ exp.duration }}</span>
+                            </div>
+                            <p class="text-muted mb-1 text-decoration-none">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</p>
+                            <p class="small text-muted mb-0 text-decoration-none">{{ exp.description|truncatechars:150 }}</p>
                         </div>
-                        <p class="text-muted mb-1">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</p>
-                        <p class="small text-muted mb-0">{{ exp.description|truncatechars:150 }}</p>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 <div class="text-center mt-4">

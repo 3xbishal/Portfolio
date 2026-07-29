@@ -31,6 +31,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
+    // --- Click Sound Effect ---
+    (function() {
+        var audioContext = null;
+        
+        function playClickSound() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                var oscillator = audioContext.createOscillator();
+                var gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Silently fail if audio is not supported
+            }
+        }
+        
+        // Play sound on all clicks
+        document.addEventListener('click', function(e) {
+            playClickSound();
+        });
+    })();
+
     // --- Click Destroy Effect with particles ---
     (function() {
         // Add destroy effect keyframes
@@ -146,13 +181,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1200);
         }
 
-        // Apply to all clickable elements - destroy parent card with delay for navigation
+        // Apply to all clickable elements - destroy parent card (excluding project cards)
         document.querySelectorAll('button, .btn, a, .card, .project-card, .service-card, .experience-item, .contact-info-item').forEach(function(el) {
             el.addEventListener('click', function(e) {
-                // Find parent card to destroy
-                var parentCard = this.closest('.card, .project-card, .service-card, .experience-item, .contact-info-item');
-                var targetElement = parentCard || this;
-                var isProjectCard = parentCard && parentCard.classList.contains('project-card');
+                // Skip destroy effect for project cards - let them navigate normally
+                var parentCard = this.closest('.project-card');
+                if (parentCard) {
+                    return; // Allow normal navigation for project cards
+                }
+                
+                // Find parent card to destroy (excluding project cards)
+                var targetElement = this.closest('.card, .service-card, .experience-item, .contact-info-item') || this;
                 
                 var rect = targetElement.getBoundingClientRect();
                 var x = e.clientX - rect.left;
@@ -161,35 +200,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetElement.style.position = 'relative';
                 createParticles(targetElement, x, y);
 
-                // Crush effect on parent - stronger for project cards
-                var crushScale = isProjectCard ? '0.85' : '0.92';
-                var crushBrightness = isProjectCard ? '1.6' : '1.4';
-                
+                // Crush effect on parent
                 targetElement.style.transition = 'all 0.12s cubic-bezier(0.4, 0, 0.2, 1)';
-                targetElement.style.transform = 'scale(' + crushScale + ')';
-                targetElement.style.filter = 'brightness(' + crushBrightness + ') saturate(1.3)';
+                targetElement.style.transform = 'scale(0.92)';
+                targetElement.style.filter = 'brightness(1.4) saturate(1.3)';
                 targetElement.style.boxShadow = '0 0 30px rgba(128, 0, 0, 0.6)';
 
-                // Delay navigation for project cards to show crush effect
-                if (isProjectCard) {
-                    var link = this.closest('a');
-                    var href = link ? link.getAttribute('href') : null;
+                setTimeout(() => {
+                    targetElement.style.transform = 'scale(1.03)';
+                    targetElement.style.filter = 'brightness(0.95)';
                     
-                    e.preventDefault();
-                    
-                    // Destroy card particle by particle
-                    destroyCardParticleByParticle(targetElement, href);
-                } else {
                     setTimeout(() => {
-                        targetElement.style.transform = 'scale(1.03)';
-                        targetElement.style.filter = 'brightness(0.95)';
-                        
-                        setTimeout(() => {
-                            targetElement.style.transform = '';
-                            targetElement.style.filter = '';
-                        }, 150);
+                        targetElement.style.transform = '';
+                        targetElement.style.filter = '';
                     }, 150);
-                }
+                }, 150);
             });
         });
     })();

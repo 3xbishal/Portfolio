@@ -1,8 +1,3 @@
-"""
-Models for the portfolio application.
-All content is managed through the Django admin panel.
-"""
-
 import os
 
 from django.db import models
@@ -105,7 +100,7 @@ class Project(models.Model):
     """Portfolio project entry."""
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, help_text="URL-friendly slug")
+    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, help_text="URL-friendly slug")
     description = models.TextField(help_text="Full project description")
     project_media = models.FileField(
         upload_to='projects/',
@@ -167,6 +162,7 @@ class Experience(models.Model):
 
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=200, blank=True, null=True, help_text="URL-friendly slug (auto-generated if left blank)")
     location = models.CharField(max_length=100, blank=True)
     company_website = models.URLField(blank=True)
     description = models.TextField(help_text="Job responsibilities and achievements")
@@ -185,6 +181,11 @@ class Experience(models.Model):
 
     def __str__(self):
         return f"{self.position} at {self.company}"
+
+    def get_absolute_url(self):
+        if not self.slug:
+            return '#'
+        return reverse('experience_detail', kwargs={'slug': self.slug})
 
     @property
     def duration(self):

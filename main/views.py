@@ -112,9 +112,28 @@ class ProjectDetailView(DetailView):
         return context
 
 
-# ---------------------------------------------------------------------------
-# Contact Page
-# ---------------------------------------------------------------------------
+ # ---------------------------------------------------------------------------
+ # Experience Detail
+ # ---------------------------------------------------------------------------
+
+class ExperienceDetailView(DetailView):
+    """Detail view for a single experience."""
+    model = Experience
+    template_name = 'experience_detail.html'
+    context_object_name = 'experience'
+
+    def get_queryset(self):
+        return Experience.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = get_active_profile()
+        return context
+
+
+ # ---------------------------------------------------------------------------
+ # Contact Page
+ # ---------------------------------------------------------------------------
 
 def contact(request):
     """Contact page with a contact form."""

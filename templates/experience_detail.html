@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ experience.position }} at {{ experience.company }} - {{ profile.name|default:'My Portfolio' }}{% endblock %}
+
+{% block content %}
+<!-- Experience Hero -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col-lg-12" data-aos="fade-up">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'about' %}">About</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Experience</li>
+                    </ol>
+                </nav>
+                
+                <span class="text-primary fw-semibold d-block mb-2">{{ experience.duration }}</span>
+                <h1 class="fw-bold mb-3">{{ experience.position }}</h1>
+                <p class="lead text-muted mb-4">
+                    {{ experience.company }}
+                    {% if experience.location %} · {{ experience.location }}{% endif %}
+                </p>
+                
+                {% if experience.company_website %}
+                <a href="{{ experience.company_website }}" target="_blank" class="btn btn-outline-primary mb-4">
+                    <i class="fas fa-external-link-alt me-2"></i>Visit Company Website
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <h2 class="h4 fw-bold mb-4">Job Description</h2>
+                        <div class="lh-lg">
+                            {{ experience.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Back Button -->
+<section class="py-3">
+    <div class="container">
+        <div class="text-center">
+            <a href="{% url 'about' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to About
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

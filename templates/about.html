@@ -54,15 +54,17 @@
                         {% if experiences %}
                             <div class="experience-timeline">
                                 {% for exp in experiences %}
-                                <div class="experience-item">
-                                    <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
-                                    <h3 class="h5 mb-1">{{ exp.position }}</h3>
-                                    <p class="text-muted mb-2">
-                                        {{ exp.company }}
-                                        {% if exp.location %} · {{ exp.location }}{% endif %}
-                                    </p>
-                                    <p class="mb-0">{{ exp.description|truncatechars:150 }}</p>
-                                </div>
+                                <a href="{{ exp.get_absolute_url }}" class="text-decoration-none">
+                                    <div class="experience-item">
+                                        <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
+                                        <h3 class="h5 mb-1">{{ exp.position }}</h3>
+                                        <p class="text-muted mb-2">
+                                            {{ exp.company }}
+                                            {% if exp.location %} · {{ exp.location }}{% endif %}
+                                        </p>
+                                        <p class="mb-0 text-muted">{{ exp.description|truncatechars:150 }}</p>
+                                    </div>
+                                </a>
                                 {% endfor %}
                             </div>
                         {% else %}
