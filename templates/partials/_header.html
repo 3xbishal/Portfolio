@@ -42,27 +42,27 @@
                 <ul class="navbar-nav align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"
-                           href="{% url 'home' %}">Home</a>
+                           href="{% url 'home' %}">Home<span class="nav-link-indicator"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}"
-                           href="{% url 'about' %}">About</a>
+                           href="{% url 'about' %}">About<span class="nav-link-indicator"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'projects' or request.resolver_match.url_name == 'project_detail' %} active{% endif %}"
-                           href="{% url 'projects' %}">Projects</a>
+                           href="{% url 'projects' %}">Projects<span class="nav-link-indicator"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'parallax' %} active{% endif %}"
-                           href="{% url 'parallax' %}">Parallax</a>
+                           href="{% url 'parallax' %}">Parallax<span class="nav-link-indicator"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'gaming_zone' %} active{% endif %}"
-                           href="{% url 'gaming_zone' %}">Gaming Zone</a>
+                           href="{% url 'gaming_zone' %}">Gaming Zone<span class="nav-link-indicator"></span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
-                           href="{% url 'contact' %}">Contact</a>
+                           href="{% url 'contact' %}">Contact<span class="nav-link-indicator"></span></a>
                     </li>
                     <!-- Mobile nav controls (inside collapsed menu) -->
                     <li class="nav-item d-lg-none">

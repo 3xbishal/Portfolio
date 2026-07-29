@@ -250,18 +250,19 @@ section {
     background: var(--section-alt) !important;
 }
 
-/* ===== Header / Navigation ===== */
+/* ===== Header / Navigation — Coding Vibe ===== */
 .header {
     position: sticky;
     top: 0;
     z-index: 100;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, border-color 0.3s ease;
 }
 
 .header.scrolled {
     box-shadow: 0 2px 8px var(--shadow);
+    border-bottom-color: var(--accent);
 }
 
 .header .navbar {
@@ -270,11 +271,33 @@ section {
     padding: 0.75rem 0;
 }
 
+/* Brand with terminal prompt */
 .header .navbar-brand {
     gap: 0.75rem;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text);
+    position: relative;
+    padding-left: 1.5rem;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.header .navbar-brand::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1rem;
+    opacity: 0.8;
+    animation: navPromptBlink 1.4s step-end infinite;
+}
+
+@keyframes navPromptBlink {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.2; }
 }
 
 .header .brand-avatar {
@@ -287,39 +310,48 @@ section {
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
+    border: 1px solid var(--accent);
+    transition: all 0.3s ease;
+}
+
+.header .navbar-brand:hover .brand-avatar {
+    transform: rotate(15deg) scale(1.05);
+    box-shadow: 0 0 20px rgba(128, 0, 0, 0.2);
 }
 
 .header .brand-title {
     display: block;
     line-height: 1.1;
     color: var(--text);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-weight: 600;
 }
 
 .header .brand-subtitle {
     display: block;
-    font-size: 0.8rem;
-    color: var(--muted);
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    opacity: 0.7;
 }
 
 .header .navbar-nav {
     align-items: center;
 }
 
+/* Nav links with terminal style */
 .header .nav-link {
     color: var(--text-secondary);
     padding: 0.5rem 0.75rem;
     font-weight: 500;
     position: relative;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
 }
 
-.header .nav-link.active,
-.header .nav-link:hover {
-    color: var(--accent);
-}
-
-.header .nav-link.active::after,
-.header .nav-link:hover::after {
+.header .nav-link::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -328,11 +360,59 @@ section {
     height: 2px;
     background: var(--accent);
     border-radius: 2px;
+    opacity: 0;
+}
+
+.header .nav-link:hover::after,
+.header .nav-link.active::after {
+    opacity: 0.8;
+}
+
+.header .nav-link.active,
+.header .nav-link:hover {
+    color: var(--accent);
+}
+
+/* Nav toggle buttons */
+.nav-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.nav-toggle-btn:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
+}
+
+.nav-toggle-btn.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .header .navbar-toggler {
     border-color: var(--border);
     color: var(--text);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    transition: all 0.3s ease;
+}
+
+.header .navbar-toggler:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
 }
 
 .header .navbar-toggler-icon {
@@ -341,6 +421,12 @@ section {
 
 body.dark-mode .navbar-toggler-icon {
     filter: invert(1);
+}
+
+/* Nav divider for mobile */
+.header .dropdown-divider {
+    border-color: var(--border);
+    opacity: 0.5;
 }
 
 /* ===== Typography ===== */
