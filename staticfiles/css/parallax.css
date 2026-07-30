@@ -1,0 +1,1519 @@
+/* ==========================================================================
+   Parallax Portfolio Page — Advanced Scroll-Driven Interactive Experience
+   Scenes: Hero (3D) → Build (stack blocks) → Open (doors) → Visit (horizontal)
+           → Skills (orbit) → Journey (timeline) → Services → Testimonials → CTA
+   ========================================================================== */
+
+/* Page wrapper */
+.parallax-page {
+    position: relative;
+    overflow-x: hidden;
+    background: var(--bg);
+}
+
+.parallax-page section {
+    padding: 0;
+    animation: none;
+}
+
+/* ===== Scroll Progress Bar (top of page) ===== */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.scroll-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 0.05s linear;
+    will-change: width;
+}
+
+/* ===== Scene Navigation Dots (right side) ===== */
+.scene-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.scene-nav-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.scene-nav-dot span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: all 0.3s ease;
+}
+
+.scene-nav-dot.active {
+    border-color: var(--accent);
+    transform: scale(1.2);
+}
+
+.scene-nav-dot.active span {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.scene-nav-dot:hover {
+    border-color: var(--accent);
+}
+
+/* ===== Shared scene tag ===== */
+.scene-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0.4rem 1rem;
+    background: var(--accent-light);
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+}
+
+.scene-tag-light {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   SCENE 1: Hero with 3D Parallax (mouse + scroll)
+   ========================================================================== */
+.scene-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, var(--section-alt) 0%, var(--bg) 70%);
+    perspective: 1000px;
+}
+
+.hero-3d-stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.hero-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+    transform-style: preserve-3d;
+}
+
+/* Far layer — orbs */
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-hover));
+    opacity: 0.15;
+    filter: blur(2px);
+}
+
+.hero-orb-1 {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    right: -100px;
+}
+
+.hero-orb-2 {
+    width: 250px;
+    height: 250px;
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.1;
+}
+
+.hero-orb-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 60%;
+    opacity: 0.08;
+}
+
+/* Mid layer — grid pattern */
+.hero-grid-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.4;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+/* Near layer — shapes */
+.hero-shape {
+    position: absolute;
+    border: 2px solid var(--accent);
+    opacity: 0.2;
+    will-change: transform;
+}
+
+.hero-shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 15%;
+    right: 12%;
+    transform: rotate(45deg);
+    border-radius: 12px;
+}
+
+.hero-shape-2 {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 8%;
+    border-radius: 50%;
+    border-style: dashed;
+}
+
+.hero-shape-3 {
+    width: 80px;
+    height: 80px;
+    top: 60%;
+    right: 25%;
+    border-width: 1px;
+    transform: rotate(15deg);
+}
+
+/* Hero content */
+.hero-content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 4rem 1rem;
+    will-change: transform, opacity;
+}
+
+.hero-eyebrow {
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.hero-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.hero-bio {
+    font-size: 1.1rem;
+    max-width: 640px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* Scroll cue */
+.hero-scroll-cue {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 5;
+}
+
+.scroll-cue-mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+}
+
+.scroll-cue-wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: scrollWheel 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollWheel {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* ==========================================================================
+   Pinned Scene Base (scroll-jacking)
+   ========================================================================== */
+.scene-pin {
+    position: relative;
+}
+
+.scene-pin-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   SCENE 2: "Build" — Blocks assemble as you scroll
+   ========================================================================== */
+.scene-build {
+    height: 300vh; /* extra scroll height for the pin */
+}
+
+.scene-build .scene-pin-sticky {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--section-alt) 100%);
+}
+
+.scene-build-intro {
+    position: absolute;
+    top: 12vh;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+}
+
+.scene-build-intro h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.scene-build-intro p {
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.build-stage {
+    position: relative;
+    width: 280px;
+    height: 420px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 60px;
+}
+
+.build-block {
+    width: 100%;
+    max-width: 260px;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    transform: translateY(120vh) rotate(-8deg);
+    opacity: 0;
+    transition: none;
+    will-change: transform, opacity;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.build-block i {
+    font-size: 1.5rem;
+    color: var(--accent);
+    width: 32px;
+    text-align: center;
+}
+
+.build-block span {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.build-block-cap {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    border-color: var(--accent);
+}
+
+.build-block-cap i,
+.build-block-cap span {
+    color: #fff;
+}
+
+.build-foundation {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 6px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 3px;
+    opacity: 0.5;
+}
+
+.build-progress-label {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--accent);
+    opacity: 0.3;
+}
+
+/* ==========================================================================
+   SCENE 3: "Open" — Doors split to reveal About
+   ========================================================================== */
+.scene-open {
+    height: 250vh;
+}
+
+.scene-open .scene-pin-sticky {
+    background: var(--bg);
+}
+
+.open-reveal-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+    transform: scale(0.9);
+    will-change: transform, opacity;
+}
+
+.open-reveal-content h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--text);
+    margin-bottom: 1.5rem;
+}
+
+.open-bio {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.open-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.open-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.open-info-item i {
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+/* Doors */
+.open-door {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 5;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.open-door-left {
+    left: 0;
+    transform: translateX(0);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.open-door-right {
+    right: 0;
+    transform: translateX(0);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.open-door-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.open-door-right .open-door-inner {
+    background: linear-gradient(225deg, var(--accent) 0%, var(--accent-hover) 100%);
+}
+
+.open-door-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%);
+    background-size: 30px 30px;
+}
+
+.open-door-label {
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.open-door-left .open-door-label {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   SCENE 4: "Visit" — Horizontal scroll through projects
+   ========================================================================== */
+.scene-visit {
+    height: 400vh;
+}
+
+.scene-visit .scene-pin-sticky {
+    background: linear-gradient(180deg, var(--section-alt) 0%, var(--bg) 100%);
+}
+
+.visit-header {
+    position: absolute;
+    top: 10vh;
+    left: 5vw;
+    z-index: 2;
+}
+
+.visit-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.visit-header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.visit-track-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    overflow: hidden;
+}
+
+.visit-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 5vw;
+    will-change: transform;
+}
+
+.visit-card {
+    flex: 0 0 auto;
+    width: 340px;
+    height: 460px;
+    will-change: transform;
+}
+
+.visit-card-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.visit-card-inner:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px var(--shadow);
+}
+
+.visit-card-media {
+    height: 220px;
+    overflow: hidden;
+    background: var(--placeholder-bg);
+    position: relative;
+}
+
+.visit-card-media img,
+.visit-card-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.visit-card-inner:hover .visit-card-media img {
+    transform: scale(1.08);
+}
+
+.visit-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--placeholder-color);
+    font-size: 3rem;
+}
+
+.visit-card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+}
+
+.visit-card-number {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--accent);
+    opacity: 0.15;
+    position: absolute;
+    top: 0.5rem;
+    right: 1.5rem;
+    line-height: 1;
+}
+
+.visit-card-body h3 {
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    padding-right: 3rem;
+}
+
+.visit-card-body p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.visit-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.visit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.1rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.visit-btn:hover {
+    background: var(--accent-hover);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.visit-btn-alt {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.8rem;
+}
+
+.visit-btn-alt:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.visit-card-end {
+    width: 380px;
+}
+
+.visit-card-end-inner {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.visit-card-end-inner h3 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.visit-card-end-inner p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+.visit-btn-lg {
+    background: #fff;
+    color: var(--accent);
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+}
+
+.visit-btn-lg:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--accent-hover);
+}
+
+.visit-progress {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.visit-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    border-radius: 2px;
+    will-change: width;
+}
+
+/* ==========================================================================
+   SCENE 5: Skills "Assemble" — Orbit
+   ========================================================================== */
+.scene-skills {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.scene-skills-heading {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.scene-skills-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.scene-skills-heading p {
+    color: var(--muted);
+}
+
+.skills-orbit-stage {
+    position: relative;
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.skills-orbit-core {
+    position: relative;
+    z-index: 5;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 40px var(--accent-light);
+    transform: scale(0);
+    will-change: transform;
+}
+
+.skills-orbit-core i {
+    font-size: 2rem;
+}
+
+.skills-orbit-core span {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.skills-orbit-ring {
+    position: absolute;
+    border: 1px dashed var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.skills-orbit-ring-1 {
+    width: 300px;
+    height: 300px;
+}
+
+.skills-orbit-ring-2 {
+    width: 500px;
+    height: 500px;
+}
+
+.skill-orbit-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    font-weight: 500;
+    color: var(--text);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px var(--shadow);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.skill-orbit-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.skill-orbit-item i {
+    color: var(--accent);
+}
+
+/* ==========================================================================
+   SCENE 6: Journey Timeline with scroll-driven progress
+   ========================================================================== */
+.scene-journey {
+    position: relative;
+    padding: 6rem 0;
+    background: var(--section-alt);
+}
+
+.scene-journey-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 0 1rem;
+}
+
+.scene-journey-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.scene-journey-heading p {
+    color: var(--muted);
+}
+
+.journey-timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem 0 3rem;
+}
+
+.journey-progress-line {
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.journey-progress-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+    border-radius: 2px;
+    transition: height 0.1s linear;
+    will-change: height;
+}
+
+.journey-item {
+    position: relative;
+    padding-bottom: 3rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    will-change: transform, opacity;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.journey-item:last-child {
+    padding-bottom: 0;
+}
+
+.journey-marker {
+    position: absolute;
+    left: -2.4rem;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 3px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.journey-item.in-view .journey-marker {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    box-shadow: 0 0 0 4px var(--accent-light);
+}
+
+.journey-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px var(--shadow);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.journey-card:hover {
+    transform: translateX(6px);
+    box-shadow: 0 10px 30px var(--shadow);
+}
+
+.journey-duration {
+    display: inline-block;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.journey-card h3 {
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.journey-company {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.journey-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.journey-link {
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.journey-link:hover {
+    color: var(--accent-hover);
+}
+
+/* ==========================================================================
+   Services Section
+   ========================================================================== */
+.scene-services {
+    padding: 6rem 0;
+    background: var(--bg);
+}
+
+.scene-services-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.scene-services-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.service-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    height: 100%;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.6s ease;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+}
+
+.service-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 15px 35px var(--shadow);
+}
+
+.service-card-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 50%;
+    font-size: 1.8rem;
+}
+
+.service-card h3 {
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+
+.service-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Testimonials Section
+   ========================================================================== */
+.scene-testimonials {
+    padding: 6rem 0;
+    background: var(--section-alt);
+}
+
+.scene-testimonials-heading {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.scene-testimonials-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.testimonial-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    height: 100%;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.6s ease;
+}
+
+.testimonial-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 15px 30px var(--shadow);
+}
+
+.testimonial-quote-icon {
+    color: var(--accent);
+    opacity: 0.2;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.testimonial-author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+}
+
+.testimonial-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.testimonial-author-info strong {
+    display: block;
+    color: var(--text);
+}
+
+.testimonial-author-info span {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Final CTA
+   ========================================================================== */
+.scene-cta {
+    position: relative;
+    padding: 6rem 0;
+    text-align: center;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: #fff;
+    overflow: hidden;
+}
+
+.scene-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    animation: ctaGlow 8s ease-in-out infinite;
+}
+
+@keyframes ctaGlow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.scene-cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.scene-cta h2 {
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 1rem;
+}
+
+.scene-cta p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.scene-cta-btn {
+    background: #fff;
+    color: var(--accent);
+    border: none;
+    padding: 0.8rem 2.5rem;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.scene-cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: var(--accent-hover);
+}
+
+/* ==========================================================================
+   Generic Scroll Reveal System — [data-reveal]
+   Re-triggers every time an element scrolls into/out of view.
+   Variants: data-reveal="up|down|left|right|scale|fade"
+   Stagger:  data-reveal-delay="1..6"  (adds 0.08s per step)
+   ========================================================================== */
+[data-reveal] {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+/* Default = slide up */
+[data-reveal] { transform: translateY(40px); }
+[data-reveal="up"] { transform: translateY(40px); }
+[data-reveal="down"] { transform: translateY(-40px); }
+[data-reveal="left"] { transform: translateX(-40px); }
+[data-reveal="right"] { transform: translateX(40px); }
+[data-reveal="scale"] { transform: scale(0.85); }
+[data-reveal="fade"] { transform: none; }
+
+/* Visible state — applied by IntersectionObserver (.is-visible) */
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Stagger delays */
+[data-reveal-delay="1"] { transition-delay: 0.08s; }
+[data-reveal-delay="2"] { transition-delay: 0.16s; }
+[data-reveal-delay="3"] { transition-delay: 0.24s; }
+[data-reveal-delay="4"] { transition-delay: 0.32s; }
+[data-reveal-delay="5"] { transition-delay: 0.40s; }
+[data-reveal-delay="6"] { transition-delay: 0.48s; }
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 992px) {
+    .scene-nav {
+        right: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .scene-nav {
+        display: none;
+    }
+
+    .scene-build {
+        height: 250vh;
+    }
+
+    .scene-open {
+        height: 200vh;
+    }
+
+    .scene-visit {
+        height: 350vh;
+    }
+
+    .build-stage {
+        width: 240px;
+        height: 380px;
+    }
+
+    .build-block {
+        max-width: 220px;
+        padding: 0.8rem 1.2rem;
+    }
+
+    .visit-card {
+        width: 280px;
+        height: 400px;
+    }
+
+    .visit-card-end {
+        width: 280px;
+    }
+
+    .visit-header {
+        left: 1rem;
+        right: 1rem;
+        text-align: center;
+    }
+
+    .open-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skills-orbit-stage {
+        width: 90vw;
+        height: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+
+    .skills-orbit-ring-1 {
+        width: 220px;
+        height: 220px;
+    }
+
+    .skills-orbit-ring-2 {
+        width: 360px;
+        height: 360px;
+    }
+
+    .skill-orbit-item {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .journey-timeline {
+        padding-left: 2.5rem;
+    }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .scene-pin-sticky {
+        position: relative;
+        height: auto;
+    }
+
+    .scene-build,
+    .scene-open,
+    .scene-visit {
+        height: auto;
+    }
+
+    .build-block {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    .open-door {
+        display: none;
+    }
+
+    .open-reveal-content {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .visit-track-wrapper {
+        overflow-x: auto;
+    }
+
+    .visit-track {
+        transform: none !important;
+    }
+
+    .skill-orbit-item,
+    .skills-orbit-core,
+    .skills-orbit-ring {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .journey-item,
+    .service-card,
+    .testimonial-card {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .scroll-cue-wheel {
+        animation: none;
+    }
+}
+
+/* Blueprint edition: a technical, midnight visual identity for this page. */
+.parallax-blueprint {
+    --bg: #07111f;
+    --surface: #0c1b2d;
+    --section-alt: #091727;
+    --border: rgba(142, 220, 255, .2);
+    --text: #f3fbff;
+    --text-secondary: #b9d3e0;
+    --muted: #7ca1b3;
+    --accent: #58d7ff;
+    --accent-hover: #a5ebff;
+    --accent-light: rgba(88, 215, 255, .11);
+    --shadow: rgba(0, 0, 0, .45);
+    background: #07111f;
+    color: var(--text);
+}
+.parallax-blueprint .page-content-wrapper { background: #07111f; }
+.parallax-blueprint .header { background: rgba(7, 17, 31, .86); border-bottom: 1px solid var(--border); backdrop-filter: blur(16px); }
+.parallax-blueprint .navbar-light .navbar-nav .nav-link, .parallax-blueprint .brand-title, .parallax-blueprint .brand-subtitle { color: var(--text) !important; }
+.parallax-blueprint .nav-toggle-btn { color: var(--text); border-color: var(--border); background: var(--accent-light); }
+.parallax-blueprint .scene-tag { border: 1px solid rgba(88, 215, 255, .42); border-radius: 3px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
+.parallax-blueprint .scene-hero { background: radial-gradient(circle at 75% 18%, rgba(31, 118, 161, .32), transparent 26%), linear-gradient(135deg, #06101d, #0d2740); }
+.parallax-blueprint .hero-grid-pattern { background-size: 44px 44px; opacity: .65; mask-image: none; -webkit-mask-image: none; }
+.parallax-blueprint .hero-orb { opacity: .12; filter: blur(1px); }
+.parallax-blueprint .hero-shape { border-color: var(--accent); border-radius: 0; opacity: .42; }
+.parallax-blueprint .hero-content { max-width: 980px; padding: 4rem 2rem; border: 1px solid rgba(142, 220, 255, .18); background: linear-gradient(90deg, rgba(7, 17, 31, .76), rgba(7, 17, 31, .25)); box-shadow: 24px 24px 0 rgba(0, 0, 0, .14); }
+.parallax-blueprint .hero-title, .parallax-blueprint .scene-build-intro h2, .parallax-blueprint .open-reveal-content h2, .parallax-blueprint .visit-header h2, .parallax-blueprint .scene-skills-heading h2, .parallax-blueprint .scene-journey-heading h2, .parallax-blueprint .scene-services-heading h2, .parallax-blueprint .scene-testimonials-heading h2, .parallax-blueprint .scene-cta h2 { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.055em; }
+.parallax-blueprint .text-gradient { color: var(--accent); background: none; -webkit-text-fill-color: currentColor; }
+.parallax-blueprint .scene-build .scene-pin-sticky, .parallax-blueprint .scene-visit .scene-pin-sticky { background: linear-gradient(145deg, #07111f, #0b2036); }
+.parallax-blueprint .build-block { border-radius: 2px; border-color: rgba(88, 215, 255, .7); background: rgba(10, 31, 52, .94); box-shadow: 8px 8px 0 rgba(0, 0, 0, .23); }
+.parallax-blueprint .build-block-cap { background: var(--accent); color: #06101d; }.parallax-blueprint .build-foundation { background: repeating-linear-gradient(90deg, var(--accent), var(--accent) 14px, transparent 14px, transparent 22px); }
+.parallax-blueprint .build-progress-label { border-radius: 0; font-family: ui-monospace, monospace; background: #06101d; border: 1px solid var(--accent); }
+.parallax-blueprint .scene-open .scene-pin-sticky { background: #06101d; }.parallax-blueprint .open-door-inner { background: repeating-linear-gradient(45deg, #0c233b, #0c233b 12px, #092039 12px, #092039 24px); border-color: rgba(88, 215, 255, .35); }.parallax-blueprint .open-door-pattern { opacity: .35; }
+.parallax-blueprint .open-info-item { border-radius: 2px; background: rgba(9, 29, 49, .86); border-color: var(--border); }
+.parallax-blueprint .visit-card-inner, .parallax-blueprint .service-card, .parallax-blueprint .testimonial-card, .parallax-blueprint .journey-card { border-radius: 3px; border-color: var(--border); background: #0b1d30; box-shadow: 8px 8px 0 rgba(0, 0, 0, .16); }
+.parallax-blueprint .visit-card-inner:hover, .parallax-blueprint .service-card:hover, .parallax-blueprint .testimonial-card:hover, .parallax-blueprint .journey-card:hover { box-shadow: 12px 12px 0 rgba(88, 215, 255, .12); }
+.parallax-blueprint .visit-card-media { filter: saturate(.75) contrast(1.1); }
+.parallax-blueprint .visit-btn, .parallax-blueprint .scene-cta-btn { border-radius: 2px; background: var(--accent); color: #06101d; font-family: ui-monospace, monospace; }.parallax-blueprint .visit-btn:hover, .parallax-blueprint .scene-cta-btn:hover { background: var(--accent-hover); color: #06101d; }.parallax-blueprint .visit-btn-alt { background: transparent; color: var(--text); }
+.parallax-blueprint .visit-card-end-inner { border-radius: 3px; background: repeating-linear-gradient(135deg, #58d7ff, #58d7ff 8px, #4ac4ec 8px, #4ac4ec 16px); color: #06101d; }
+.parallax-blueprint .skills-orbit-core { border-color: var(--accent); background: #0b2036; box-shadow: 0 0 0 10px rgba(88, 215, 255, .06); }.parallax-blueprint .skills-orbit-ring { border-color: rgba(88, 215, 255, .35); border-style: dashed; }.parallax-blueprint .skill-orbit-item { border-radius: 2px; background: #0b1d30; border-color: var(--border); }
+.parallax-blueprint .journey-marker { border-radius: 2px; background: var(--accent); color: #06101d; }.parallax-blueprint .scene-services, .parallax-blueprint .scene-testimonials { background: #081624; }.parallax-blueprint .scene-cta { background: linear-gradient(135deg, #06101d, #0e3550); }.parallax-blueprint .scene-cta::before { background-image: linear-gradient(rgba(88, 215, 255, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(88, 215, 255, .12) 1px, transparent 1px); }
+.parallax-blueprint .scroll-progress-fill { background: var(--accent); box-shadow: 0 0 14px var(--accent); }.parallax-blueprint .scene-nav-dot { border-radius: 2px; border-color: rgba(142, 220, 255, .4); }.parallax-blueprint .scene-nav-dot span { border-radius: 0; background: transparent; }.parallax-blueprint .scene-nav-dot.active { border-color: var(--accent); transform: scale(1.25); }.parallax-blueprint .scene-nav-dot.active span { background: var(--accent); box-shadow: none; }
+@media (max-width: 768px) { .parallax-blueprint .hero-content { margin: 1rem; padding: 2rem 1.25rem; } }
+
+/* Alternate page structure: rearranges scenes while retaining the site theme. */
+.parallax-layout .scene-nav { left: 1.5rem; right: auto; }
+.parallax-layout .scene-hero { justify-content: flex-start; }
+.parallax-layout .hero-content { width: min(680px, 55vw); margin-left: 10vw; text-align: left; padding: 3rem 0; }
+.parallax-layout .hero-bio { margin-left: 0; }
+.parallax-layout .hero-frame-label { position: absolute; top: 7rem; right: 5vw; z-index: 5; display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; color: var(--muted); font-size: .7rem; font-weight: 700; letter-spacing: .2em; writing-mode: vertical-rl; }
+.parallax-layout .hero-frame-label span:last-child { color: var(--accent); }
+.parallax-layout .hero-scroll-cue { left: auto; right: 8vw; transform: none; align-items: flex-end; }
+
+.parallax-layout .scene-build-intro { top: 50%; left: 10vw; width: min(360px, 32vw); transform: translateY(-50%); text-align: left; }
+.parallax-layout .build-stage { position: absolute; right: 16vw; bottom: 13vh; }
+.parallax-layout .build-progress-label { left: auto; right: 10vw; transform: none; bottom: 10vh; }
+
+.parallax-layout .open-reveal-content { width: min(900px, 74vw); margin-left: 20vw; text-align: left; }
+.parallax-layout .open-bio { margin-left: 0; margin-right: 0; }
+.parallax-layout .open-info-grid { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; }
+.parallax-layout .open-door-left { width: 34%; }.parallax-layout .open-door-right { width: 66%; }
+
+.parallax-layout .visit-header { top: 14vh; left: auto; right: 9vw; width: min(410px, 35vw); text-align: right; }
+.parallax-layout .visit-track { padding-left: 10vw; padding-right: 10vw; gap: 1.25rem; }
+.parallax-layout .visit-card:nth-child(even) { margin-top: 4rem; }.parallax-layout .visit-card:nth-child(odd) { margin-bottom: 4rem; }
+.parallax-layout .visit-progress { left: 10vw; transform: none; width: min(280px, 38vw); }
+
+.parallax-layout .scene-skills { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(360px, 1.2fr); align-content: center; gap: 3rem; padding: 7rem 10vw; }
+.parallax-layout .scene-skills-heading { text-align: left; margin: 0; }.parallax-layout .skills-orbit-stage { justify-self: center; }
+
+.parallax-layout .scene-journey { padding: 7rem 10vw; }.parallax-layout .scene-journey-heading { max-width: 440px; margin: 0 0 4rem; padding: 0; text-align: left; }
+.parallax-layout .journey-timeline { max-width: none; padding: 0 0 0 50%; }.parallax-layout .journey-progress-line { left: calc(50% - 1px); }
+.parallax-layout .journey-item { width: 100%; }.parallax-layout .journey-item:nth-child(odd) { transform: translateX(30px); margin-left: -100%; padding-right: 4rem; text-align: right; }.parallax-layout .journey-item:nth-child(even) { padding-left: 4rem; }
+.parallax-layout .journey-item:nth-child(odd).in-view { transform: translateX(0); }.parallax-layout .journey-marker { left: -1.25rem; }.parallax-layout .journey-item:nth-child(odd) .journey-marker { left: auto; right: -1.25rem; }
+.parallax-layout .scene-services .container, .parallax-layout .scene-testimonials .container { max-width: 1180px; }.parallax-layout .scene-services-heading, .parallax-layout .scene-testimonials-heading { text-align: left; max-width: 450px; }
+.parallax-layout .visit-card { transition: transform .16s linear, opacity .16s linear; transform-origin: center center; }
+
+@media (max-width: 992px) {
+    .parallax-layout .hero-content { width: min(700px, 76vw); margin-left: 12vw; }.parallax-layout .hero-frame-label { display: none; }
+    .parallax-layout .scene-build-intro { left: 8vw; }.parallax-layout .build-stage { right: 8vw; }.parallax-layout .open-reveal-content { margin-left: 12vw; }
+    .parallax-layout .scene-skills { grid-template-columns: 1fr; padding: 6rem 1rem; }.parallax-layout .scene-skills-heading { text-align: center; margin-bottom: 2rem; }
+}
+@media (max-width: 768px) {
+    .parallax-layout .scene-nav { left: auto; right: 1rem; }.parallax-layout .hero-content { width: auto; margin: 0 2rem; text-align: center; }.parallax-layout .hero-bio { margin-right: auto; }.parallax-layout .hero-scroll-cue { right: 50%; transform: translateX(50%); align-items: center; }
+    .parallax-layout .scene-build-intro { top: 12vh; left: 50%; width: 90%; transform: translateX(-50%); text-align: center; }.parallax-layout .build-stage { right: 50%; bottom: 10vh; transform: translateX(50%); }.parallax-layout .build-progress-label { right: 1.5rem; bottom: 4vh; }
+    .parallax-layout .open-reveal-content { width: 86vw; margin: 0; text-align: center; }.parallax-layout .open-bio { margin-left: auto; margin-right: auto; }.parallax-layout .open-info-grid { grid-template-columns: 1fr; }.parallax-layout .open-door-left, .parallax-layout .open-door-right { width: 50%; }
+    .parallax-layout .visit-header { left: 7vw; right: auto; width: 86vw; text-align: left; }.parallax-layout .visit-card:nth-child(even), .parallax-layout .visit-card:nth-child(odd) { margin-top: 0; margin-bottom: 0; }.parallax-layout .visit-progress { left: 50%; transform: translateX(-50%); }
+    .parallax-layout .scene-journey { padding: 5rem 1.25rem; }.parallax-layout .journey-timeline { padding: 0 0 0 3rem; }.parallax-layout .journey-progress-line { left: 1rem; }.parallax-layout .journey-item:nth-child(odd) { margin-left: 0; padding-right: 0; padding-left: 0; text-align: left; transform: translateX(-30px); }.parallax-layout .journey-item:nth-child(odd) .journey-marker { left: -2.4rem; right: auto; }
+}

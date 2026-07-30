@@ -16,7 +16,7 @@ db.sqlite3.bak
 media/
 
 # Static files
-staticfiles/
+# staticfiles/
 *.css.map
 *.js.map
 
