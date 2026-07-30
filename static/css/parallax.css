@@ -1266,7 +1266,7 @@
 /* Default = slide up */
 [data-reveal] { transform: translateY(40px); }
 [data-reveal="up"] { transform: translateY(40px); }
-[data-reveal="down"] { transform: translateY(-40px); }
+[data-reveal="down"] { transform: translateY(40px); }
 [data-reveal="left"] { transform: translateX(-40px); }
 [data-reveal="right"] { transform: translateX(40px); }
 [data-reveal="scale"] { transform: scale(0.85); }
