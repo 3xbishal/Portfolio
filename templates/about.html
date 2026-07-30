@@ -111,7 +111,7 @@
                             <div class="experience-timeline">
                                 {% for exp in experiences %}
                                 <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
-                                   data-aos="{% if forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                                   data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                                    data-aos-delay="{{ forloop.counter|mul:100 }}">
                                     <div class="experience-item">
                                         <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
@@ -133,13 +133,13 @@
                     </div>
 
                     <!-- Education -->
-                    <div class="col-lg-6" data-aos="fade-left">
+                    <div class="col-lg-6" data-aos="fade-right">
                         <h2 class="fw-bold mb-4 section-title">Education</h2>
                         {% if educations %}
                             <div class="experience-timeline">
                                 {% for edu in educations %}
                                 <div class="experience-item"
-                                     data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-left{% endif %}"
+                                     data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                                      data-aos-delay="{{ forloop.counter|mul:100 }}">
                                     <span class="text-primary fw-semibold d-block mb-1">{{ edu.duration }}</span>
                                     <h3 class="h5 mb-1">{{ edu.degree }}</h3>
@@ -169,7 +169,7 @@
 {% if skills %}
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-down">
+        <div class="text-center mb-5" data-aos="fade-up">
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
             <p class="text-muted">// Technologies I work with</p>
         </div>

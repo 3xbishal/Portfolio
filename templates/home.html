@@ -29,7 +29,7 @@
             <div class="row align-items-start">
                 <div class="col-lg-6 hero-content">
                     {% if profile %}
-                        <div class="hero-greeting mb-3" data-aos="fade-down" data-aos-delay="100">
+                        <div class="hero-greeting mb-3" data-aos="fade-up" data-aos-delay="100">
                             <span class="greeting-badge">
                                 <i class="fas fa-hand-sparkles me-2"></i>Hello
                             </span>
@@ -37,7 +37,7 @@
                         <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">
                             I'm <span class="text-gradient name-highlight">{{ profile.name }}</span>
                         </h1>
-                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-left" data-aos-delay="340">
+                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-right" data-aos-delay="340">
                             <p class="hero-subtitle">{{ profile.title }}</p>
                             <div class="subtitle-underline"></div>
                         </div>
@@ -58,13 +58,13 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="hero-greeting mb-3" data-aos="fade-down" data-aos-delay="100">
+                        <div class="hero-greeting mb-3" data-aos="fade-up" data-aos-delay="100">
                             <span class="greeting-badge">
                                 <i class="fas fa-hand-sparkles me-2"></i>Hello
                             </span>
                         </div>
                         <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">Welcome to My Portfolio</h1>
-                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-left" data-aos-delay="340">
+                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-right" data-aos-delay="340">
                             <p class="hero-subtitle">Web Developer</p>
                             <div class="subtitle-underline"></div>
                         </div>
@@ -90,7 +90,7 @@
 
 <!-- ===== Coding Vibe Section ===== -->
 <div class="container">
-    <div class="text-center pt-3" data-aos="fade-down">
+    <div class="text-center pt-3" data-aos="fade-up">
         <h2 class="coding-heading">
             <span class="prompt">$</span>
             <span class="typing-text" id="typingHeading">./about-developer.sh</span>
@@ -101,14 +101,14 @@
 {% if featured_projects %}
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-down">
+        <div class="text-center mb-5" data-aos="fade-up">
             <h2 class="fw-bold section-title">Featured Projects</h2>
             <p class="text-muted">Some of my recent work</p>
         </div>
         <div class="row g-4">
             {% for project in featured_projects %}
             <div class="col-md-6 col-lg-4"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                  data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm project-card">
                     {% if project.project_media %}
@@ -147,14 +147,14 @@
 {% if services %}
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-left">
+        <div class="text-center mb-5" data-aos="fade-right">
             <h2 class="fw-bold section-title">What I Do</h2>
             <p class="text-muted">Services I offer</p>
         </div>
         <div class="row g-4">
             {% for service in services %}
             <div class="col-md-6 col-lg-4"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                  data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm service-card text-center p-4">
                     {% if service.icon_class %}
@@ -176,7 +176,7 @@
 {% if skills %}
 <section class="py-5 skills-showcase-section">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-down">
+        <div class="text-center mb-5" data-aos="fade-up">
             <h2 class="fw-bold section-title">Skills & Expertise</h2>
             <p class="text-muted">// Technologies I work with</p>
         </div>
@@ -220,7 +220,7 @@
                 <div class="experience-timeline">
                     {% for exp in experiences %}
                     <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
-                       data-aos="{% if forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                       data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                        data-aos-delay="{{ forloop.counter|mul:100 }}">
                         <div class="experience-item">
                             <div class="d-flex justify-content-between">
@@ -246,7 +246,7 @@
 {% if testimonials %}
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-down">
+        <div class="text-center mb-5" data-aos="fade-up">
             <h2 class="fw-bold section-title">What People Say</h2>
             <p class="text-muted">Testimonials from clients and colleagues</p>
         </div>

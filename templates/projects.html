@@ -7,7 +7,7 @@
 {% block content %}
 <!-- Projects Hero - Terminal Style -->
 <section class="py-5 bg-light projects-hero-terminal">
-    <div class="container text-center" data-aos="fade-down">
+    <div class="container text-center" data-aos="fade-up">
         <div class="terminal-hero-bar">
             <i class="fas fa-terminal"></i>
             <span>$ ls ~/projects/ --format=grid</span>
@@ -24,7 +24,7 @@
             <div class="row g-4">
                 {% for project in projects %}
                 <div class="col-md-6 col-lg-4"
-                     data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-left{% else %}fade-right{% endif %}"
+                     data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                      data-aos-delay="{{ forloop.counter|mul:100 }}">
                     <div class="card h-100 shadow-sm project-card">
                         {% if project.project_media %}
