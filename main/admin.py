@@ -114,13 +114,14 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
-    list_display = ['position', 'company', 'location', 'is_current', 'duration', 'order']
+    list_display = ['position', 'company', 'location', 'is_current', 'duration', 'slug', 'order']
     list_editable = ['is_current', 'order']
     list_filter = ['is_current', 'company']
-    search_fields = ['position', 'company', 'description']
+    search_fields = ['position', 'company', 'description', 'slug']
+    prepopulated_fields = {'slug': ('position', 'company')}
     fieldsets = (
         ('Company Info', {
-            'fields': ('company', 'company_website', 'position', 'location')
+            'fields': ('company', 'company_website', 'position', 'slug', 'location')
         }),
         ('Timeline', {
             'fields': ('start_date', 'end_date', 'is_current')

@@ -20,35 +20,38 @@
             <div class="col-lg-4" data-aos="fade-up">
                 <article class="game-card h-100">
                     <div class="game-card-heading">
-                        <div class="game-icon"><i class="fas fa-gem"></i></div>
+                        <div class="game-icon"><i class="fas fa-worm"></i></div>
                         <div>
-                            <span class="game-number">01 / DISCOVER</span>
-                            <h2>Treasure Hunt</h2>
+                            <span class="game-number">01 / ARCADE</span>
+                            <h2>Snake Game</h2>
                         </div>
                     </div>
-                    <p>Search the ancient map. Find the hidden treasure before your three turns run out.</p>
-                    <div id="treasureMap" class="treasure-map" role="grid" aria-label="Treasure Hunt map"></div>
-                    <div class="game-footer"><span id="treasureStatus" class="game-status" aria-live="polite">Three searches remain.</span><button id="treasureReset" class="reset-button" type="button">New map</button></div>
+                    <p>Guide the snake to eat food and grow longer. Don't hit the walls or yourself!</p>
+                    <div id="snakeCanvas" class="snake-canvas" role="application" aria-label="Snake game. Use arrow keys to move.">
+                        <canvas id="snakeGame" width="280" height="280"></canvas>
+                    </div>
+                    <div class="game-stats"><span>Score <strong id="snakeScore">0</strong></span><span>Best <strong id="snakeBest">0</strong></span></div>
+                    <button id="snakeStart" class="game-button" type="button">Start Game</button>
+                    <p id="snakeStatus" class="game-status" aria-live="polite">Press Start or Space to play</p>
                 </article>
             </div>
 
             <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
                 <article class="game-card h-100">
                     <div class="game-card-heading">
-                        <div class="game-icon"><i class="fas fa-person-running"></i></div>
+                        <div class="game-icon"><i class="fas fa-table-cells"></i></div>
                         <div>
-                            <span class="game-number">02 / SURVIVE</span>
-                            <h2>Trail Runner</h2>
+                            <span class="game-number">02 / ARCADE</span>
+                            <h2>Breakout</h2>
                         </div>
                     </div>
-                    <p>Cross the wilderness. Jump every obstacle and keep the run alive.</p>
-                    <div id="runnerTrack" class="runner-track" role="application" aria-label="Trail Runner game. Press space to jump.">
-                        <span id="runnerPlayer" class="runner-player"><i class="fas fa-person-running"></i></span>
-                        <span id="runnerObstacle" class="runner-obstacle"><i class="fas fa-mountain"></i></span>
+                    <p>Break all the bricks with the ball. Move the paddle to keep the ball in play.</p>
+                    <div id="breakoutCanvas" class="breakout-canvas" role="application" aria-label="Breakout game. Use mouse or arrow keys.">
+                        <canvas id="breakoutGame" width="280" height="280"></canvas>
                     </div>
-                    <div class="game-stats"><span>Distance <strong id="runnerScore">0 m</strong></span><span>Best <strong id="runnerBest">0 m</strong></span></div>
-                    <button id="runnerStart" class="game-button" type="button">Start expedition</button>
-                    <p id="runnerStatus" class="game-status" aria-live="polite">Press Space or jump to begin.</p>
+                    <div class="game-stats"><span>Score <strong id="breakoutScore">0</strong></span><span>Lives <strong id="breakoutLives">3</strong></span></div>
+                    <button id="breakoutStart" class="game-button" type="button">Start Game</button>
+                    <p id="breakoutStatus" class="game-status" aria-live="polite">Press Start or Space to play</p>
                 </article>
             </div>
 

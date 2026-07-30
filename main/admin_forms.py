@@ -77,7 +77,7 @@ class ExperienceAdminForm(AdminBaseForm):
     class Meta:
         model = Experience
         fields = [
-            'company', 'company_website', 'position', 'location',
+            'company', 'company_website', 'position', 'slug', 'location',
             'description', 'start_date', 'end_date', 'is_current',
             'order',
         ]
@@ -85,6 +85,10 @@ class ExperienceAdminForm(AdminBaseForm):
             'description': forms.Textarea(attrs={'rows': 5}),
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'slug': forms.TextInput(attrs={'placeholder': 'Leave blank to auto-generate from position & company'}),
+        }
+        help_texts = {
+            'slug': 'URL-friendly identifier. Leave blank to auto-generate from position & company.',
         }
 
 

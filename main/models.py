@@ -2,6 +2,7 @@ import os
 
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Profile(models.Model):
@@ -185,6 +186,27 @@ class Experience(models.Model):
         if not self.slug:
             return '#'
         return reverse('experience_detail', kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        """Auto-generate a unique slug when one is not provided."""
+        if not self.slug:
+            base = slugify(f"{self.position} {self.company}")
+            if not base:
+                base = slugify(str(self))
+            slug = base
+            qs = Experience.objects.filter(slug=slug)
+            # Exclude the current instance when updating an existing record.
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            counter = 1
+            while qs.exists():
+                slug = f"{base}-{counter}"
+                qs = Experience.objects.filter(slug=slug)
+                if self.pk:
+                    qs = qs.exclude(pk=self.pk)
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     @property
     def duration(self):

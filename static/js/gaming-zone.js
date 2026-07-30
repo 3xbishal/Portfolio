@@ -1,17 +1,209 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var treasureMap = document.getElementById('treasureMap'); var treasureStatus = document.getElementById('treasureStatus'); var treasureIndex; var searches;
-    function newTreasureMap() { treasureIndex = Math.floor(Math.random() * 9); searches = 3; treasureStatus.textContent = 'Three searches remain.'; treasureMap.innerHTML = ''; for (var i = 0; i < 9; i++) { var tile = document.createElement('button'); tile.type = 'button'; tile.dataset.tile = i; tile.setAttribute('aria-label', 'Search location ' + (i + 1)); tile.innerHTML = '<i class="fas fa-question"></i>'; tile.addEventListener('click', searchTile); treasureMap.appendChild(tile); } }
-    function searchTile(event) { var tile = event.currentTarget; if (tile.disabled || searches <= 0) return; var index = Number(tile.dataset.tile); tile.disabled = true; if (index === treasureIndex) { tile.classList.add('found'); tile.innerHTML = '<i class="fas fa-gem"></i>'; searches = 0; treasureStatus.textContent = 'Treasure found! The expedition is a success.'; return; } tile.classList.add('empty'); tile.innerHTML = '<i class="fas fa-xmark"></i>'; searches--; if (searches === 0) { treasureMap.children[treasureIndex].classList.add('found'); treasureMap.children[treasureIndex].innerHTML = '<i class="fas fa-gem"></i>'; Array.from(treasureMap.children).forEach(function (item) { item.disabled = true; }); treasureStatus.textContent = 'The treasure stayed hidden. New map?'; } else { treasureStatus.textContent = searches + ' search' + (searches === 1 ? '' : 'es') + ' remaining.'; } }
-    document.getElementById('treasureReset').addEventListener('click', newTreasureMap); newTreasureMap();
+    // Snake Game
+    var snakeCanvas = document.getElementById('snakeGame'); var snakeCtx = snakeCanvas.getContext('2d');
+    var snakeScoreEl = document.getElementById('snakeScore'); var snakeBestEl = document.getElementById('snakeBest');
+    var snakeStartBtn = document.getElementById('snakeStart'); var snakeStatusEl = document.getElementById('snakeStatus');
+    var snakeGridSize = 14; var snakeCellSize = snakeCanvas.width / snakeGridSize;
+    var snake = []; var snakeFood = { x: 0, y: 0 }; var snakeDir = { x: 1, y: 0 }; var snakeNextDir = { x: 1, y: 0 };
+    var snakeScore = 0; var snakeBest = Number(localStorage.getItem('gaming_zone_snake_best')) || 0;
+    var snakeRunning = false; var snakeLoop = null; var snakeSpeed = 120;
+    snakeBestEl.textContent = snakeBest;
 
-    var runner = document.getElementById('runnerPlayer'); var obstacle = document.getElementById('runnerObstacle'); var runnerStart = document.getElementById('runnerStart'); var runnerStatus = document.getElementById('runnerStatus'); var running = false; var jumping = false; var score = 0; var runnerTimer; var runnerBest = Number(localStorage.getItem('gaming_zone_runner_best')) || 0;
-    document.getElementById('runnerBest').textContent = runnerBest + ' m';
-    function stopRunner(message) { running = false; clearInterval(runnerTimer); obstacle.classList.remove('running'); runnerStart.textContent = 'Start expedition'; runnerStatus.textContent = message; if (score > runnerBest) { runnerBest = score; localStorage.setItem('gaming_zone_runner_best', score); document.getElementById('runnerBest').textContent = score + ' m'; } }
-    function jump() { if (!running || jumping) return; jumping = true; runner.classList.add('jump'); setTimeout(function () { runner.classList.remove('jump'); jumping = false; }, 440); }
-    function startRunner() { if (running) { jump(); return; } running = true; score = 0; document.getElementById('runnerScore').textContent = '0 m'; runnerStart.textContent = 'Jump'; runnerStatus.textContent = 'Run! Press Space to jump.'; obstacle.classList.add('running'); runnerTimer = setInterval(function () { score += 10; document.getElementById('runnerScore').textContent = score + ' m'; if (!jumping && score > 20 && score % 70 === 0) stopRunner('Expedition over at ' + score + ' m. Try again.'); }, 350); }
-    runnerStart.addEventListener('click', function () { if (running) jump(); else startRunner(); });
-    document.addEventListener('keydown', function (event) { if (event.code === 'Space') { event.preventDefault(); if (running) jump(); else startRunner(); } });
+    function initSnake() {
+        snake = [{ x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }];
+        snakeDir = { x: 1, y: 0 }; snakeNextDir = { x: 1, y: 0 };
+        snakeScore = 0; snakeScoreEl.textContent = '0';
+        placeSnakeFood(); drawSnake();
+    }
 
+    function placeSnakeFood() {
+        var valid = false;
+        while (!valid) {
+            snakeFood.x = Math.floor(Math.random() * snakeGridSize);
+            snakeFood.y = Math.floor(Math.random() * snakeGridSize);
+            valid = !snake.some(function (s) { return s.x === snakeFood.x && s.y === snakeFood.y; });
+        }
+    }
+
+    function drawSnake() {
+        snakeCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0d1117';
+        snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+        // Draw food
+        snakeCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff6b35';
+        snakeCtx.beginPath();
+        snakeCtx.arc(snakeFood.x * snakeCellSize + snakeCellSize / 2, snakeFood.y * snakeCellSize + snakeCellSize / 2, snakeCellSize / 2 - 1, 0, Math.PI * 2);
+        snakeCtx.fill();
+        // Draw snake
+        snake.forEach(function (segment, i) {
+            var alpha = 1 - (i / snake.length) * 0.4;
+            snakeCtx.fillStyle = i === 0 ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff6b35') : 'rgba(255, 107, 53, ' + alpha + ')';
+            snakeCtx.fillRect(segment.x * snakeCellSize + 1, segment.y * snakeCellSize + 1, snakeCellSize - 2, snakeCellSize - 2);
+        });
+    }
+
+    function updateSnake() {
+        snakeDir = snakeNextDir;
+        var head = { x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y };
+        // Check wall collision
+        if (head.x < 0 || head.x >= snakeGridSize || head.y < 0 || head.y >= snakeGridSize) { stopSnake('Game Over! You hit the wall.'); return; }
+        // Check self collision
+        if (snake.some(function (s) { return s.x === head.x && s.y === head.y; })) { stopSnake('Game Over! You bit yourself.'); return; }
+        snake.unshift(head);
+        // Check food
+        if (head.x === snakeFood.x && head.y === snakeFood.y) {
+            snakeScore += 10; snakeScoreEl.textContent = snakeScore;
+            if (snakeScore > snakeBest) { snakeBest = snakeScore; localStorage.setItem('gaming_zone_snake_best', snakeBest); snakeBestEl.textContent = snakeBest; }
+            placeSnakeFood();
+            // Speed up slightly
+            if (snakeSpeed > 60) { snakeSpeed -= 2; clearInterval(snakeLoop); snakeLoop = setInterval(updateSnake, snakeSpeed); }
+        } else { snake.pop(); }
+        drawSnake();
+    }
+
+    function startSnake() {
+        if (snakeRunning) return;
+        snakeRunning = true; snakeSpeed = 120;
+        initSnake();
+        snakeStartBtn.textContent = 'Playing...';
+        snakeStatusEl.textContent = 'Use arrow keys to move!';
+        snakeLoop = setInterval(updateSnake, snakeSpeed);
+    }
+
+    function stopSnake(message) {
+        snakeRunning = false; clearInterval(snakeLoop);
+        snakeStartBtn.textContent = 'Start Game';
+        snakeStatusEl.textContent = message + ' Score: ' + snakeScore;
+    }
+
+    snakeStartBtn.addEventListener('click', function () { if (!snakeRunning) startSnake(); });
+    document.addEventListener('keydown', function (e) {
+        if (e.code === 'Space' && !snakeRunning && document.activeElement !== snakeStartBtn) {
+            // Only start snake if breakout isn't active either
+        }
+        if (!snakeRunning) return;
+        switch (e.code) {
+            case 'ArrowUp': if (snakeDir.y !== 1) snakeNextDir = { x: 0, y: -1 }; e.preventDefault(); break;
+            case 'ArrowDown': if (snakeDir.y !== -1) snakeNextDir = { x: 0, y: 1 }; e.preventDefault(); break;
+            case 'ArrowLeft': if (snakeDir.x !== 1) snakeNextDir = { x: -1, y: 0 }; e.preventDefault(); break;
+            case 'ArrowRight': if (snakeDir.x !== -1) snakeNextDir = { x: 1, y: 0 }; e.preventDefault(); break;
+        }
+    });
+    initSnake();
+
+    // Breakout Game
+    var bkCanvas = document.getElementById('breakoutGame'); var bkCtx = bkCanvas.getContext('2d');
+    var bkScoreEl = document.getElementById('breakoutScore'); var bkLivesEl = document.getElementById('breakoutLives');
+    var bkStartBtn = document.getElementById('breakoutStart'); var bkStatusEl = document.getElementById('breakoutStatus');
+    var bkRunning = false; var bkLoop = null; var bkScore = 0; var bkLives = 3;
+    var bkPaddle = { x: 100, y: 260, w: 70, h: 8 }; var bkBall = { x: 140, y: 230, dx: 3, dy: -3, r: 5 };
+    var bkBricks = []; var bkRows = 4; var bkCols = 7; var bkBrickW = 34; var bkBrickH = 12; var bkBrickPad = 4; var bkBrickOffsetTop = 20; var bkBrickOffsetLeft = 12;
+    var bkMouseX = null; var bkKeyLeft = false; var bkKeyRight = false;
+
+    function initBreakout() {
+        bkScore = 0; bkLives = 3; bkScoreEl.textContent = '0'; bkLivesEl.textContent = '3';
+        bkPaddle.x = (bkCanvas.width - bkPaddle.w) / 2;
+        bkBall.x = bkCanvas.width / 2; bkBall.y = bkPaddle.y - 10; bkBall.dx = 3; bkBall.dy = -3;
+        bkBricks = [];
+        for (var r = 0; r < bkRows; r++) {
+            for (var c = 0; c < bkCols; c++) {
+                bkBricks.push({ x: bkBrickOffsetLeft + c * (bkBrickW + bkBrickPad), y: bkBrickOffsetTop + r * (bkBrickH + bkBrickPad), w: bkBrickW, h: bkBrickH, alive: true, row: r });
+            }
+        }
+        drawBreakout();
+    }
+
+    function drawBreakout() {
+        var bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0d1117';
+        var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff6b35';
+        bkCtx.fillStyle = bgColor; bkCtx.fillRect(0, 0, bkCanvas.width, bkCanvas.height);
+        // Draw bricks
+        var rowColors = ['#ff6b35', '#f7931e', '#ffc857', '#4ecdc4'];
+        bkBricks.forEach(function (b) {
+            if (!b.alive) return;
+            bkCtx.fillStyle = rowColors[b.row] || accentColor;
+            bkCtx.fillRect(b.x, b.y, b.w, b.h);
+        });
+        // Draw paddle
+        bkCtx.fillStyle = accentColor;
+        bkCtx.fillRect(bkPaddle.x, bkPaddle.y, bkPaddle.w, bkPaddle.h);
+        // Draw ball
+        bkCtx.beginPath();
+        bkCtx.arc(bkBall.x, bkBall.y, bkBall.r, 0, Math.PI * 2);
+        bkCtx.fillStyle = accentColor; bkCtx.fill();
+    }
+
+    function updateBreakout() {
+        // Move paddle
+        if (bkMouseX !== null) { bkPaddle.x = bkMouseX - bkPaddle.w / 2; }
+        if (bkKeyLeft) bkPaddle.x -= 6;
+        if (bkKeyRight) bkPaddle.x += 6;
+        bkPaddle.x = Math.max(0, Math.min(bkCanvas.width - bkPaddle.w, bkPaddle.x));
+        // Move ball
+        bkBall.x += bkBall.dx; bkBall.y += bkBall.dy;
+        // Wall collision
+        if (bkBall.x + bkBall.r > bkCanvas.width || bkBall.x - bkBall.r < 0) bkBall.dx = -bkBall.dx;
+        if (bkBall.y - bkBall.r < 0) bkBall.dy = -bkBall.dy;
+        // Paddle collision
+        if (bkBall.y + bkBall.r >= bkPaddle.y && bkBall.y + bkBall.r <= bkPaddle.y + bkPaddle.h && bkBall.x >= bkPaddle.x && bkBall.x <= bkPaddle.x + bkPaddle.w) {
+            bkBall.dy = -Math.abs(bkBall.dy);
+            var hitPos = (bkBall.x - bkPaddle.x) / bkPaddle.w - 0.5;
+            bkBall.dx = hitPos * 6;
+        }
+        // Bottom - lose life
+        if (bkBall.y - bkBall.r > bkCanvas.height) {
+            bkLives--; bkLivesEl.textContent = bkLives;
+            if (bkLives <= 0) { stopBreakout('Game Over! Final score: ' + bkScore); return; }
+            bkBall.x = bkCanvas.width / 2; bkBall.y = bkPaddle.y - 10; bkBall.dx = 3; bkBall.dy = -3;
+            bkStatusEl.textContent = 'Life lost! ' + bkLives + ' lives remaining.';
+        }
+        // Brick collision
+        for (var i = 0; i < bkBricks.length; i++) {
+            var b = bkBricks[i];
+            if (!b.alive) continue;
+            if (bkBall.x + bkBall.r > b.x && bkBall.x - bkBall.r < b.x + b.w && bkBall.y + bkBall.r > b.y && bkBall.y - bkBall.r < b.y + b.h) {
+                bkBall.dy = -bkBall.dy; b.alive = false;
+                bkScore += 10; bkScoreEl.textContent = bkScore;
+                if (bkBricks.every(function (br) { return !br.alive; })) { stopBreakout('You win! All bricks cleared! Score: ' + bkScore); return; }
+            }
+        }
+        drawBreakout();
+    }
+
+    function startBreakout() {
+        if (bkRunning) return;
+        bkRunning = true; initBreakout();
+        bkStartBtn.textContent = 'Playing...';
+        bkStatusEl.textContent = 'Move mouse or use arrow keys!';
+        bkLoop = setInterval(updateBreakout, 1000 / 50);
+    }
+
+    function stopBreakout(message) {
+        bkRunning = false; clearInterval(bkLoop);
+        bkStartBtn.textContent = 'Start Game';
+        bkStatusEl.textContent = message;
+    }
+
+    bkStartBtn.addEventListener('click', function () { if (!bkRunning) startBreakout(); });
+    bkCanvas.addEventListener('mousemove', function (e) {
+        var rect = bkCanvas.getBoundingClientRect(); var scaleX = bkCanvas.width / rect.width;
+        bkMouseX = (e.clientX - rect.left) * scaleX;
+    });
+    bkCanvas.addEventListener('mouseleave', function () { bkMouseX = null; });
+    bkCanvas.addEventListener('touchmove', function (e) {
+        e.preventDefault(); var rect = bkCanvas.getBoundingClientRect(); var scaleX = bkCanvas.width / rect.width;
+        bkMouseX = (e.touches[0].clientX - rect.left) * scaleX;
+    }, { passive: false });
+    document.addEventListener('keydown', function (e) {
+        if (e.code === 'ArrowLeft') { bkKeyLeft = true; if (bkRunning) e.preventDefault(); }
+        if (e.code === 'ArrowRight') { bkKeyRight = true; if (bkRunning) e.preventDefault(); }
+    });
+    document.addEventListener('keyup', function (e) {
+        if (e.code === 'ArrowLeft') bkKeyLeft = false;
+        if (e.code === 'ArrowRight') bkKeyRight = false;
+    });
+    initBreakout();
+
+    // Tic Tac Toe (Grid Clash)
     var board = Array(9).fill(''); var active = true; var aiThinking = false; var cells = document.querySelectorAll('#ticTacToeBoard button'); var status = document.getElementById('tttStatus');
     var wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
     function winner(mark) { return wins.some(function (line) { return line.every(function (index) { return board[index] === mark; }); }); }
