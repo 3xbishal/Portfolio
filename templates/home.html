@@ -111,11 +111,12 @@
                  data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
                  data-aos-delay="{{ forloop.counter|mul:100 }}">
                 <div class="card h-100 shadow-sm project-card">
+                    <a href="{{ project.get_absolute_url }}" class="project-card-link" aria-hidden="true" tabindex="-1"></a>
                     {% include 'partials/_project_card_media.html' with project=project %}
                     <div class="card-body d-flex flex-column">
                         <h3 class="h5 card-title">{{ project.title }}</h3>
                         <p class="card-text text-muted small flex-grow-1">{{ project.technologies_used|truncatechars:120 }}</p>
-                        <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-auto stretched-link">
+                        <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-auto">
                             <i class="fas fa-arrow-right me-1"></i>View Details
                         </a>
                     </div>

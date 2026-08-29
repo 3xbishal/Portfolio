@@ -1546,13 +1546,25 @@ a:hover {
     border-color: var(--primary, #800000);
 }
 
-/* Whole project card is clickable (stretched-link on the Details button) --
-   these controls need their own stacking so they stay independently
-   clickable instead of being swallowed by the full-card overlay link. */
+/* Whole project card is clickable via a dedicated invisible overlay link
+   (a direct child of .project-card, not nested inside .card-body) -- this
+   avoids Bootstrap's .stretched-link trick, which breaks here because
+   .card-body gets a `transform` on hover (below) and any transformed
+   element becomes a new containing block for absolutely-positioned
+   descendants, which would shrink the overlay down to just the card-body
+   box the instant the card is hovered. */
 .project-card {
     cursor: pointer;
 }
 
+.project-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* These controls need their own stacking so they stay independently
+   clickable above the full-card overlay link. */
 .project-card .card-body a,
 .project-card .card-body button,
 .project-card-carousel .carousel-control-prev,
