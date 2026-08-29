@@ -3,9 +3,12 @@ Views for the portfolio application.
 All content is fetched from the database (admin-managed).
 """
 
+import logging
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
+from django.core.mail import EmailMessage
 from django.db.models import Q
 
 from .models import (
@@ -19,6 +22,8 @@ from .models import (
     Service,
 )
 from .forms import ContactForm
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -174,7 +179,21 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            form.save()
+            contact_message = form.save()
+            notify_email = profile.gmail_address if profile else ''
+            if notify_email:
+                try:
+                    EmailMessage(
+                        subject=f'New portfolio message: {contact_message.subject}',
+                        body=(
+                            f'From: {contact_message.name} <{contact_message.email}>\n\n'
+                            f'{contact_message.message}'
+                        ),
+                        to=[notify_email],
+                        reply_to=[contact_message.email],
+                    ).send(fail_silently=False)
+                except Exception:
+                    logger.exception('Failed to send contact form notification email')
             messages.success(
                 request,
                 'Your message has been sent successfully! I will get back to you soon.'
