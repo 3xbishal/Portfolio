@@ -43,7 +43,7 @@
                                 {{ project.description|truncatechars:100|default:project.technologies_used|truncatechars:120 }}
                             </div>
                             <div class="d-flex gap-2 mt-auto">
-                                <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm stretched-link">
                                     <i class="fas fa-arrow-right me-1"></i>Details
                                 </a>
                                 {% if project.project_url %}
