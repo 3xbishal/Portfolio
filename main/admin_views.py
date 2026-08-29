@@ -12,12 +12,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from .models import (
     Profile,
     Skill,
     Project,
+    ProjectMedia,
     Experience,
     Education,
     Testimonial,
@@ -230,6 +231,62 @@ class ProjectDeleteView(AdminRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Project deleted successfully.')
         return super().delete(request, *args, **kwargs)
+
+
+class ProjectMediaManageView(AdminRequiredMixin, TemplateView):
+    """Manage a project's gallery of extra images/videos (beyond the single
+    cover in Project.project_media). Plain POST actions, no Form class --
+    same style as the File Manager and mark_message_read below."""
+    template_name = 'admin_panel/project_media.html'
+
+    def get_project(self):
+        return get_object_or_404(Project, pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_project()
+        context['project'] = project
+        context['media_items'] = project.media_items.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        project = self.get_project()
+        action = request.POST.get('action')
+
+        if action == 'upload':
+            files = request.FILES.getlist('files')
+            if not files:
+                messages.error(request, 'No files selected.')
+            else:
+                next_order = (project.media_items.aggregate(Max('order'))['order__max'] or 0) + 1
+                for i, f in enumerate(files):
+                    ProjectMedia.objects.create(project=project, file=f, order=next_order + i)
+                messages.success(request, f'Added {len(files)} file(s).')
+
+        elif action == 'update':
+            for media in project.media_items.all():
+                caption_key = f'caption_{media.pk}'
+                order_key = f'order_{media.pk}'
+                if caption_key not in request.POST and order_key not in request.POST:
+                    continue
+                media.caption = request.POST.get(caption_key, media.caption)
+                try:
+                    media.order = int(request.POST.get(order_key, media.order))
+                except (TypeError, ValueError):
+                    pass
+                media.save()
+            messages.success(request, 'Gallery updated.')
+
+        elif action == 'delete':
+            deleted, _ = ProjectMedia.objects.filter(
+                pk=request.POST.get('media_id'), project=project,
+            ).delete()
+            if deleted:
+                messages.success(request, 'Item deleted.')
+            else:
+                messages.error(request, 'Item not found.')
+
+        return redirect('admin_panel:project_media', pk=project.pk)
 
 
 # ---------------------------------------------------------------------------

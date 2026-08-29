@@ -1,0 +1,27 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+{% block title %}Edit File{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">Edit: {{ path }}</h1>
+{% if is_python %}
+<div class="alert alert-warning">
+    <i class="fas fa-triangle-exclamation me-1"></i>
+    You are editing a live application file. A mistake here can break the site immediately, and there is no built-in undo.
+</div>
+{% endif %}
+<form method="post" id="fmEditForm" data-python="{{ is_python|yesno:'true,false' }}">
+    {% csrf_token %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <textarea name="content" class="form-control" rows="24" spellcheck="false" style="font-family:monospace">{{ content }}</textarea>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'admin_panel:fm_list' %}?root={{ root }}&amp;path={{ parent_path|urlencode }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/admin-filemanager.js' %}"></script>
+{% endblock %}

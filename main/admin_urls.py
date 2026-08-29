@@ -5,6 +5,8 @@ URL configuration for the custom admin panel.
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import admin_views
+from . import admin_filemanager_views as fmv
+from . import admin_github_views as ghv
 
 app_name = 'admin_panel'
 
@@ -32,6 +34,7 @@ urlpatterns = [
     path('projects/add/', admin_views.ProjectCreateView.as_view(), name='project_add'),
     path('projects/<int:pk>/edit/', admin_views.ProjectUpdateView.as_view(), name='project_edit'),
     path('projects/<int:pk>/delete/', admin_views.ProjectDeleteView.as_view(), name='project_delete'),
+    path('projects/<int:pk>/media/', admin_views.ProjectMediaManageView.as_view(), name='project_media'),
 
     # Experience CRUD
     path('experience/', admin_views.ExperienceListView.as_view(), name='experience_list'),
@@ -63,4 +66,23 @@ urlpatterns = [
     path('messages/<int:pk>/delete/', admin_views.ContactMessageDeleteView.as_view(), name='contactmessage_delete'),
     path('messages/<int:pk>/mark-read/', admin_views.mark_message_read, name='message_mark_read'),
     path('messages/<int:pk>/mark-unread/', admin_views.mark_message_unread, name='message_mark_unread'),
+
+    # File Manager (sandboxed to the project/media/static roots; see main/file_manager.py)
+    path('files/', fmv.file_manager, name='fm_list'),
+    path('files/upload/', fmv.file_upload, name='fm_upload'),
+    path('files/mkdir/', fmv.file_mkdir, name='fm_mkdir'),
+    path('files/rename/', fmv.file_rename, name='fm_rename'),
+    path('files/delete/', fmv.file_delete, name='fm_delete'),
+    path('files/clipboard/', fmv.file_clipboard, name='fm_clipboard'),
+    path('files/paste/', fmv.file_paste, name='fm_paste'),
+    path('files/download/', fmv.file_download, name='fm_download'),
+    path('files/download-zip/', fmv.file_download_zip, name='fm_download_zip'),
+    path('files/edit/', fmv.file_edit, name='fm_edit'),
+
+    # GitHub repo browser (read-only via the GitHub API; see main/github_client.py)
+    path('github/', ghv.github_repo_list, name='github_repo_list'),
+    path('github/<str:owner>/<str:repo>/', ghv.github_tree, name='github_tree'),
+    path('github/<str:owner>/<str:repo>/file/', ghv.github_file, name='github_file'),
+    path('github/<str:owner>/<str:repo>/commits/', ghv.github_commits, name='github_commits'),
+    path('github/<str:owner>/<str:repo>/download/', ghv.github_download, name='github_download'),
 ]

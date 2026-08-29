@@ -161,6 +161,14 @@ if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Admin panel: GitHub repo browser (read-only). Token lives in .env only --
+# there is no in-app editing UI for it, matching how EMAIL_HOST_PASSWORD/
+# DB_PASSWORD are handled above. Leave blank to disable the GitHub pages.
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
+
+# Admin panel: File Manager per-file upload size cap, in bytes.
+FILE_MANAGER_MAX_UPLOAD_SIZE = int(os.getenv('FILE_MANAGER_MAX_UPLOAD_SIZE', 50 * 1024 * 1024))
+
 # Security settings for production
 if not DEBUG:
     SECURE_SSL_REDIRECT = True

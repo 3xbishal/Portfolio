@@ -69,7 +69,7 @@ def get_active_profile():
 def home(request):
     """Home page with featured projects, skills, and testimonials."""
     profile = get_active_profile()
-    featured_projects = Project.objects.all()[:6]
+    featured_projects = Project.objects.prefetch_related('media_items').all()[:6]
     skills = Skill.objects.all()
     services = Service.objects.filter(is_active=True)
     testimonials = Testimonial.objects.filter(is_active=True)[:6]
@@ -118,7 +118,7 @@ class ProjectListView(ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        return Project.objects.all()
+        return Project.objects.prefetch_related('media_items').all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,7 +139,7 @@ class ProjectDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Project.objects.all()
+        return Project.objects.prefetch_related('media_items').all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -9,7 +9,7 @@ from .models import (
     Profile,
     Skill,
     Project,
-    ProjectImage,
+    ProjectMedia,
     Experience,
     Education,
     Testimonial,
@@ -72,10 +72,10 @@ class SkillAdmin(admin.ModelAdmin):
 # Project Image Inline
 # ---------------------------------------------------------------------------
 
-class ProjectImageInline(admin.TabularInline):
-    model = ProjectImage
+class ProjectMediaInline(admin.TabularInline):
+    model = ProjectMedia
     extra = 1
-    fields = ('image', 'caption', 'order')
+    fields = ('file', 'caption', 'order')
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ['title', 'tech_list']
     search_fields = ['title', 'description', 'technologies_used']
     prepopulated_fields = {'slug': ('title',)}
-    inlines = [ProjectImageInline]
+    inlines = [ProjectMediaInline]
     fieldsets = (
         ('Project Details', {
             'fields': ('title', 'slug', 'description')

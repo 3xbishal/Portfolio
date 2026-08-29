@@ -5,6 +5,14 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 
+def detect_media_type(filename):
+    """Classify a filename as 'video' or 'image' by extension. Shared by
+    Project.media_type and ProjectMedia.media_type so single-cover and
+    gallery items agree on what counts as a video."""
+    ext = os.path.splitext(filename)[1].lower()
+    return 'video' if ext in {'.mp4', '.webm', '.ogg'} else 'image'
+
+
 class Profile(models.Model):
     """Developer profile - single instance for the site owner."""
 
@@ -132,29 +140,56 @@ class Project(models.Model):
     def media_type(self):
         if not self.project_media:
             return None
-        ext = os.path.splitext(self.project_media.name)[1].lower()
-        if ext in {'.mp4', '.webm', '.ogg'}:
-            return 'video'
-        return 'image'
+        return detect_media_type(self.project_media.name)
+
+    @property
+    def media_gallery(self):
+        """All media for this project in display order: project_media
+        first (if set), then every ProjectMedia gallery item in order.
+        The single merge point for 'cover + extra items' so templates
+        don't each re-derive it."""
+        items = []
+        if self.project_media:
+            items.append({
+                'url': self.project_media.url,
+                'type': self.media_type,
+                'ext': os.path.splitext(self.project_media.name)[1].lstrip('.').lower(),
+                'caption': '',
+            })
+        for media in self.media_items.all():
+            items.append({
+                'url': media.file.url,
+                'type': media.media_type,
+                'ext': os.path.splitext(media.file.name)[1].lstrip('.').lower(),
+                'caption': media.caption,
+            })
+        return items
 
 
-class ProjectImage(models.Model):
-    """Additional images for a project gallery."""
+class ProjectMedia(models.Model):
+    """Additional images/videos for a project gallery (beyond the single
+    cover in Project.project_media)."""
 
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name='gallery_images'
+        related_name='media_items'
     )
-    image = models.ImageField(upload_to='projects/gallery/')
+    file = models.FileField(upload_to='projects/gallery/', help_text="Image or video file")
     caption = models.CharField(max_length=200, blank=True)
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower = first)")
 
     class Meta:
-        ordering = ['order']
+        verbose_name = "Project Media"
+        verbose_name_plural = "Project Media"
+        ordering = ['order', 'id']
 
     def __str__(self):
-        return f"Image for {self.project.title}"
+        return f"{self.media_type.title()} for {self.project.title}"
+
+    @property
+    def media_type(self):
+        return detect_media_type(self.file.name)
 
 
 class Experience(models.Model):

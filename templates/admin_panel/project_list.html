@@ -23,6 +23,7 @@
               <td>{{ project.title }}</td>
               <td>{{ project.technologies_used|truncatechars:60|default:'-' }}</td>
               <td class="text-end">
+                <a href="{% url 'admin_panel:project_media' project.pk %}" class="btn btn-sm btn-outline-secondary">Media</a>
                 <a href="{% url 'admin_panel:project_edit' project.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
                 <a href="{% url 'admin_panel:project_delete' project.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
               </td>

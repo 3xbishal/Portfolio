@@ -1,0 +1,77 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}GitHub{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 mb-0">GitHub Repositories</h1>
+    {% if configured %}
+    <a href="?refresh=1" class="btn btn-sm btn-outline-secondary"><i class="fas fa-rotate me-1"></i> Refresh</a>
+    {% endif %}
+</div>
+
+{% if not configured %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fab fa-github me-2"></i>GitHub is not configured yet</h5>
+        <p class="text-muted mb-2">
+            Add a <code>GITHUB_TOKEN</code> to the server's <code>.env</code> file to browse your public and
+            private repositories from here. A fine-grained Personal Access Token scoped to
+            read-only "Contents" and "Metadata" access is recommended, since this feature is read-only.
+        </p>
+        <p class="text-muted mb-0">After adding the token, restart the app for the change to take effect.</p>
+    </div>
+</div>
+{% else %}
+<input type="search" id="ghRepoFilter" class="form-control mb-3" placeholder="Filter repositories by name...">
+<div class="row g-3" id="ghRepoGrid">
+    {% for repo in repos %}
+    <div class="col-md-6 col-lg-4 gh-repo-card" data-name="{{ repo.name|lower }}">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title text-break">
+                    <i class="fas fa-book me-1"></i>{{ repo.name }}
+                    {% if repo.private %}
+                        <span class="badge bg-danger">Private</span>
+                    {% else %}
+                        <span class="badge bg-success">Public</span>
+                    {% endif %}
+                </h5>
+                <p class="card-text text-muted small">{{ repo.description|default:"No description." }}</p>
+                <p class="card-text small text-muted mb-0">
+                    {% if repo.language %}<i class="fas fa-code me-1"></i>{{ repo.language }} &middot;{% endif %}
+                    <i class="fas fa-star me-1"></i>{{ repo.stargazers_count }} &middot;
+                    Updated {{ repo.updated_at|date:"Y-m-d" }}
+                </p>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <a href="{% url 'admin_panel:github_tree' repo.owner.login repo.name %}" class="btn btn-sm btn-primary flex-grow-1">Browse</a>
+                <a href="{% url 'admin_panel:github_commits' repo.owner.login repo.name %}" class="btn btn-sm btn-outline-secondary">Commits</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No repositories found.</p>
+    {% endfor %}
+</div>
+
+<nav class="mt-3">
+    <ul class="pagination">
+        {% if has_prev %}<li class="page-item"><a class="page-link" href="?page={{ page|add:'-1' }}">Previous</a></li>{% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page }}</span></li>
+        {% if has_next %}<li class="page-item"><a class="page-link" href="?page={{ page|add:'1' }}">Next</a></li>{% endif %}
+    </ul>
+</nav>
+
+<script>
+(function () {
+    var input = document.getElementById('ghRepoFilter');
+    if (!input) return;
+    input.addEventListener('input', function () {
+        var q = input.value.toLowerCase();
+        document.querySelectorAll('.gh-repo-card').forEach(function (card) {
+            card.style.display = card.dataset.name.indexOf(q) === -1 ? 'none' : '';
+        });
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

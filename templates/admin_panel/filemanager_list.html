@@ -1,0 +1,210 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+{% block title %}File Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h1 class="h2 mb-0">File Manager</h1>
+    <ul class="nav nav-pills">
+        {% for key, label in roots.items %}
+        <li class="nav-item">
+            <a class="nav-link{% if key == root %} active{% endif %}" href="{% url 'admin_panel:fm_list' %}?root={{ key }}">{{ label }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'admin_panel:fm_list' %}?root={{ root }}"><i class="fas fa-house"></i></a></li>
+        {% for crumb in breadcrumbs %}
+            {% if forloop.last %}
+                <li class="breadcrumb-item active">{{ crumb.name }}</li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'admin_panel:fm_list' %}?root={{ root }}&amp;path={{ crumb.path|urlencode }}">{{ crumb.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#fmUploadModal">
+        <i class="fas fa-upload me-1"></i> Upload
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#fmNewFolderModal">
+        <i class="fas fa-folder-plus me-1"></i> New Folder
+    </button>
+    {% if clipboard %}
+    <form method="post" action="{% url 'admin_panel:fm_paste' %}" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="root" value="{{ root }}">
+        <input type="hidden" name="path" value="{{ path }}">
+        <button type="submit" class="btn btn-sm btn-outline-success">
+            <i class="fas fa-paste me-1"></i> Paste {{ clipboard.items|length }} item(s)
+            {% if clipboard.mode == 'cut' %}(move){% else %}(copy){% endif %}
+        </button>
+    </form>
+    {% endif %}
+</div>
+
+<form method="post" id="fmBulkForm">
+    {% csrf_token %}
+    <input type="hidden" name="root" value="{{ root }}">
+    <input type="hidden" name="path" value="{{ path }}">
+    <div class="card card-list">
+        <div class="card-body p-3">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:32px"><input type="checkbox" id="fmSelectAll" aria-label="Select all"></th>
+                            <th>Name</th>
+                            <th>Size</th>
+                            <th>Modified</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                        <tr>
+                            <td><input type="checkbox" class="fm-row-checkbox" name="selected" value="{{ entry.rel_path }}" aria-label="Select {{ entry.name }}"></td>
+                            <td>
+                                {% if entry.is_dir %}
+                                    <i class="fas fa-folder text-warning me-2"></i>
+                                    <a href="{% url 'admin_panel:fm_list' %}?root={{ root }}&amp;path={{ entry.rel_path|urlencode }}">{{ entry.name }}</a>
+                                {% else %}
+                                    <i class="fas fa-file text-muted me-2"></i>{{ entry.name }}
+                                {% endif %}
+                            </td>
+                            <td>{% if entry.size is not None %}{{ entry.size|filesizeformat }}{% else %}&mdash;{% endif %}</td>
+                            <td>{{ entry.modified|date:"Y-m-d H:i" }}</td>
+                            <td class="text-end text-nowrap">
+                                {% if not entry.is_dir %}
+                                    <a href="{% url 'admin_panel:fm_download' %}?root={{ root }}&amp;path={{ entry.rel_path|urlencode }}" class="btn btn-sm btn-outline-secondary" title="Download"><i class="fas fa-download"></i></a>
+                                    {% if entry.editable %}
+                                    <a href="{% url 'admin_panel:fm_edit' %}?root={{ root }}&amp;path={{ entry.rel_path|urlencode }}" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fas fa-pen"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename"
+                                        data-bs-toggle="modal" data-bs-target="#fmRenameModal"
+                                        data-item="{{ entry.rel_path }}" data-name="{{ entry.name }}">
+                                    <i class="fas fa-i-cursor"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary fm-row-action" title="Copy"
+                                        data-url="{% url 'admin_panel:fm_clipboard' %}" data-item="{{ entry.rel_path }}" data-action="copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary fm-row-action" title="Cut"
+                                        data-url="{% url 'admin_panel:fm_clipboard' %}" data-item="{{ entry.rel_path }}" data-action="cut">
+                                    <i class="fas fa-scissors"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger fm-row-action" title="Delete"
+                                        data-url="{% url 'admin_panel:fm_delete' %}" data-item="{{ entry.rel_path }}"
+                                        data-confirm="Delete &quot;{{ entry.name }}&quot;? This cannot be undone.">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-muted">This folder is empty.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <button type="submit" formaction="{% url 'admin_panel:fm_download_zip' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-file-zipper me-1"></i> Download Zip
+            </button>
+            <button type="submit" id="fmDeleteSelected" formaction="{% url 'admin_panel:fm_delete' %}" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-trash me-1"></i> Delete Selected
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Shared hidden form used by row Copy/Cut/Delete buttons (see admin-filemanager.js) -->
+<form method="post" id="fmItemActionForm" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" name="root" value="{{ root }}">
+    <input type="hidden" name="path" value="{{ path }}">
+    <input type="hidden" name="item" value="">
+    <input type="hidden" name="action" value="">
+</form>
+
+<div class="modal fade" id="fmUploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'admin_panel:fm_upload' %}" enctype="multipart/form-data" id="fmUploadForm">
+      {% csrf_token %}
+      <input type="hidden" name="root" value="{{ root }}">
+      <input type="hidden" name="path" value="{{ path }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Upload Files</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="fmDropZone" class="fm-dropzone mb-3">Drag and drop files here, or choose below</div>
+          <input type="file" name="files" id="fmUploadInput" class="form-control" multiple required>
+          <div class="form-text">Max {{ max_upload_mb }} MB per file.</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="fmNewFolderModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'admin_panel:fm_mkdir' %}">
+      {% csrf_token %}
+      <input type="hidden" name="root" value="{{ root }}">
+      <input type="hidden" name="path" value="{{ path }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New Folder</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Folder name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="fmRenameModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'admin_panel:fm_rename' %}">
+      {% csrf_token %}
+      <input type="hidden" name="root" value="{{ root }}">
+      <input type="hidden" name="path" value="{{ path }}">
+      <input type="hidden" name="item" value="">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rename</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">New name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Rename</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/admin-filemanager.js' %}"></script>
+{% endblock %}

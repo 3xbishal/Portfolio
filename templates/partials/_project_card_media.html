@@ -1,0 +1,57 @@
+{% comment %}
+Compact project card media area, shared by home.html's featured-projects
+grid and projects.html's list grid. Expects `project` in context.
+
+0 items  -> placeholder icon box (unchanged from before this partial existed)
+1 item   -> plain <img>/<video controls> (unchanged output, no carousel chrome)
+2+ items -> a per-project Bootstrap carousel with arrows + indicator dots
+{% endcomment %}
+{% with gallery=project.media_gallery %}
+{% if not gallery %}
+    <div class="card-img-top project-image-placeholder d-flex align-items-center justify-content-center">
+        <i class="fas fa-image fa-3x text-muted"></i>
+    </div>
+{% elif gallery|length == 1 %}
+    {% with item=gallery.0 %}
+        {% if item.type == 'video' %}
+            <video controls class="card-img-top project-image" preload="metadata">
+                <source src="{{ item.url }}" type="video/{{ item.ext }}">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <img src="{{ item.url }}" class="card-img-top project-image lazy" alt="{{ project.title }}">
+        {% endif %}
+    {% endwith %}
+{% else %}
+    <div id="projectCarousel{{ project.pk }}" class="carousel slide project-card-carousel" data-bs-interval="false">
+        <div class="carousel-inner">
+            {% for item in gallery %}
+            <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                {% if item.type == 'video' %}
+                    <video class="card-img-top project-image" muted preload="metadata">
+                        <source src="{{ item.url }}#t=0.1" type="video/{{ item.ext }}">
+                    </video>
+                    <span class="project-media-play-icon"><i class="fas fa-play"></i></span>
+                {% else %}
+                    <img src="{{ item.url }}" class="card-img-top project-image lazy" alt="{{ project.title }}">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel{{ project.pk }}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel{{ project.pk }}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        <div class="carousel-indicators project-card-indicators">
+            {% for item in gallery %}
+            <button type="button" data-bs-target="#projectCarousel{{ project.pk }}" data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endwith %}

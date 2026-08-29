@@ -1,0 +1,35 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{{ path }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h1 class="h4 mb-0 text-break"><i class="fas fa-file me-2"></i>{{ path }}</h1>
+    <div class="d-flex gap-2">
+        <a href="{% url 'admin_panel:github_tree' owner repo %}?path={{ parent_path|urlencode }}{% if ref %}&amp;ref={{ ref }}{% endif %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </a>
+        {% if meta.html_url %}
+        <a href="{{ meta.html_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">
+            <i class="fab fa-github me-1"></i> View on GitHub
+        </a>
+        {% endif %}
+        {% if meta.download_url %}
+        <a href="{{ meta.download_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
+            <i class="fas fa-download me-1"></i> Download raw
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if viewable %}
+        <pre class="mb-0" style="white-space:pre-wrap;word-break:break-word">{{ content }}</pre>
+        {% else %}
+        <p class="text-muted mb-0">
+            This file can't be previewed here (binary or larger than 512 KB, {{ meta.size|filesizeformat }}).
+            Use "Download raw" or "View on GitHub" instead.
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
