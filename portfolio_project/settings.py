@@ -169,6 +169,12 @@ GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', '')
 # Admin panel: File Manager per-file upload size cap, in bytes.
 FILE_MANAGER_MAX_UPLOAD_SIZE = int(os.getenv('FILE_MANAGER_MAX_UPLOAD_SIZE', 50 * 1024 * 1024))
 
+# Admin panel: File Manager's dedicated storage root -- deliberately kept
+# outside the Django project directory entirely (a sibling folder, same
+# pattern as MEDIA_ROOT above), so admin file management never touches the
+# app's own source code, settings, or database file.
+FILE_MANAGER_STORAGE_ROOT = BASE_DIR / '../portfolio_files'
+
 # Security settings for production
 if not DEBUG:
     SECURE_SSL_REDIRECT = True

@@ -1,9 +1,10 @@
 """
 Views for the admin File Manager: sandboxed browsing, upload, download,
-copy/cut/paste, rename, delete and lightweight text editing across the
-'project', 'media' and 'static' roots (see main/file_manager.py for the
-sandboxing rules). All state-changing actions are classic multipart POST +
-redirect, matching the rest of the admin panel -- no AJAX/JSON API.
+copy/cut/paste, rename, delete and lightweight text editing within a
+dedicated storage root kept entirely outside the Django project directory
+(see main/file_manager.py for the sandboxing rules). All state-changing
+actions are classic multipart POST + redirect, matching the rest of the
+admin panel -- no AJAX/JSON API.
 """
 from urllib.parse import urlencode
 
@@ -24,10 +25,10 @@ def _fm_url(root, path=''):
 
 
 def _get_root_path(request):
-    root = request.GET.get('root') or request.POST.get('root') or 'project'
+    root = request.GET.get('root') or request.POST.get('root') or 'storage'
     path = (request.GET.get('path') or request.POST.get('path') or '').strip('/')
     if root not in fm.ROOTS:
-        root, path = 'project', ''
+        root, path = 'storage', ''
     return root, path
 
 
@@ -203,7 +204,7 @@ def file_paste(request):
 
 @admin_login_required
 def file_download(request):
-    root = request.GET.get('root', 'project')
+    root = request.GET.get('root', 'storage')
     path = request.GET.get('path', '')
     try:
         target = fm.resolve_safe(root, path)

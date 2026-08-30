@@ -55,7 +55,7 @@ class FileManagerSafetyTests(SimpleTestCase):
     def test_blocked_segments_rejected_at_any_depth(self):
         for bad in (
             '.env', '.git/config', 'sub/.git/config', '__pycache__/x.pyc',
-            'venv/bin/python', 'db.sqlite3', 'a/b/.hidden',
+            'node_modules/pkg/index.js', 'a/b/.hidden',
         ):
             with self.subTest(bad=bad):
                 with self.assertRaises(fm.FileManagerError):
