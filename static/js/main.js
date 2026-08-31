@@ -243,6 +243,65 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- Auto-play muted project video previews, only while visible ---
+    // (project cards + the project detail page gallery). Browsers only
+    // allow autoplay when muted, so these are always muted/looping; only
+    // the active slide of a Bootstrap carousel plays at a time, and
+    // playback pauses again once scrolled out of view so a page with many
+    // project cards isn't decoding a dozen videos in the background.
+    (function () {
+        const autoplayVideos = document.querySelectorAll('video.autoplay-video');
+        if (!autoplayVideos.length) return;
+
+        function isActiveSlide(video) {
+            const item = video.closest('.carousel-item');
+            return !item || item.classList.contains('active');
+        }
+
+        function tryPlay(video) {
+            if (!isActiveSlide(video)) return;
+            const playPromise = video.play();
+            if (playPromise && playPromise.catch) {
+                playPromise.catch(function () {
+                    // Autoplay can still be blocked in some browsers/contexts;
+                    // fail silently rather than throwing an unhandled rejection.
+                });
+            }
+        }
+
+        if ('IntersectionObserver' in window) {
+            const videoObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        tryPlay(entry.target);
+                    } else {
+                        entry.target.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            autoplayVideos.forEach(function (video) {
+                videoObserver.observe(video);
+            });
+        } else {
+            autoplayVideos.forEach(tryPlay);
+        }
+
+        // Carousel slide changes: pause the outgoing slide's video, play
+        // the incoming one (only takes effect if it's currently in view).
+        document.querySelectorAll('.carousel').forEach(function (carouselEl) {
+            carouselEl.addEventListener('slid.bs.carousel', function () {
+                carouselEl.querySelectorAll('video.autoplay-video').forEach(function (video) {
+                    if (isActiveSlide(video)) {
+                        tryPlay(video);
+                    } else {
+                        video.pause();
+                    }
+                });
+            });
+        });
+    })();
+
 
     // --- Back to top button ---
     const backToTopBtn = document.createElement('button');

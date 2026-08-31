@@ -3,8 +3,15 @@ Compact project card media area, shared by home.html's featured-projects
 grid and projects.html's list grid. Expects `project` in context.
 
 0 items  -> placeholder icon box (unchanged from before this partial existed)
-1 item   -> plain <img>/<video controls> (unchanged output, no carousel chrome)
+1 item   -> plain <img>/silently autoplaying <video> (no carousel chrome)
 2+ items -> a per-project Bootstrap carousel with arrows + indicator dots
+
+Video previews are muted/looping and have no controls -- they're click-
+through previews (the whole card navigates to the detail page), not a real
+player. Actual playback with sound/controls happens on the detail page.
+They only start playing once scrolled into view and only the active
+carousel slide plays at a time -- see the "autoplay-video" handling in
+static/js/main.js.
 {% endcomment %}
 {% with gallery=project.media_gallery %}
 {% if not gallery %}
@@ -14,7 +21,7 @@ grid and projects.html's list grid. Expects `project` in context.
 {% elif gallery|length == 1 %}
     {% with item=gallery.0 %}
         {% if item.type == 'video' %}
-            <video controls class="card-img-top project-image" preload="metadata">
+            <video class="card-img-top project-image autoplay-video" muted loop playsinline preload="metadata">
                 <source src="{{ item.url }}" type="video/{{ item.ext }}">
                 Your browser does not support the video tag.
             </video>
@@ -28,10 +35,9 @@ grid and projects.html's list grid. Expects `project` in context.
             {% for item in gallery %}
             <div class="carousel-item{% if forloop.first %} active{% endif %}">
                 {% if item.type == 'video' %}
-                    <video class="card-img-top project-image" muted preload="metadata">
-                        <source src="{{ item.url }}#t=0.1" type="video/{{ item.ext }}">
+                    <video class="card-img-top project-image autoplay-video" muted loop playsinline preload="metadata">
+                        <source src="{{ item.url }}" type="video/{{ item.ext }}">
                     </video>
-                    <span class="project-media-play-icon"><i class="fas fa-play"></i></span>
                 {% else %}
                     <img src="{{ item.url }}" class="card-img-top project-image lazy" alt="{{ project.title }}">
                 {% endif %}

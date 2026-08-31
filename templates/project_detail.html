@@ -18,7 +18,7 @@
                 {% elif gallery|length == 1 %}
                     {% with item=gallery.0 %}
                         {% if item.type == 'video' %}
-                            <video controls class="img-fluid rounded shadow-lg project-detail-image" preload="metadata">
+                            <video controls muted loop playsinline class="img-fluid rounded shadow-lg project-detail-image autoplay-video" preload="metadata">
                                 <source src="{{ item.url }}" type="video/{{ item.ext }}">
                                 Your browser does not support the video tag.
                             </video>
@@ -34,7 +34,7 @@
                             {% for item in gallery %}
                             <div class="carousel-item{% if forloop.first %} active{% endif %}">
                                 {% if item.type == 'video' %}
-                                    <video controls class="img-fluid rounded shadow-lg project-detail-image" preload="metadata">
+                                    <video controls muted loop playsinline class="img-fluid rounded shadow-lg project-detail-image autoplay-video" preload="metadata">
                                         <source src="{{ item.url }}" type="video/{{ item.ext }}">
                                         Your browser does not support the video tag.
                                     </video>
