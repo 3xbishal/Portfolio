@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'creative/base.html' %}
 {% load static %}
 {% load main_tags %}
 
@@ -209,11 +209,11 @@
                                 <h3>{{ project.title }}</h3>
                                 <p>{{ project.technologies_used|truncatechars:100 }}</p>
                                 <div class="visit-card-actions">
-                                    <a href="{{ project.get_absolute_url }}" class="visit-btn">
+                                    <a href="{% url 'creative:project_detail' project.slug %}" class="visit-btn">
                                         <i class="fas fa-arrow-right"></i> Visit
                                     </a>
-                                    {% if project.project_url %}
-                                        <a href="{{ project.project_url }}" target="_blank" class="visit-btn visit-btn-alt">
+                                    {% if project.live_url %}
+                                        <a href="{{ project.live_url }}" target="_blank" class="visit-btn visit-btn-alt">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     {% endif %}
@@ -243,7 +243,7 @@
                     <div class="visit-card-inner visit-card-end-inner">
                         <h3>That's a wrap!</h3>
                         <p>Want to see more or start a project?</p>
-                        <a href="{% url 'contact' %}" class="visit-btn visit-btn-lg">
+                        <a href="{% url 'creative:contact' %}" class="visit-btn visit-btn-lg">
                             <i class="fas fa-paper-plane"></i> Get In Touch
                         </a>
                     </div>
@@ -392,7 +392,7 @@
     <div class="scene-cta-content">
         <h2 data-reveal="up" data-reveal-delay="1">Let's Build Something Together</h2>
         <p data-reveal="up" data-reveal-delay="2">Have a project in mind? Let's create something amazing.</p>
-        <a href="{% url 'contact' %}" class="scene-cta-btn mb-3" data-reveal="up" data-reveal-delay="3">
+        <a href="{% url 'creative:contact' %}" class="scene-cta-btn mb-3" data-reveal="up" data-reveal-delay="3">
             <i class="fas fa-paper-plane me-2"></i>Get In Touch
         </a>
     </div>

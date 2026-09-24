@@ -1,34 +1,28 @@
-{% load static %}
-<!-- Footer -->
-<footer class="footer mt-5">
-    <div class="container text-center py-4">
-        {% if profile %}
-            <div class="mb-3">
-                {% if profile.linkedin_url %}
-                    <a href="{{ profile.linkedin_url }}" target="_blank" class="social-link linkedin" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                {% endif %}
-                {% if profile.github_url %}
-                    <a href="{{ profile.github_url }}" target="_blank" class="social-link github" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                {% endif %}
-                {% if profile.instagram_url %}
-                    <a href="{{ profile.instagram_url }}" target="_blank" class="social-link instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                {% endif %}
-                {% if profile.facebook_url %}
-                    <a href="{{ profile.facebook_url }}" target="_blank" class="social-link facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                {% endif %}
-                {% if profile.leetcode_url %}
-                    <a href="{{ profile.leetcode_url }}" target="_blank" class="social-link leetcode" aria-label="LeetCode"><i class="fas fa-laptop-code"></i></a>
-                {% endif %}
-                {% if profile.gmail_address %}
-                    <a href="mailto:{{ profile.gmail_address }}" class="social-link email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                {% endif %}
-                {% if profile.whatsapp_number %}
-                    <a href="https://wa.me/{{ profile.whatsapp_number|urlencode }}" target="_blank" class="social-link whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-md-4">
+                <span class="footer-name">{% if profile %}{{ profile.name }}{% else %}{{ site_name }}{% endif %}</span>
+                {% if profile and profile.title %}<span class="footer-title">{{ profile.title }}{% if profile.location %}, {{ profile.location }}{% endif %}</span>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <ul class="footer-nav justify-content-md-center" aria-label="Footer">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'projects' %}">Projects</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                {% if profile %}
+                    <div class="footer-social justify-content-md-end">
+                        {% include 'partials/_social_links.html' %}
+                    </div>
                 {% endif %}
             </div>
-            <p class="text-muted mb-0">&copy; {{ profile.name }} - {{ profile.title }}. All rights reserved.</p>
-        {% else %}
-            <p class="text-muted mb-0">&copy; My Portfolio. All rights reserved.</p>
-        {% endif %}
+        </div>
+        <div class="footer-bottom">
+            &copy; {% now "Y" %} {% if profile %}{{ profile.name }}{% else %}{{ site_name }}{% endif %}. All rights reserved.
+        </div>
     </div>
 </footer>

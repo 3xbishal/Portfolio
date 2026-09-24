@@ -149,7 +149,16 @@ After logging into the admin panel, you can manage all portfolio content:
 
 ### Change the Color Scheme
 
-Edit `static/css/style.css` and modify the gradient colors in the `.text-gradient`, `.btn-primary`, and `.btn-outline-primary` classes.
+The public site is styled by `static/css/site.css` (the admin panel uses `style.css` + `admin.css`). Change the colour tokens at the top of `site.css`: `--accent` is the brand colour, and the `html[data-bs-theme="dark"]` block holds the dark-mode values. After editing any file in `static/`, run `python manage.py collectstatic --noinput` so the hashed copies in `staticfiles/` are updated.
+
+### Two Designs: Professional and Creative
+
+The site serves two front ends from the same views, database and admin panel:
+
+- **Professional** (default, at `/`): `templates/*.html`, styled by `static/css/site.css`.
+- **Creative** (at `/creative/`): `templates/creative/`, routes in `main/creative_urls.py`, styled by `style.css` + `animated-bg.css` + `main.js`. It includes the Parallax and Gaming Zone pages; the old `/parallax/` and `/gaming-zone/` links redirect there.
+
+Each design lists the other one as a project, so visitors can open either from the Projects page: the professional design shows **Creative Portfolio** (slug `creative-portfolio`, links to `/creative/`) and the creative design shows **Professional Portfolio** (slug `professional-portfolio`, links to `/`). A design never lists its own project. Migrations `0012`/`0013` create both projects; their text is editable in the admin like any other project, and uploading screenshots replaces the bundled cover images. The mapping lives in `Project.DESIGN_SHOWCASES`.
 
 ### Add New Pages
 

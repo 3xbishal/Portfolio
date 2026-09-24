@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -104,8 +105,30 @@ class Skill(models.Model):
         return self.name
 
 
+class ProjectQuerySet(models.QuerySet):
+
+    def for_design(self, design):
+        """Projects to list on the given site design: everything except the
+        built-in project that showcases that same design (it would only link
+        back to the page the visitor is already on)."""
+        showcase = self.model.DESIGN_SHOWCASES.get(design)
+        return self.exclude(slug=showcase[0]) if showcase else self
+
+
 class Project(models.Model):
     """Portfolio project entry."""
+
+    # The public site has two designs that share all data: "professional"
+    # (the default, at /) and "creative" (at /creative/, see
+    # main/creative_urls.py). Each design has a built-in project that
+    # showcases it, and each design lists the *other* design's project, so a
+    # visitor on either one can open the other. Created by migrations
+    # 0012/0013 and matched by slug, so titles and text stay editable.
+    DESIGN_SHOWCASES = {
+        # design: (project slug, URL name of its home page, bundled cover image)
+        'professional': ('professional-portfolio', 'home', 'images/professional-portfolio.png'),
+        'creative': ('creative-portfolio', 'creative:home', 'images/creative-portfolio.png'),
+    }
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, help_text="URL-friendly slug")
@@ -125,6 +148,8 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = ProjectQuerySet.as_manager()
+
     class Meta:
         verbose_name = "Project"
         verbose_name_plural = "Projects"
@@ -135,6 +160,25 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('project_detail', kwargs={'slug': self.slug})
+
+    @property
+    def showcased_design(self):
+        """The site design this project showcases ('professional' or
+        'creative'), or None for an ordinary project."""
+        for design, (slug, _, _) in self.DESIGN_SHOWCASES.items():
+            if self.slug == slug:
+                return design
+        return None
+
+    @property
+    def live_url(self):
+        """Where the "Live site" button points. A design-showcase project
+        links to that design on this same site (a relative path can't be
+        stored in the URLField without failing admin validation)."""
+        design = self.showcased_design
+        if design:
+            return reverse(self.DESIGN_SHOWCASES[design][1])
+        return self.project_url
 
     @property
     def media_type(self):
@@ -162,6 +206,16 @@ class Project(models.Model):
                 'type': media.media_type,
                 'ext': os.path.splitext(media.file.name)[1].lstrip('.').lower(),
                 'caption': media.caption,
+            })
+        design = self.showcased_design
+        if not items and design:
+            # Bundled screenshot so the card never looks empty; any media
+            # uploaded in the admin replaces it.
+            items.append({
+                'url': static(self.DESIGN_SHOWCASES[design][2]),
+                'type': 'image',
+                'ext': 'png',
+                'caption': '',
             })
         return items
 

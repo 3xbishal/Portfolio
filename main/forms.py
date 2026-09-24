@@ -15,22 +15,24 @@ class ContactForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Your Name',
+                'placeholder': 'e.g. Jane Smith',
+                'autocomplete': 'name',
                 'required': True,
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Your Email',
+                'placeholder': 'you@company.com',
+                'autocomplete': 'email',
                 'required': True,
             }),
             'subject': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Subject',
+                'placeholder': 'e.g. New website for my business',
                 'required': True,
             }),
             'message': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'Your Message',
+                'placeholder': 'A few lines about what you need, your goals and your timeline.',
                 'rows': 6,
                 'required': True,
             }),

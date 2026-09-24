@@ -1,193 +1,144 @@
 {% extends 'base.html' %}
-{% load static %}
 {% load main_tags %}
 
-{% block title %}About - {{ profile.name|default:'My Portfolio' }}{% endblock %}
+{% block title %}About | {{ profile.name|default:site_name }}{% endblock %}
 
 {% block content %}
-<!-- About Hero - Terminal Style -->
-<section class="py-5">
+<header class="page-header">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10" data-aos="fade-up">
-                <div class="about-hero-card">
-                    <!-- Terminal header bar -->
-                    <div class="about-header-bar">
-                        <div class="about-dots">
-                            <span class="about-dot red"></span>
-                            <span class="about-dot yellow"></span>
-                            <span class="about-dot green"></span>
-                        </div>
-                        <span class="about-path"><i class="fas fa-folder-open"></i> ~/about/developer.sh</span>
+        <span class="eyebrow">About</span>
+        <h1 class="page-title">{% if profile %}{{ profile.name }}{% else %}About me{% endif %}</h1>
+        {% if profile %}<p class="page-lead">{{ profile.title }}{% if profile.location %}, based in {{ profile.location }}{% endif %}.</p>{% endif %}
+    </div>
+</header>
+
+<section class="pb-2">
+    <div class="container">
+        <div class="row g-5">
+            {# --- Profile card: photo, contact details, CV --- #}
+            <aside class="col-lg-4">
+                <div class="card-plain profile-card">
+                    <div class="hero-portrait">
+                        {% if profile and profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="Portrait of {{ profile.name }}">
+                        {% else %}
+                            <div class="portrait-placeholder" aria-hidden="true"><i class="fas fa-user"></i></div>
+                        {% endif %}
                     </div>
-                    <!-- Terminal body -->
-                    <div class="about-body">
-                        <div class="row align-items-center">
-                            <div class="col-lg-4 text-center mb-4 mb-lg-0">
-                                <div class="about-profile-wrap">
-                                    {% if profile and profile.profile_image %}
-                                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="lazy">
-                                    {% else %}
-                                        <div class="profile-image-lg-placeholder d-flex align-items-center justify-content-center mx-auto">
-                                            <i class="fas fa-user fa-7x text-muted"></i>
-                                        </div>
+                    {% if profile %}
+                        <ul class="contact-list">
+                            {% if profile.email %}
+                                <li><i class="fas fa-envelope" aria-hidden="true"></i><span><span class="label">Email</span><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></span></li>
+                            {% endif %}
+                            {% if profile.phone %}
+                                <li><i class="fas fa-phone" aria-hidden="true"></i><span><span class="label">Phone</span><a href="tel:{{ profile.phone|cut:' ' }}">{{ profile.phone }}</a></span></li>
+                            {% endif %}
+                            {% if profile.location %}
+                                <li><i class="fas fa-location-dot" aria-hidden="true"></i><span><span class="label">Location</span>{{ profile.location }}</span></li>
+                            {% endif %}
+                            {% if profile.linkedin_url %}
+                                <li><i class="fab fa-linkedin-in" aria-hidden="true"></i><span><span class="label">LinkedIn</span><a href="{{ profile.linkedin_url }}" target="_blank" rel="noopener">View profile</a></span></li>
+                            {% endif %}
+                            {% if profile.github_url %}
+                                <li><i class="fab fa-github" aria-hidden="true"></i><span><span class="label">GitHub</span><a href="{{ profile.github_url }}" target="_blank" rel="noopener">View code</a></span></li>
+                            {% endif %}
+                        </ul>
+                        <div class="d-grid gap-2">
+                            {% if profile.cv_file %}
+                                <a href="{{ profile.cv_file.url }}" class="btn btn-primary" download>
+                                    <i class="fas fa-file-arrow-down me-2" aria-hidden="true"></i>Download CV
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'contact' %}" class="btn btn-outline">Contact me</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </aside>
+
+            {# --- Main column --- #}
+            <div class="col-lg-8">
+                <div class="about-block">
+                    <h2>Profile</h2>
+                    <div class="prose">
+                        {% if profile %}
+                            {{ profile.bio|linebreaks }}
+                        {% else %}
+                            <p>Profile details have not been added yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="about-block">
+                    <h2>Work experience</h2>
+                    {% if experiences %}
+                        <ol class="timeline">
+                            {% for exp in experiences %}
+                            <li class="timeline-item">
+                                <div class="timeline-date">{{ exp.duration }}</div>
+                                <div>
+                                    <h3 class="timeline-title">
+                                        {% if exp.slug %}<a href="{{ exp.get_absolute_url }}">{{ exp.position }}</a>{% else %}{{ exp.position }}{% endif %}
+                                        {% if exp.is_current %}<span class="badge-current">Current</span>{% endif %}
+                                    </h3>
+                                    <p class="timeline-org">
+                                        {% if exp.company_website %}<a href="{{ exp.company_website }}" target="_blank" rel="noopener" class="text-reset">{{ exp.company }}</a>{% else %}{{ exp.company }}{% endif %}{% if exp.location %} · {{ exp.location }}{% endif %}
+                                    </p>
+                                    <p class="timeline-text">{{ exp.description|summary:40 }}</p>
+                                    {% if exp.slug %}
+                                        <a href="{{ exp.get_absolute_url }}" class="link-arrow mt-2">Read more <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                                     {% endif %}
                                 </div>
-                            </div>
-                            <div class="col-lg-8">
-                                {% if profile %}
-                                    <div class="about-info-line">
-                                        <span class="info-prompt">$</span>
-                                        <span class="info-label">cat</span>
-                                        <span class="info-value">/home/developer/name.txt</span>
-                                    </div>
-                                    <div class="about-info-line">
-                                        <span class="info-prompt">></span>
-                                        <span class="info-label">name:</span>
-                                        <span class="info-value" style="font-size: 1.3rem; font-weight: 700;">{{ profile.name }}</span>
-                                    </div>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <p class="text-muted">No work experience has been added yet.</p>
+                    {% endif %}
+                </div>
 
-                                    <div class="about-info-line">
-                                        <span class="info-prompt">$</span>
-                                        <span class="info-label">cat</span>
-                                        <span class="info-value">/home/developer/role.txt</span>
-                                    </div>
-                                    <div class="about-info-line">
-                                        <span class="info-prompt">></span>
-                                        <span class="info-label">role:</span>
-                                        <span class="info-value" style="color: var(--accent); font-weight: 600;">{{ profile.title }}</span>
-                                    </div>
-
-                                    <div class="about-bio-terminal">
-                                        {{ profile.bio|linebreaks }}
-                                    </div>
-
-                                    <div class="d-flex flex-wrap gap-3 mt-3">
-                                        {% if profile.email %}
-                                            <div class="about-info-line">
-                                                <span class="info-prompt">@</span>
-                                                <span class="info-value">{{ profile.email }}</span>
-                                            </div>
-                                        {% endif %}
-                                        {% if profile.phone %}
-                                            <div class="about-info-line">
-                                                <span class="info-prompt">#</span>
-                                                <span class="info-value">{{ profile.phone }}</span>
-                                            </div>
-                                        {% endif %}
-                                        {% if profile.location %}
-                                            <div class="about-info-line">
-                                                <span class="info-prompt">~</span>
-                                                <span class="info-value">{{ profile.location }}</span>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% else %}
-                                    <div class="about-info-line">
-                                        <span class="info-prompt">$</span>
-                                        <span class="info-label">echo</span>
-                                        <span class="info-value">"Profile not configured. Please add a profile in the admin panel."</span>
-                                    </div>
+                {% if educations %}
+                <div class="about-block">
+                    <h2>Education</h2>
+                    <ol class="timeline">
+                        {% for edu in educations %}
+                        <li class="timeline-item">
+                            <div class="timeline-date">{{ edu.duration }}</div>
+                            <div>
+                                <h3 class="timeline-title">
+                                    {{ edu.degree }}{% if edu.field_of_study %}, {{ edu.field_of_study }}{% endif %}
+                                    {% if edu.is_current %}<span class="badge-current">In progress</span>{% endif %}
+                                </h3>
+                                <p class="timeline-org">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
+                                {% if edu.grade %}
+                                    <p class="timeline-meta"><span>Result: {{ edu.grade }}</span></p>
+                                {% endif %}
+                                {% if edu.description %}
+                                    <p class="timeline-text mt-2">{{ edu.description }}</p>
                                 {% endif %}
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                        {% endfor %}
+                    </ol>
                 </div>
+                {% endif %}
+
+                {% if skills %}
+                <div class="about-block">
+                    <h2>Skills</h2>
+                    <ul class="tag-list">
+                        {% for skill in skills %}
+                            <li class="tag tag-lg">
+                                {% if skill.icon_class %}<i class="{{ skill.icon_class }}" aria-hidden="true"></i>{% endif %}
+                                {{ skill.name }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
 
-<!-- Experience & Education Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="row">
-                    <!-- Experience -->
-                    <div class="col-lg-6" data-aos="fade-right">
-                        <h2 class="fw-bold mb-4 section-title">Work Experience</h2>
-                        {% if experiences %}
-                            <div class="experience-timeline">
-                                {% for exp in experiences %}
-                                <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
-                                   data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
-                                   data-aos-delay="{{ forloop.counter|mul:100 }}">
-                                    <div class="experience-item">
-                                        <span class="text-primary fw-semibold d-block mb-1">{{ exp.duration }}</span>
-                                        <h3 class="h5 mb-1">{{ exp.position }}</h3>
-                                        <p class="text-muted mb-2">
-                                            {{ exp.company }}
-                                            {% if exp.location %} · {{ exp.location }}{% endif %}
-                                        </p>
-                                        <p class="mb-0 text-muted">{{ exp.description|truncatechars:150 }}</p>
-                                    </div>
-                                </a>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center text-muted">
-                                <p>No experience entries yet. Add them through the admin panel.</p>
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Education -->
-                    <div class="col-lg-6" data-aos="fade-right">
-                        <h2 class="fw-bold mb-4 section-title">Education</h2>
-                        {% if educations %}
-                            <div class="experience-timeline">
-                                {% for edu in educations %}
-                                <div class="experience-item"
-                                     data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
-                                     data-aos-delay="{{ forloop.counter|mul:100 }}">
-                                    <span class="text-primary fw-semibold d-block mb-1">{{ edu.duration }}</span>
-                                    <h3 class="h5 mb-1">{{ edu.degree }}</h3>
-                                    <p class="text-muted mb-2">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
-                                    {% if edu.field_of_study %}
-                                        <p class="text-muted small mb-1">Field: {{ edu.field_of_study }}</p>
-                                    {% endif %}
-                                    {% if edu.grade %}
-                                        <p class="text-muted small mb-0"><i class="fas fa-star me-1"></i>{{ edu.grade }}</p>
-                                    {% endif %}
-                                </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center text-muted">
-                                <p>No education entries yet. Add them through the admin panel.</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Skills Section - Clean Tag Cloud -->
-{% if skills %}
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="fw-bold section-title">Skills & Expertise</h2>
-            <p class="text-muted">// Technologies I work with</p>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="text-center">
-                    {% for skill in skills %}
-                    <span class="skill-tag" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|mul:30 }}">
-                        {% if skill.icon_class %}
-                            <i class="{{ skill.icon_class }}"></i>
-                        {% endif %}
-                        {{ skill.name }}
-                    </span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-{% endif %}
+{% include 'partials/_cta.html' %}
 {% endblock %}

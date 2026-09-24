@@ -12,6 +12,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Custom admin panel (replaces Django built-in admin)
     path('admin/', include('main.admin_urls', namespace='admin_panel')),
+    # "Creative" design of the public site, same views and data (see main/creative_urls.py)
+    path('creative/', include('main.creative_urls')),
     # Public portfolio site
     path('', include('main.urls')),
 ]

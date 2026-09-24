@@ -1,0 +1,28 @@
+{% comment %}
+Icon links for the profile's contact/social accounts. Used by the home hero
+and the footer. Expects `profile` in context; renders nothing for blank
+fields. Ordered by what a client is most likely to use first.
+{% endcomment %}
+{% with email=profile.email|default:profile.gmail_address %}
+{% if email %}
+    <a href="mailto:{{ email }}" class="social-link" aria-label="Email {{ profile.name }}" title="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a>
+{% endif %}
+{% endwith %}
+{% if profile.linkedin_url %}
+    <a href="{{ profile.linkedin_url }}" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn profile" title="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+{% endif %}
+{% if profile.github_url %}
+    <a href="{{ profile.github_url }}" target="_blank" rel="noopener" class="social-link" aria-label="GitHub profile" title="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+{% endif %}
+{% if profile.whatsapp_number %}
+    <a href="https://wa.me/{{ profile.whatsapp_number|cut:'+'|cut:' '|cut:'-' }}" target="_blank" rel="noopener" class="social-link" aria-label="Message on WhatsApp" title="WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+{% endif %}
+{% if profile.leetcode_url %}
+    <a href="{{ profile.leetcode_url }}" target="_blank" rel="noopener" class="social-link" aria-label="LeetCode profile" title="LeetCode"><i class="fas fa-code" aria-hidden="true"></i></a>
+{% endif %}
+{% if profile.facebook_url %}
+    <a href="{{ profile.facebook_url }}" target="_blank" rel="noopener" class="social-link" aria-label="Facebook profile" title="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+{% endif %}
+{% if profile.instagram_url %}
+    <a href="{{ profile.instagram_url }}" target="_blank" rel="noopener" class="social-link" aria-label="Instagram profile" title="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+{% endif %}

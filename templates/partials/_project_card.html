@@ -1,0 +1,36 @@
+{% load main_tags %}
+{% comment %}
+One project card. Used by home.html (featured work) and projects.html.
+Expects `project` in context. The title link stretches over the whole card;
+the live/source links sit above it so they stay separately clickable.
+{% endcomment %}
+<article class="card-plain project-card">
+    {% include 'partials/_project_card_media.html' with project=project %}
+    <div class="project-card-body">
+        <h3 class="project-card-title">
+            <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
+        </h3>
+        <p class="project-card-text">{{ project.description|summary:24 }}</p>
+        {% if project.technologies_used %}
+            <ul class="tag-list" aria-label="Technologies">
+                {% for tech in project.technologies_used|split:","|slice:":4" %}
+                    {% if tech %}<li class="tag">{{ tech }}</li>{% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if project.live_url or project.github_url %}
+            <div class="project-card-links">
+                {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" rel="noopener">
+                        <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>Live site
+                    </a>
+                {% endif %}
+                {% if project.github_url %}
+                    <a href="{{ project.github_url }}" target="_blank" rel="noopener">
+                        <i class="fab fa-github" aria-hidden="true"></i>Source code
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</article>

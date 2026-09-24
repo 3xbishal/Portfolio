@@ -1,80 +1,62 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ site_name|default:'My Portfolio' }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% if profile %}{{ profile.name }}, {{ profile.title }}. {{ profile.bio|striptags|truncatewords:28 }}{% endif %}{% endblock %}">
+    <meta name="color-scheme" content="light dark">
 
-    <!-- Favicon -->
+    <!-- Link previews (LinkedIn, WhatsApp, Slack, email clients) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}{% if profile %}{{ profile.name }} | {{ profile.title }}{% else %}{{ site_name }}{% endif %}{% endblock %}">
+    <meta property="og:description" content="{% if profile %}{{ profile.bio|striptags|truncatewords:28 }}{% endif %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if profile and profile.profile_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.profile_image.url }}">
+    {% endif %}
+
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- Apply the saved (or system) theme before anything paints -->
+    <script>
+        (function () {
+            var dark = false;
+            try {
+                var saved = localStorage.getItem('dark_mode');
+                dark = saved === null
+                    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                    : saved === 'true';
+            } catch (e) {}
+            document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-
-    <!-- AOS - Animate On Scroll -->
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-
-    <!-- Fancybox - Lightbox Gallery -->
-    <link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" rel="stylesheet">
-
-    <!-- Animated Background CSS -->
-    <link rel="stylesheet" href="{% static 'css/animated-bg.css' %}">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    <!-- Page Loading Screen -->
-    <div id="pageLoader" class="page-loader">
-        <div class="loader-content">
-            <div class="loader-ring"></div>
-            <div class="loader-ring"></div>
-            <div class="loader-ring"></div>
-            <div class="loader-icon">
-                <i class="fas fa-code"></i>
-            </div>
-            <p class="loader-text">Loading...</p>
-        </div>
-    </div>
+    <a class="skip-link" href="#main">Skip to main content</a>
 
-    <!-- Animated Background Container -->
-    <div class="animated-bg" aria-hidden="true"></div>
-
-    <!-- Header / Navigation -->
     {% include 'partials/_header.html' %}
 
-    <!-- Main Content -->
-    <main class="page-content-wrapper">
+    <main id="main" class="page-content-wrapper">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     {% include 'partials/_footer.html' %}
 
-    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- AOS - Animate On Scroll -->
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-
-    <!-- Fancybox - Lightbox Gallery -->
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
-
-    <!-- Animated Background JS (floating particles with neural connections) -->
-    <script src="{% static 'js/animated-bg.js' %}"></script>
-
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="{% static 'js/site.js' %}"></script>
 
     {% block extra_js %}{% endblock %}
 </body>

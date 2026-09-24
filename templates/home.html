@@ -1,192 +1,76 @@
 {% extends 'base.html' %}
-{% load static %}
 {% load main_tags %}
 
-{% block title %}{{ profile.name|default:'Developer' }} - {{ profile.title|default:'Portfolio' }}{% endblock %}
+{% block title %}{% if profile %}{{ profile.name }} | {{ profile.title }}{% else %}{{ site_name }}{% endif %}{% endblock %}
 
 {% block body_class %}home-page{% endblock %}
 
 {% block content %}
-    <!-- Hero Section - Artistic Top Section -->
-    <section class="hero-section artistic-hero min-vh-100 d-flex align-items-center">
-        <!-- Artistic decorative elements -->
-        <div class="hero-decorations" aria-hidden="true">
-            <div class="deco-circle deco-circle-1"></div>
-            <div class="deco-circle deco-circle-2"></div>
-            <div class="deco-circle deco-circle-3"></div>
-            <div class="deco-line deco-line-1"></div>
-            <div class="deco-line deco-line-2"></div>
-            <div class="deco-dot deco-dot-1"></div>
-            <div class="deco-dot deco-dot-2"></div>
-            <div class="deco-dot deco-dot-3"></div>
-            <div class="deco-dot deco-dot-4"></div>
-            <div class="deco-geo deco-geo-1"></div>
-            <div class="deco-geo deco-geo-2"></div>
-            <div class="hero-signature">{{ profile.name|default:'Artist' }}</div>
-        </div>
-
-        <div class="container">
-            <div class="row align-items-start">
-                <div class="col-lg-6 hero-content">
-                    {% if profile %}
-                        <div class="hero-greeting mb-3" data-aos="fade-up" data-aos-delay="100">
-                            <span class="greeting-badge">
-                                <i class="fas fa-hand-sparkles me-2"></i>Hello
-                            </span>
-                        </div>
-                        <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">
-                            I'm <span class="text-gradient name-highlight">{{ profile.name }}</span>
-                        </h1>
-                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-right" data-aos-delay="340">
-                            <p class="hero-subtitle">{{ profile.title }}</p>
-                            <div class="subtitle-underline"></div>
-                        </div>
-                        <div class="hero-bio-wrapper mb-5" data-aos="fade-up" data-aos-delay="430">
-                            <p class="hero-bio">{{ profile.bio|truncatewords:30 }}</p>
-                        </div>
-                        <div class="hero-actions d-flex flex-wrap gap-3" data-aos="zoom-in-up" data-aos-delay="540">
-                            <a href="{% url 'projects' %}" class="btn btn-primary btn-lg px-4 artistic-btn">
-                                <i class="fas fa-folder-open me-2"></i>View My Work
+{# --- Introduction: who I am, what I do, and what to do next --- #}
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                {% if profile %}
+                    <p class="hero-role">
+                        <span class="role">{{ profile.title }}</span>
+                        {% if profile.location %}
+                            <span class="sep" aria-hidden="true"></span>
+                            <span><i class="fas fa-location-dot me-1" aria-hidden="true"></i>{{ profile.location }}</span>
+                        {% endif %}
+                    </p>
+                    <h1 class="hero-name">{{ profile.name }}</h1>
+                    <p class="hero-bio">{{ profile.bio|striptags|truncatewords:60 }}</p>
+                    <div class="hero-actions">
+                        <a href="{% url 'projects' %}" class="btn btn-primary btn-lg">View my work</a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline btn-lg">Contact me</a>
+                        {% if profile.cv_file %}
+                            <a href="{{ profile.cv_file.url }}" class="btn-link-plain" download>
+                                <i class="fas fa-file-arrow-down" aria-hidden="true"></i>Download CV
                             </a>
-                            <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4 artistic-btn-outline">
-                                <i class="fas fa-envelope me-2"></i>Get In Touch
-                            </a>
-                            {% if profile.cv_file %}
-                                <a href="{{ profile.cv_file.url }}" class="btn btn-outline-secondary btn-lg px-4 artistic-btn-outline" download>
-                                    <i class="fas fa-download me-2"></i>Download CV
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="hero-greeting mb-3" data-aos="fade-up" data-aos-delay="100">
-                            <span class="greeting-badge">
-                                <i class="fas fa-hand-sparkles me-2"></i>Hello
-                            </span>
-                        </div>
-                        <h1 class="hero-title artistic-title mb-4" data-aos="fade-right" data-aos-delay="220">Welcome to My Portfolio</h1>
-                        <div class="hero-subtitle-wrapper mb-4" data-aos="fade-right" data-aos-delay="340">
-                            <p class="hero-subtitle">Web Developer</p>
-                            <div class="subtitle-underline"></div>
-                        </div>
-                        <div class="hero-bio-wrapper mb-5" data-aos="fade-up" data-aos-delay="430">
-                            <p class="hero-bio">Please configure your profile in the admin panel.</p>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="col-lg-6 hero-visual d-flex justify-content-center" data-aos="zoom-in-left" data-aos-delay="280">
-                    <div class="hero-image-wrapper">
-                        {% if profile and profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="profile-image lazy">
-                        {% else %}
-                            <div class="profile-image-placeholder d-flex align-items-center justify-content-center">
-                                <i class="fas fa-user fa-7x text-muted"></i>
-                            </div>
                         {% endif %}
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<!-- ===== Coding Vibe Section ===== -->
-<div class="container">
-    <div class="text-center pt-3" data-aos="fade-up">
-        <h2 class="coding-heading">
-            <span class="prompt">$</span>
-            <span class="typing-text" id="typingHeading">./about-developer.sh</span>
-        </h2>
-    </div>
-</div>
-<!-- Featured Projects Section -->
-{% if featured_projects %}
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="fw-bold section-title">Featured Projects</h2>
-            <p class="text-muted">Some of my recent work</p>
-        </div>
-        <div class="row g-4">
-            {% for project in featured_projects %}
-            <div class="col-md-6 col-lg-4"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}zoom-in{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
-                 data-aos-delay="{{ forloop.counter|mul:100 }}">
-                <div class="card h-100 shadow-sm project-card">
-                    <a href="{{ project.get_absolute_url }}" class="project-card-link" aria-hidden="true" tabindex="-1"></a>
-                    {% include 'partials/_project_card_media.html' with project=project %}
-                    <div class="card-body d-flex flex-column">
-                        <h3 class="h5 card-title">{{ project.title }}</h3>
-                        <p class="card-text text-muted small flex-grow-1">{{ project.technologies_used|truncatechars:120 }}</p>
-                        <a href="{{ project.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-auto">
-                            <i class="fas fa-arrow-right me-1"></i>View Details
-                        </a>
+                    <div class="hero-social">
+                        {% include 'partials/_social_links.html' %}
                     </div>
+                {% else %}
+                    <h1 class="hero-name">Welcome</h1>
+                    <p class="hero-bio">This portfolio is being set up. Please add a profile in the admin panel.</p>
+                {% endif %}
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-portrait">
+                    {% if profile and profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Portrait of {{ profile.name }}" fetchpriority="high">
+                    {% else %}
+                        <div class="portrait-placeholder" aria-hidden="true"><i class="fas fa-user"></i></div>
+                    {% endif %}
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="text-center mt-5" data-aos="zoom-in">
-            <a href="{% url 'projects' %}" class="btn btn-primary px-5">View All Projects</a>
         </div>
     </div>
 </section>
-{% endif %}
 
-<!-- Services Section -->
+{# --- Services --- #}
 {% if services %}
-<section class="py-5">
+<section class="section section-alt" aria-labelledby="services-title">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-right">
-            <h2 class="fw-bold section-title">What I Do</h2>
-            <p class="text-muted">Services I offer</p>
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Services</span>
+                <h2 class="section-title" id="services-title">How I can help</h2>
+                <p class="section-intro">The kind of work I take on for clients and teams.</p>
+            </div>
         </div>
         <div class="row g-4">
             {% for service in services %}
-            <div class="col-md-6 col-lg-4"
-                 data-aos="{% if forloop.counter|divisibleby:3 %}flip-up{% elif forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
-                 data-aos-delay="{{ forloop.counter|mul:100 }}">
-                <div class="card h-100 shadow-sm service-card text-center p-4">
-                    {% if service.icon_class %}
-                        <div class="service-icon mx-auto">
-                            <i class="{{ service.icon_class }}"></i>
-                        </div>
-                    {% endif %}
-                    <h3 class="h5 card-title">{{ service.title }}</h3>
-                    <p class="card-text text-muted small">{{ service.description|truncatechars:150 }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Skills Section - Interactive Skill Cards -->
-{% if skills %}
-<section class="py-5 skills-showcase-section">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="fw-bold section-title">Skills & Expertise</h2>
-            <p class="text-muted">// Technologies I work with</p>
-        </div>
-        <div class="row g-4 justify-content-center">
-            {% for skill in skills %}
-            <div class="col-6 col-md-4 col-lg-3 col-xl-2"
-                 data-aos="zoom-in"
-                 data-aos-delay="{{ forloop.counter|mul:60 }}">
-                <div class="skill-showcase-card">
-                    <div class="skill-showcase-inner">
-                        {% if skill.icon_class %}
-                            <div class="skill-showcase-icon">
-                                <i class="{{ skill.icon_class }}"></i>
-                            </div>
-                        {% else %}
-                            <div class="skill-showcase-icon">
-                                <i class="fas fa-terminal"></i>
-                            </div>
-                        {% endif %}
-                        <h3 class="skill-showcase-name">{{ skill.name }}</h3>
+            <div class="col-md-6 col-lg-4">
+                <div class="card-plain service-card">
+                    <div class="service-icon" aria-hidden="true">
+                        <i class="{{ service.icon_class|default:'fas fa-check' }}"></i>
                     </div>
-                    <div class="skill-showcase-glow"></div>
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
                 </div>
             </div>
             {% endfor %}
@@ -195,94 +79,118 @@
 </section>
 {% endif %}
 
-<!-- Experience Preview Section -->
+{# --- Selected work --- #}
+{% if featured_projects %}
+<section class="section" aria-labelledby="work-title">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Portfolio</span>
+                <h2 class="section-title" id="work-title">Selected work</h2>
+                <p class="section-intro">Recent projects. Open any project for screenshots, details and links.</p>
+            </div>
+            <a href="{% url 'projects' %}" class="link-arrow">All projects <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for project in featured_projects %}
+            <div class="col-md-6 col-lg-4">
+                {% include 'partials/_project_card.html' with project=project %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# --- Experience --- #}
 {% if experiences %}
-<section class="py-5">
+<section class="section section-alt" aria-labelledby="experience-title">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-right">
-            <h2 class="fw-bold section-title">Recent Experience</h2>
-            <p class="text-muted">My professional background</p>
-        </div>
-        <div class="row justify-content-center">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <span class="eyebrow">Experience</span>
+                <h2 class="section-title" id="experience-title">Where I've worked</h2>
+                <p class="section-intro mb-3">My most recent roles.</p>
+                <a href="{% url 'about' %}" class="link-arrow">Full background <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
             <div class="col-lg-8">
-                <div class="experience-timeline">
+                <ol class="timeline">
                     {% for exp in experiences %}
-                    <a href="{{ exp.get_absolute_url }}" class="text-decoration-none"
-                       data-aos="{% if forloop.counter|divisibleby:2 %}fade-right{% else %}fade-right{% endif %}"
-                       data-aos-delay="{{ forloop.counter|mul:100 }}">
-                        <div class="experience-item">
-                            <div class="d-flex justify-content-between">
-                                <h3 class="h5 mb-1 text-decoration-none">{{ exp.position }}</h3>
-                                <span class="text-muted small">{{ exp.duration }}</span>
-                            </div>
-                            <p class="text-muted mb-1 text-decoration-none">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</p>
-                            <p class="small text-muted mb-0 text-decoration-none">{{ exp.description|truncatechars:150 }}</p>
+                    <li class="timeline-item">
+                        <div class="timeline-date">{{ exp.duration }}</div>
+                        <div>
+                            <h3 class="timeline-title">
+                                {% if exp.slug %}<a href="{{ exp.get_absolute_url }}">{{ exp.position }}</a>{% else %}{{ exp.position }}{% endif %}
+                                {% if exp.is_current %}<span class="badge-current">Current</span>{% endif %}
+                            </h3>
+                            <p class="timeline-org">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</p>
+                            <p class="timeline-text">{{ exp.description|summary:30 }}</p>
                         </div>
-                    </a>
+                    </li>
                     {% endfor %}
-                </div>
-                <div class="text-center mt-4" data-aos="zoom-in">
-                    <a href="{% url 'about' %}" class="btn btn-outline-primary">View Full Experience</a>
-                </div>
+                </ol>
             </div>
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- Testimonials Section -->
-{% if testimonials %}
-<section class="py-5 bg-light">
+{# --- Skills --- #}
+{% if skills %}
+<section class="section" aria-labelledby="skills-title">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="fw-bold section-title">What People Say</h2>
-            <p class="text-muted">Testimonials from clients and colleagues</p>
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Skills</span>
+                <h2 class="section-title" id="skills-title">Technologies I use</h2>
+                <p class="section-intro">Languages, frameworks and tools I work with day to day.</p>
+            </div>
         </div>
-        <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                {% for testimonial in testimonials %}
-                    <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
-                {% endfor %}
+        <ul class="tag-list">
+            {% for skill in skills %}
+                <li class="tag tag-lg">
+                    {% if skill.icon_class %}<i class="{{ skill.icon_class }}" aria-hidden="true"></i>{% endif %}
+                    {{ skill.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+
+{# --- Testimonials: shown all at once, not in a rotating carousel --- #}
+{% if testimonials %}
+<section class="section section-alt" aria-labelledby="testimonials-title">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Testimonials</span>
+                <h2 class="section-title" id="testimonials-title">What clients and colleagues say</h2>
             </div>
-            <div class="carousel-inner">
-                {% for testimonial in testimonials %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8 text-center">
-                                {% if testimonial.image %}
-                                    <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="testimonial-img">
-                                {% else %}
-                                    <div class="testimonial-img d-inline-flex align-items-center justify-content-center bg-light rounded-circle" style="width:80px;height:80px;">
-                                        <i class="fas fa-user fa-2x text-muted"></i>
-                                    </div>
-                                {% endif %}
-                                <blockquote class="blockquote mb-4">
-                                    <p class="mb-0 fst-italic">"{{ testimonial.content }}"</p>
-                                </blockquote>
-                                <figcaption class="blockquote-footer mb-0">
-                                    <strong>{{ testimonial.name }}</strong>
-                                    {% if testimonial.position %}
-                                        <span class="text-muted">, {{ testimonial.position }}</span>
-                                    {% endif %}
-                                    {% if testimonial.company %}
-                                        <span class="text-muted"> — {{ testimonial.company }}</span>
-                                    {% endif %}
-                                </figcaption>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+        </div>
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6 col-lg-4">
+                <figure class="card-plain testimonial-card">
+                    <blockquote>{{ testimonial.content }}</blockquote>
+                    <figcaption>
+                        {% if testimonial.image %}
+                            <img src="{{ testimonial.image.url }}" alt="" class="testimonial-avatar" loading="lazy">
+                        {% else %}
+                            <span class="testimonial-avatar" aria-hidden="true"><i class="fas fa-user"></i></span>
+                        {% endif %}
+                        <span>
+                            <span class="testimonial-name">{{ testimonial.name }}</span>
+                            <span class="testimonial-role">{{ testimonial.position }}{% if testimonial.company %}, {{ testimonial.company }}{% endif %}</span>
+                        </span>
+                    </figcaption>
+                </figure>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
+
+{% include 'partials/_cta.html' %}
 {% endblock %}
