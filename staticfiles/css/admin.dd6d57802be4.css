@@ -1,0 +1,205 @@
+/*
+  Professional Admin Styles — Light + Dark
+  - Left navigation with clear active state
+  - Sidebar overlays content on small screens (does not shrink content)
+  - Compact collapsed sidebar for desktop
+  - Accessible focus states
+  - Card/form hover "lift" animation disabled (admin panel only)
+  - Dark mode toggled via body.dark-mode (shared #darkModeToggle wiring in main.js)
+*/
+
+:root{
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-alt: #f1f3f6;
+  --text: #111111;
+  --muted: #5f6368;
+  --primary: #800000;
+  --primary-hover: #6b0000;
+  --primary-10: rgba(128,0,0,0.08);
+  --border: #e6eef8;
+  --shadow: rgba(0,0,0,0.06);
+  --input-bg: #ffffff;
+  --input-border: #d7dee8;
+  --overlay-hover: rgba(0,0,0,0.04);
+  --table-stripe: rgba(0,0,0,0.03);
+  --table-active: rgba(0,0,0,0.06);
+  --table-hover: rgba(0,0,0,0.035);
+  --alert-danger-bg: #f8d7da; --alert-danger-border: #f1aeb5; --alert-danger-text: #842029;
+  --alert-success-bg: #d1e7dd; --alert-success-border: #a3cfbb; --alert-success-text: #0f5132;
+  --alert-warning-bg: #fff3cd; --alert-warning-border: #ffe69c; --alert-warning-text: #664d03;
+  --alert-info-bg: #cff4fc; --alert-info-border: #9eeaf9; --alert-info-text: #055160;
+  --sidebar-w: 250px;
+  --sidebar-collapsed: 72px;
+  --topbar-h: 64px;
+}
+
+/* Dark mode palette */
+body.dark-mode{
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-alt: #141414;
+  --text: #f0f0f0;
+  --muted: #a0a0a0;
+  --primary: #d44a4a;
+  --primary-hover: #e06060;
+  --primary-10: rgba(212,74,74,0.16);
+  --border: rgba(255,255,255,0.12);
+  --shadow: rgba(0,0,0,0.4);
+  --input-bg: #202020;
+  --input-border: rgba(255,255,255,0.16);
+  --overlay-hover: rgba(255,255,255,0.08);
+  --table-stripe: rgba(255,255,255,0.03);
+  --table-active: rgba(255,255,255,0.06);
+  --table-hover: rgba(255,255,255,0.05);
+  --alert-danger-bg: rgba(239,68,68,0.14); --alert-danger-border: rgba(239,68,68,0.35); --alert-danger-text: #ff9b9b;
+  --alert-success-bg: rgba(34,197,94,0.14); --alert-success-border: rgba(34,197,94,0.35); --alert-success-text: #7ee2a8;
+  --alert-warning-bg: rgba(234,179,8,0.14); --alert-warning-border: rgba(234,179,8,0.35); --alert-warning-text: #fbd674;
+  --alert-info-bg: rgba(59,130,246,0.14); --alert-info-border: rgba(59,130,246,0.35); --alert-info-text: #8fb8fb;
+}
+
+/* Base */
+html,body{height:100%}
+body.admin-body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;transition:background-color .2s ease,color .2s ease}
+
+/* Layout */
+.admin-layout{min-height:100vh;display:flex}
+
+/* Sidebar */
+.admin-sidebar{width:var(--sidebar-w);position:fixed;left:0;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--border);z-index:2200;overflow:auto;padding:16px}
+.admin-sidebar .brand{display:flex;align-items:center;gap:10px;padding:6px 0;margin-bottom:14px}
+.admin-sidebar .brand .logo{width:40px;height:40px;border-radius:6px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.admin-sidebar .brand .title{font-weight:700;color:var(--text);font-size:1rem}
+
+.admin-sidebar .nav{margin-top:6px}
+.admin-sidebar .nav-link{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;color:var(--muted);text-decoration:none}
+.admin-sidebar .nav-link i{width:28px;text-align:center;color:var(--primary)}
+.admin-sidebar .nav-link:hover{background:var(--primary-10);color:var(--text)}
+.admin-sidebar .nav-link.active{background:var(--primary-10);color:var(--text);font-weight:600}
+.admin-sidebar .nav-link .badge{margin-left:auto}
+.admin-sidebar hr{border-color:var(--border);opacity:1}
+
+/* Collapsed sidebar on desktop */
+body.sidebar-collapsed .admin-sidebar{width:var(--sidebar-collapsed)}
+body.sidebar-collapsed .admin-sidebar .title,body.sidebar-collapsed .admin-sidebar .nav-link span{display:none}
+
+/* Main content on desktop leaves room for the sidebar */
+.admin-main{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));z-index:1;transition:margin-left .22s ease,width .22s ease}
+body.sidebar-collapsed .admin-main{margin-left:var(--sidebar-collapsed);width:calc(100% - var(--sidebar-collapsed))}
+.admin-content{padding:20px}
+
+/* Topbar */
+.admin-topbar{height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 8px;border-bottom:1px solid var(--border);background:transparent}
+.admin-topbar .page-title{font-weight:700;color:var(--text)}
+.admin-topbar .search{flex:1;margin:0 12px}
+
+/* Toggle */
+#adminSidebarToggle{position:fixed;left:12px;top:12px;z-index:2300;background:var(--surface);border:1px solid var(--border);padding:8px;border-radius:8px;display:inline-flex;align-items:center;gap:8px;color:var(--text)}
+#adminSidebarToggle .admin-toggle-label{font-weight:600;color:var(--text)}
+#darkModeToggle.active{background-color:var(--primary-10);border-color:var(--primary);color:var(--text)}
+
+/* Bootstrap primary overrides for the admin accent color */
+.admin-body .btn-primary{background-color:var(--primary);border-color:var(--primary);color:#fff}
+.admin-body .btn-primary:hover,.admin-body .btn-primary:focus{background-color:var(--primary-hover);border-color:var(--primary-hover)}
+.admin-body .btn-outline-primary{color:var(--primary);border-color:var(--primary)}
+.admin-body .btn-outline-primary:hover{background-color:var(--primary-10);border-color:var(--primary);color:var(--text)}
+.admin-body .btn-outline-secondary{color:var(--text);border-color:var(--border)}
+.admin-body .btn-outline-secondary:hover{background-color:var(--overlay-hover);border-color:var(--border);color:var(--text)}
+.admin-body .text-primary{color:var(--primary)!important}
+.admin-body .bg-primary{background-color:var(--primary)!important}
+.admin-body .badge.bg-primary{background-color:var(--primary)!important}
+.admin-body .text-muted{color:var(--muted)!important}
+.admin-body .border{border-color:var(--border)!important}
+
+/* Backdrop for overlay */
+.admin-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);opacity:0;visibility:hidden;transition:opacity .22s;z-index:2100}
+body.sidebar-open .admin-backdrop{opacity:1;visibility:visible}
+
+/* Mobile: overlay sidebar */
+@media (max-width:991.98px){
+  .admin-sidebar{transform:translateX(-110%);width:min(calc(100vw - 48px),320px);box-shadow:0 20px 80px rgba(0,0,0,0.3);transition:transform .22s ease}
+  body.sidebar-open .admin-sidebar{transform:translateX(0)}
+  #adminSidebarToggle .admin-toggle-label{display:none}
+  .admin-main{margin-left:0;width:100%}
+  body.sidebar-open .admin-main{margin-left:0;width:100%}
+}
+
+/* Forms / cards */
+.form-card{padding:12px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.dashboard-card{min-height:220px;display:flex;flex-direction:column;justify-content:center}
+.dashboard-card .display-6{font-size:2rem}
+.table-responsive{border-radius:8px;overflow:hidden}
+
+/* Cards (Bootstrap .card is used throughout for stats, lists and forms) */
+.admin-body .card{background:var(--surface);color:var(--text);border-color:var(--border)}
+.admin-body .card-header{background:var(--surface-alt);color:var(--text);border-color:var(--border)}
+.admin-body .card-footer{background:var(--surface-alt);border-color:var(--border)}
+.admin-body .bg-light{background:var(--surface-alt)!important;color:var(--text)}
+
+/* Card/form hover "lift" is disabled inside the admin panel: reset to the resting state */
+.admin-body .card:hover,
+.admin-body .glass-card:hover{
+  transform:translateZ(0);
+  box-shadow:0 8px 25px var(--shadow);
+}
+
+/* Tables */
+.admin-body .table{
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--text);
+  --bs-table-border-color: var(--border);
+  --bs-table-striped-bg: var(--table-stripe);
+  --bs-table-striped-color: var(--text);
+  --bs-table-active-bg: var(--table-active);
+  --bs-table-active-color: var(--text);
+  --bs-table-hover-bg: var(--table-hover);
+  --bs-table-hover-color: var(--text);
+  color:var(--text);
+}
+.admin-body .table thead th{color:var(--muted);border-bottom-color:var(--border);font-weight:600}
+
+/* List groups */
+.admin-body .list-group-item{background:var(--surface);color:var(--text);border-color:var(--border)}
+
+/* Dropdowns */
+.admin-body .dropdown-menu{background:var(--surface);border-color:var(--border);color:var(--text);box-shadow:0 8px 25px var(--shadow)}
+.admin-body .dropdown-item{color:var(--text)}
+.admin-body .dropdown-item:hover,.admin-body .dropdown-item:focus{background:var(--primary-10);color:var(--text)}
+.admin-body .dropdown-divider{border-color:var(--border)}
+
+/* Form controls */
+.admin-body .form-control,.admin-body .form-select{background-color:var(--input-bg);border-color:var(--input-border);color:var(--text)}
+.admin-body .form-control::placeholder{color:var(--muted)}
+.admin-body .form-control:focus,.admin-body .form-select:focus{background-color:var(--input-bg);border-color:var(--primary);color:var(--text);box-shadow:0 0 0 .2rem var(--primary-10)}
+.admin-body .form-label{color:var(--text)}
+.admin-body .form-text{color:var(--muted)}
+.admin-body .input-group-text{background:var(--surface-alt);border-color:var(--input-border);color:var(--muted)}
+.admin-body .form-check-input{background-color:var(--input-bg);border-color:var(--input-border)}
+.admin-body .form-check-input:checked{background-color:var(--primary);border-color:var(--primary)}
+body.dark-mode.admin-body input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px var(--input-bg) inset;-webkit-text-fill-color:var(--text)}
+
+/* Alerts */
+.admin-body .alert{border:1px solid var(--border);color:var(--text)}
+.admin-body .alert-danger{background:var(--alert-danger-bg);border-color:var(--alert-danger-border);color:var(--alert-danger-text)}
+.admin-body .alert-success{background:var(--alert-success-bg);border-color:var(--alert-success-border);color:var(--alert-success-text)}
+.admin-body .alert-warning{background:var(--alert-warning-bg);border-color:var(--alert-warning-border);color:var(--alert-warning-text)}
+.admin-body .alert-info{background:var(--alert-info-bg);border-color:var(--alert-info-border);color:var(--alert-info-text)}
+body.dark-mode.admin-body .btn-close{filter:invert(1) grayscale(100%) brightness(1.8)}
+
+/* Pagination */
+.admin-body .page-link{background:var(--surface);border-color:var(--border);color:var(--text)}
+.admin-body .page-item.disabled .page-link{background:var(--surface-alt);color:var(--muted);border-color:var(--border)}
+.admin-body .page-item.active .page-link{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* Login page */
+.admin-login-container{padding:24px}
+.admin-login-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;box-shadow:0 8px 25px var(--shadow)}
+
+/* File Manager */
+.fm-dropzone{border:2px dashed var(--border);border-radius:8px;padding:28px;text-align:center;color:var(--muted);transition:border-color .15s ease,background-color .15s ease}
+.fm-dropzone-active{border-color:var(--primary);background:var(--primary-10)}
+
+/* Accessibility */
+.admin-sidebar .nav-link:focus{outline:2px solid var(--primary-10);outline-offset:2px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
