@@ -1,11 +1,8 @@
 {% extends 'admin_panel/base.html' %}
-{% block title %}Delete Skill{% endblock %}
+{% block title %}Delete skill{% endblock %}
 {% block content %}
-<h1 class="h4 mb-3">Delete Skill</h1>
-<p class="text-muted">Are you sure you want to delete <strong>{{ object.name }}</strong>?</p>
-<form method="post">
-    {% csrf_token %}
-    <a href="{% url 'admin_panel:skill_list' %}" class="btn btn-outline-secondary">Cancel</a>
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
+{% url 'admin_panel:skill_list' as list_url %}
+{% with name=object.name %}
+    {% include 'admin_panel/partials/_confirm_delete.html' with noun="skill" %}
+{% endwith %}
 {% endblock %}

@@ -1,146 +1,99 @@
 {% extends 'admin_panel/base.html' %}
-{% load static %}
 
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2 fw-bold mb-0">Edit Profile</h1>
-    <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
-    </a>
-</div>
-
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4 p-md-5">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">Name</label>
-                    {{ form.name }}
-                    {% if form.name.errors %}
-                        <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">Title</label>
-                    {{ form.title }}
-                    {% if form.title.errors %}
-                        <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.bio.id_for_label }}" class="form-label fw-semibold">Bio</label>
-                    {{ form.bio }}
-                    {% if form.bio.errors %}
-                        <div class="invalid-feedback d-block">{{ form.bio.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">Email</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.phone.id_for_label }}" class="form-label fw-semibold">Phone</label>
-                    {{ form.phone }}
-                    {% if form.phone.errors %}
-                        <div class="invalid-feedback d-block">{{ form.phone.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.location.id_for_label }}" class="form-label fw-semibold">Location</label>
-                    {{ form.location }}
-                    {% if form.location.errors %}
-                        <div class="invalid-feedback d-block">{{ form.location.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.company.id_for_label }}" class="form-label fw-semibold">Company</label>
-                    {{ form.company }}
-                    {% if form.company.errors %}
-                        <div class="invalid-feedback d-block">{{ form.company.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.profile_image.id_for_label }}" class="form-label fw-semibold">Profile Image</label>
-                    {{ form.profile_image }}
-                    {% if profile and profile.profile_image %}
-                        <div class="mt-2">
-                            <img src="{{ profile.profile_image.url }}" alt="Current" class="img-fluid rounded" style="max-height: 100px;">
-                        </div>
-                    {% endif %}
-                    {% if form.profile_image.errors %}
-                        <div class="invalid-feedback d-block">{{ form.profile_image.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.logo.id_for_label }}" class="form-label fw-semibold">Logo</label>
-                    {{ form.logo }}
-                    {% if profile and profile.logo %}
-                        <div class="mt-2">
-                            <img src="{{ profile.logo.url }}" alt="Current Logo" class="img-fluid rounded" style="max-height: 100px;">
-                        </div>
-                    {% endif %}
-                    {% if form.logo.errors %}
-                        <div class="invalid-feedback d-block">{{ form.logo.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.cv_file.id_for_label }}" class="form-label fw-semibold">CV File</label>
-                    {{ form.cv_file }}
-                    {% if profile and profile.cv_file %}
-                        <div class="mt-2">
-                            <a href="{{ profile.cv_file.url }}" class="text-muted small"><i class="fas fa-file-pdf me-1"></i>Current CV</a>
-                        </div>
-                    {% endif %}
-                    {% if form.cv_file.errors %}
-                        <div class="invalid-feedback d-block">{{ form.cv_file.errors }}</div>
-                    {% endif %}
-                </div>
-
-                <hr class="my-4">
-
-                <h3 class="h5 fw-semibold">Social Links</h3>
-                <div class="col-12">
-                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label fw-semibold">LinkedIn</label>
-                    {{ form.linkedin_url }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.github_url.id_for_label }}" class="form-label fw-semibold">GitHub</label>
-                    {{ form.github_url }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.instagram_url.id_for_label }}" class="form-label fw-semibold">Instagram</label>
-                    {{ form.instagram_url }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.facebook_url.id_for_label }}" class="form-label fw-semibold">Facebook</label>
-                    {{ form.facebook_url }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.leetcode_url.id_for_label }}" class="form-label fw-semibold">LeetCode</label>
-                    {{ form.leetcode_url }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.gmail_address.id_for_label }}" class="form-label fw-semibold">Gmail</label>
-                    {{ form.gmail_address }}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.whatsapp_number.id_for_label }}" class="form-label fw-semibold">WhatsApp Number</label>
-                    {{ form.whatsapp_number }}
-                </div>
-
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4">
-                        <i class="fas fa-save me-1"></i>Save Profile
-                    </button>
-                </div>
-            </div>
-        </form>
+<div class="page-head">
+    <div>
+        <h1>Profile</h1>
+        <p class="page-sub">Your details as they appear on the website.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'home' %}" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-up-right-from-square me-1" aria-hidden="true"></i>View website
+        </a>
     </div>
 </div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-circle-exclamation mt-1" aria-hidden="true"></i>
+            <span>Please correct the highlighted fields below.</span>
+        </div>
+    {% endif %}
+
+    <section class="card form-section" aria-labelledby="sec-basic">
+        <div class="card-header d-block">
+            <h2 class="card-title-sm" id="sec-basic">Basic information</h2>
+            <p class="form-section-intro">Your name and introduction on the home and About pages.</p>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.name %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.title %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.company %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.location %}</div>
+                <div class="col-12">{% include 'admin_panel/partials/_field.html' with field=form.bio %}</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card form-section" aria-labelledby="sec-contact">
+        <div class="card-header d-block">
+            <h2 class="card-title-sm" id="sec-contact">Contact details</h2>
+            <p class="form-section-intro">How clients reach you, and where contact-form messages are sent.</p>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.email %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.phone %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.whatsapp_number %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.gmail_address %}</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card form-section" aria-labelledby="sec-files">
+        <div class="card-header d-block">
+            <h2 class="card-title-sm" id="sec-files">Photo and files</h2>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    {% if profile.profile_image %}<img src="{{ profile.profile_image.url }}" alt="Current profile photo" class="file-preview">{% endif %}
+                    {% include 'admin_panel/partials/_field.html' with field=form.profile_image %}
+                </div>
+                <div class="col-md-6">
+                    {% if profile.logo %}<img src="{{ profile.logo.url }}" alt="Current logo" class="file-preview" style="object-fit: contain;">{% endif %}
+                    {% include 'admin_panel/partials/_field.html' with field=form.logo %}
+                </div>
+                <div class="col-12">{% include 'admin_panel/partials/_field.html' with field=form.cv_file %}</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card form-section" aria-labelledby="sec-social">
+        <div class="card-header d-block">
+            <h2 class="card-title-sm" id="sec-social">Online profiles</h2>
+            <p class="form-section-intro">Full web addresses, e.g. https://www.linkedin.com/in/your-name/. Leave blank to hide.</p>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.linkedin_url %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.github_url %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.leetcode_url %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.facebook_url %}</div>
+                <div class="col-md-6">{% include 'admin_panel/partials/_field.html' with field=form.instagram_url %}</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="form-actions form-actions-sticky">
+        <span class="text-muted small me-auto">Changes appear on the website as soon as you save.</span>
+        <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>
 {% endblock %}

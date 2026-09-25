@@ -1,60 +1,68 @@
 {% extends 'admin_panel/base.html' %}
 {% block title %}Messages{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2">Messages</h1>
-</div>
-
-<div class="card card-list">
-  <div class="card-body p-3">
-    <div class="table-responsive">
-      <table class="table table-hover mb-0">
-        <thead>
-          <tr>
-            <th>From</th>
-            <th>Subject</th>
-            <th>Sent At</th>
-            <th>Read</th>
-            <th class="text-end">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for msg in messages_list %}
-            <tr>
-              <td>{{ msg.name }}<br><small class="text-muted">{{ msg.email }}</small></td>
-              <td>{{ msg.subject|truncatechars:60 }}</td>
-              <td>{{ msg.sent_at|date:"M d, Y H:i" }}</td>
-              <td>{% if msg.is_read %}<span class="badge bg-success">Read</span>{% else %}<span class="badge bg-danger">New</span>{% endif %}</td>
-              <td class="text-end">
-                <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-                {% if not msg.is_read %}
-                  <a href="{% url 'admin_panel:message_mark_read' msg.pk %}" class="btn btn-sm btn-outline-success">Mark Read</a>
-                {% else %}
-                  <a href="{% url 'admin_panel:message_mark_unread' msg.pk %}" class="btn btn-sm btn-outline-warning">Mark Unread</a>
-                {% endif %}
-                <a href="{% url 'admin_panel:contactmessage_delete' msg.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="5" class="text-muted">No messages yet.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<div class="page-head">
+    <div>
+        <h1>Messages</h1>
+        <p class="page-sub">
+            Sent through your website's contact form.
+            {% if unread_count %}<strong>{{ unread_count }} unread.</strong>{% endif %}
+        </p>
     </div>
-  </div>
+    {% if total_messages %}
+        <div class="page-actions">
+            <a href="{% url 'admin_panel:contactmessage_delete_all' %}" class="btn btn-outline-danger">
+                <i class="fas fa-trash-can me-1" aria-hidden="true"></i>Delete all messages
+            </a>
+        </div>
+    {% endif %}
 </div>
 
-{% if is_paginated %}
-<nav aria-label="Page navigation">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-    {% endif %}
-    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
-    {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
+<div class="card table-card">
+    <div class="card-header table-toolbar">
+        {% include 'admin_panel/partials/_search.html' with placeholder="Search messages" %}
+        <span class="table-count">{{ page_obj.paginator.count }} message{{ page_obj.paginator.count|pluralize }}{% if search_query %} found{% endif %}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">From</th>
+                    <th scope="col" class="d-none d-md-table-cell">Subject</th>
+                    <th scope="col" class="d-none d-lg-table-cell">Received</th>
+                    <th scope="col" class="d-none d-md-table-cell">Status</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in messages_list %}
+                    <tr{% if not msg.is_read %} class="row-unread"{% endif %}>
+                        <td>
+                            <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="cell-title">{{ msg.name }}</a>
+                            <span class="cell-sub">{{ msg.email }}</span>
+                            <span class="cell-sub d-md-none">{% if not msg.is_read %}<span class="pill pill-accent me-1">New</span>{% endif %}{{ msg.subject|truncatechars:50 }}</span>
+                        </td>
+                        <td class="d-none d-md-table-cell">{{ msg.subject|truncatechars:70 }}</td>
+                        <td class="text-muted text-nowrap d-none d-lg-table-cell">{{ msg.sent_at|date:"M j, Y, H:i" }}</td>
+                        <td class="d-none d-md-table-cell">{% if msg.is_read %}<span class="pill">Read</span>{% else %}<span class="pill pill-accent">New</span>{% endif %}</td>
+                        <td class="text-end">
+                            <span class="row-actions">
+                                <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="btn btn-sm btn-outline-secondary">Open</a>
+                                <a href="{% url 'admin_panel:contactmessage_delete' msg.pk %}" class="btn btn-sm btn-outline-danger btn-icon" title="Delete" aria-label="Delete message from {{ msg.name }}"><i class="fas fa-trash-can" aria-hidden="true"></i></a>
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="table-empty">
+                            <i class="fas fa-inbox" aria-hidden="true"></i>
+                            {% if search_query %}No messages match &ldquo;{{ search_query }}&rdquo;.{% else %}No messages yet. They will appear here when someone uses your contact form.{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'admin_panel/partials/_pagination.html' %}
 {% endblock %}

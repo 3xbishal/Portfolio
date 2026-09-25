@@ -1,112 +1,161 @@
 {% extends 'admin_panel/base.html' %}
-{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2 fw-bold mb-0">Dashboard</h1>
-    <a href="{% url 'admin_panel:profile_edit' %}" class="btn btn-outline-primary">
-        <i class="fas fa-user me-1"></i>Edit Profile
-    </a>
+<div class="page-head">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="page-sub">Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}. Here is an overview of your portfolio.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'home' %}" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-up-right-from-square me-1" aria-hidden="true"></i>View website
+        </a>
+        <a href="{% url 'admin_panel:project_add' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i>Add project
+        </a>
+    </div>
 </div>
 
-<!-- Stats Cards -->
+<!-- Overview -->
 <div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
-            <div class="display-6 text-primary mb-2"><i class="fas fa-folder-open"></i></div>
-            <h3 class="h4 fw-bold mb-1">{{ stats.projects }}</h3>
-            <p class="text-muted small mb-0">Projects</p>
-            <a href="{% url 'admin_panel:project_list' %}" class="stretched-link" aria-label="View projects"></a>
-        </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_panel:contactmessage_list' %}" class="stat-tile">
+            <span class="stat-label">Messages <i class="fas fa-envelope" aria-hidden="true"></i></span>
+            <div class="stat-value">{{ stats.messages }}</div>
+            <div class="stat-note{% if stats.unread_messages %} is-alert{% endif %}">
+                {% if stats.unread_messages %}{{ stats.unread_messages }} unread{% else %}All read{% endif %}
+            </div>
+        </a>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
-            <div class="display-6 text-primary mb-2"><i class="fas fa-star"></i></div>
-            <h3 class="h4 fw-bold mb-1">{{ stats.skills }}</h3>
-            <p class="text-muted small mb-0">Skills</p>
-            <a href="{% url 'admin_panel:skill_list' %}" class="stretched-link" aria-label="View skills"></a>
-        </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_panel:project_list' %}" class="stat-tile">
+            <span class="stat-label">Projects <i class="fas fa-folder-open" aria-hidden="true"></i></span>
+            <div class="stat-value">{{ stats.projects }}</div>
+            <div class="stat-note">Shown on the Projects page</div>
+        </a>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
-            <div class="display-6 text-primary mb-2"><i class="fas fa-briefcase"></i></div>
-            <h3 class="h4 fw-bold mb-1">{{ stats.experiences }}</h3>
-            <p class="text-muted small mb-0">Experience</p>
-            <a href="{% url 'admin_panel:experience_list' %}" class="stretched-link" aria-label="View experience"></a>
-        </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_panel:service_list' %}" class="stat-tile">
+            <span class="stat-label">Services <i class="fas fa-briefcase" aria-hidden="true"></i></span>
+            <div class="stat-value">{{ stats.services }}</div>
+            <div class="stat-note">{% if stats.services %}Shown on the home page{% else %}None added yet{% endif %}</div>
+        </a>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3 h-100 dashboard-card position-relative">
-            <div class="display-6 text-primary mb-2"><i class="fas fa-envelope"></i></div>
-            <h3 class="h4 fw-bold mb-1">{{ stats.messages }}</h3>
-            <p class="text-muted small mb-0">Messages</p>
-            <p class="text-muted small mb-0">({{ stats.unread_messages }} unread)</p>
-            <a href="{% url 'admin_panel:contactmessage_list' %}" class="stretched-link" aria-label="View messages"></a>
-        </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_panel:testimonial_list' %}" class="stat-tile">
+            <span class="stat-label">Testimonials <i class="fas fa-quote-left" aria-hidden="true"></i></span>
+            <div class="stat-value">{{ stats.testimonials }}</div>
+            <div class="stat-note">{% if stats.testimonials %}Shown on the home page{% else %}None added yet{% endif %}</div>
+        </a>
     </div>
 </div>
 
 <div class="row g-4">
-    <!-- Recent Projects -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
-                <h3 class="h6 fw-semibold mb-0">Recent Projects</h3>
-                <a href="{% url 'admin_panel:project_list' %}" class="text-muted small">View all</a>
+    <!-- Recent messages -->
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header">
+                <h2 class="card-title-sm">Recent messages</h2>
+                <a href="{% url 'admin_panel:contactmessage_list' %}" class="small">View all</a>
             </div>
-            <div class="card-body p-0">
-                {% if recent_projects %}
-                    <ul class="list-group list-group-flush">
-                        {% for project in recent_projects %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="fw-medium">{{ project.title }}</span>
-                                </div>
-                                <a href="{{ project.get_absolute_url }}" target="_blank" class="text-muted small">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+            {% if recent_messages %}
+                <ul class="list-plain">
+                    {% for msg in recent_messages %}
+                        <li>
+                            <div class="item-main">
+                                <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="item-title{% if not msg.is_read %} fw-bold{% endif %}">{{ msg.subject }}</a>
+                                <span class="item-meta">{{ msg.name }} &middot; {{ msg.sent_at|date:"M j, Y" }}</span>
+                            </div>
+                            {% if not msg.is_read %}<span class="pill pill-accent">New</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="card-body text-muted">
+                    No messages yet. Messages sent through your website's contact form will appear here.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Profile and shortcuts -->
+    <div class="col-lg-5">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title-sm">Your profile</h2>
+                <a href="{% url 'admin_panel:profile_edit' %}" class="small">Edit</a>
+            </div>
+            <div class="card-body">
+                {% if profile %}
+                    <div class="profile-summary">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="" class="avatar">
+                        {% else %}
+                            <span class="avatar" aria-hidden="true"><i class="fas fa-user"></i></span>
+                        {% endif %}
+                        <div class="min-w-0">
+                            <div class="fw-semibold">{{ profile.name }}</div>
+                            <div class="text-muted small">{{ profile.title }}{% if profile.location %} &middot; {{ profile.location }}{% endif %}</div>
+                            <div class="text-muted small text-break">{{ profile.email }}</div>
+                        </div>
+                    </div>
                 {% else %}
-                    <p class="text-muted p-3 mb-0">No projects yet.</p>
+                    <p class="text-muted mb-3">Your profile has not been set up yet.</p>
+                    <a href="{% url 'admin_panel:profile_edit' %}" class="btn btn-primary btn-sm">Set up profile</a>
                 {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title-sm">Shortcuts</h2>
+            </div>
+            <div class="card-body">
+                <div class="shortcut-grid">
+                    <a href="{% url 'admin_panel:project_add' %}" class="btn btn-outline-secondary btn-sm text-start"><i class="fas fa-plus me-2" aria-hidden="true"></i>Project</a>
+                    <a href="{% url 'admin_panel:service_add' %}" class="btn btn-outline-secondary btn-sm text-start"><i class="fas fa-plus me-2" aria-hidden="true"></i>Service</a>
+                    <a href="{% url 'admin_panel:testimonial_add' %}" class="btn btn-outline-secondary btn-sm text-start"><i class="fas fa-plus me-2" aria-hidden="true"></i>Testimonial</a>
+                    <a href="{% url 'admin_panel:skill_add' %}" class="btn btn-outline-secondary btn-sm text-start"><i class="fas fa-plus me-2" aria-hidden="true"></i>Skill</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Recent Messages -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
-                <h3 class="h6 fw-semibold mb-0">Recent Messages</h3>
-                <a href="{% url 'admin_panel:contactmessage_list' %}" class="text-muted small">View all</a>
+    <!-- Recent projects -->
+    <div class="col-12">
+        <div class="card table-card">
+            <div class="card-header">
+                <h2 class="card-title-sm">Recent projects</h2>
+                <a href="{% url 'admin_panel:project_list' %}" class="small">View all</a>
             </div>
-            <div class="card-body p-0">
-                {% if recent_messages %}
-                    <ul class="list-group list-group-flush">
-                        {% for msg in recent_messages %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="fw-medium">{{ msg.name }}</span>
-                                    <span class="text-muted small d-block">{{ msg.subject|truncatechars:40 }}</span>
-                                    <span class="text-muted small">{{ msg.sent_at|date:"M d, Y" }}</span>
-                                </div>
-                                {% if not msg.is_read %}
-                                    <span class="badge bg-danger">New</span>
-                                {% else %}
-                                    <a href="{% url 'admin_panel:contactmessage_detail' msg.pk %}" class="text-muted">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                {% endif %}
-                            </li>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Project</th>
+                            <th scope="col" class="d-none d-md-table-cell">Technologies</th>
+                            <th scope="col" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in recent_projects %}
+                            <tr>
+                                <td><a href="{% url 'admin_panel:project_edit' project.pk %}" class="cell-title">{{ project.title }}</a></td>
+                                <td class="text-muted d-none d-md-table-cell">{{ project.technologies_used|truncatechars:60|default:"—" }}</td>
+                                <td class="text-end">
+                                    <span class="row-actions">
+                                        <a href="{% url 'admin_panel:project_edit' project.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                        <a href="{{ project.get_absolute_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary btn-icon" title="View on website" aria-label="View {{ project.title }} on website"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                                    </span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3" class="table-empty">No projects yet.</td></tr>
                         {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted p-3 mb-0">No messages yet.</p>
-                {% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

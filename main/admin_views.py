@@ -59,6 +59,19 @@ class AdminRequiredMixin:
         return super().dispatch(*args, **kwargs)
 
 
+class DeleteSuccessMessageMixin:
+    """Show `success_message` after a record is deleted. (Since Django 4.0 a
+    DeleteView deletes in form_valid(), so overriding delete() no longer ran.)"""
+
+    success_message = ''
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.success_message:
+            messages.success(self.request, self.success_message)
+        return response
+
+
 class AdminSearchMixin:
     """Mixin to add simple query-based searching for admin list views."""
 
@@ -179,14 +192,11 @@ class SkillUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class SkillDeleteView(AdminRequiredMixin, DeleteView):
+class SkillDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Skill
     template_name = 'admin_panel/skill_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:skill_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Skill deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Skill deleted successfully.'
 
 
 # ---------------------------------------------------------------------------
@@ -223,14 +233,11 @@ class ProjectUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProjectDeleteView(AdminRequiredMixin, DeleteView):
+class ProjectDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Project
     template_name = 'admin_panel/project_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:project_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Project deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Project deleted successfully.'
 
 
 class ProjectMediaManageView(AdminRequiredMixin, TemplateView):
@@ -323,14 +330,11 @@ class ExperienceUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ExperienceDeleteView(AdminRequiredMixin, DeleteView):
+class ExperienceDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Experience
     template_name = 'admin_panel/experience_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:experience_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Experience entry deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Experience entry deleted successfully.'
 
 
 # ---------------------------------------------------------------------------
@@ -367,14 +371,11 @@ class EducationUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class EducationDeleteView(AdminRequiredMixin, DeleteView):
+class EducationDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Education
     template_name = 'admin_panel/education_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:education_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Education entry deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Education entry deleted successfully.'
 
 
 # ---------------------------------------------------------------------------
@@ -411,14 +412,11 @@ class TestimonialUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class TestimonialDeleteView(AdminRequiredMixin, DeleteView):
+class TestimonialDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Testimonial
     template_name = 'admin_panel/testimonial_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:testimonial_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Testimonial deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Testimonial deleted successfully.'
 
 
 # ---------------------------------------------------------------------------
@@ -430,7 +428,7 @@ class ServiceListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     template_name = 'admin_panel/service_list.html'
     context_object_name = 'services'
     paginate_by = 50
-    search_fields = ['name', 'description']
+    search_fields = ['title', 'description']
 
 
 class ServiceCreateView(AdminRequiredMixin, CreateView):
@@ -455,14 +453,11 @@ class ServiceUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ServiceDeleteView(AdminRequiredMixin, DeleteView):
+class ServiceDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = Service
     template_name = 'admin_panel/service_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:service_list')
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Service deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+    success_message = 'Service deleted successfully.'
 
 
 # ---------------------------------------------------------------------------
@@ -476,21 +471,49 @@ class ContactMessageListView(AdminRequiredMixin, AdminSearchMixin, ListView):
     paginate_by = 50
     search_fields = ['name', 'email', 'subject', 'message']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_messages'] = ContactMessage.objects.count()
+        return context
+
 
 class ContactMessageDetailView(AdminRequiredMixin, DetailView):
     model = ContactMessage
     template_name = 'admin_panel/contactmessage_detail.html'
     context_object_name = 'message_obj'
 
+    def get_object(self, queryset=None):
+        """Opening a message marks it as read, like an email inbox."""
+        obj = super().get_object(queryset)
+        if not obj.is_read:
+            obj.is_read = True
+            obj.save(update_fields=['is_read'])
+        return obj
 
-class ContactMessageDeleteView(AdminRequiredMixin, DeleteView):
+
+class ContactMessageDeleteView(AdminRequiredMixin, DeleteSuccessMessageMixin, DeleteView):
     model = ContactMessage
     template_name = 'admin_panel/contactmessage_confirm_delete.html'
     success_url = reverse_lazy('admin_panel:contactmessage_list')
+    success_message = 'Message deleted successfully.'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Message deleted successfully.')
-        return super().delete(request, *args, **kwargs)
+
+class ContactMessageDeleteAllView(AdminRequiredMixin, TemplateView):
+    """Confirm, then permanently delete every contact message."""
+    template_name = 'admin_panel/contactmessage_confirm_delete_all.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_messages'] = ContactMessage.objects.count()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        deleted, _ = ContactMessage.objects.all().delete()
+        if deleted:
+            messages.success(request, f'Deleted all messages ({deleted}).')
+        else:
+            messages.info(request, 'There were no messages to delete.')
+        return redirect('admin_panel:contactmessage_list')
 
 
 @admin_login_required

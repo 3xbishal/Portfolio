@@ -1,0 +1,18 @@
+{% comment %}
+File upload widget for the admin forms (replaces Django's plain
+"Currently: … Clear … Change:" text). Used by AdminBaseForm for every
+ClearableFileInput; it lives in the app's templates folder because form
+widgets are rendered by Django's form renderer, which reads app templates.
+{% endcomment %}
+{% if widget.is_initial %}
+<div class="file-current">
+    <span><span class="text-muted">Current file:</span> <a href="{{ widget.value.url }}" target="_blank" rel="noopener">{{ widget.value }}</a></span>
+    {% if not widget.required %}
+    <span class="form-check mb-0">
+        <input type="checkbox" class="form-check-input" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+        <label class="form-check-label" for="{{ widget.checkbox_id }}">Remove this file</label>
+    </span>
+    {% endif %}
+</div>
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>

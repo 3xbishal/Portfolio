@@ -4,7 +4,7 @@ Custom template tags and filters for the portfolio application.
 
 import re
 
-from django import template
+from django import forms, template
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
@@ -64,3 +64,13 @@ def strip(value):
     if not value:
         return ""
     return value.strip()
+
+
+@register.filter
+def admin_col(bound_field):
+    """Bootstrap column class for a field in the admin form grid: long text,
+    file uploads and checkboxes take the full row, short inputs share it."""
+    widget = bound_field.field.widget
+    if isinstance(widget, (forms.Textarea, forms.ClearableFileInput, forms.CheckboxInput)):
+        return 'col-12'
+    return 'col-md-6'

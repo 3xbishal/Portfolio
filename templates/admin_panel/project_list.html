@@ -1,53 +1,55 @@
 {% extends 'admin_panel/base.html' %}
 {% block title %}Projects{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2">Projects</h1>
-    <a href="{% url 'admin_panel:project_add' %}" class="btn btn-primary">Add Project</a>
-</div>
-
-<div class="card card-list">
-  <div class="card-body p-3">
-    <div class="table-responsive">
-      <table class="table table-hover mb-0">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Technologies</th>
-            <th class="text-end">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for project in projects %}
-            <tr>
-              <td>{{ project.title }}</td>
-              <td>{{ project.technologies_used|truncatechars:60|default:'-' }}</td>
-              <td class="text-end">
-                <a href="{% url 'admin_panel:project_media' project.pk %}" class="btn btn-sm btn-outline-secondary">Media</a>
-                <a href="{% url 'admin_panel:project_edit' project.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                <a href="{% url 'admin_panel:project_delete' project.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="5" class="text-muted">No projects yet.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<div class="page-head">
+    <div>
+        <h1>Projects</h1>
+        <p class="page-sub">Work shown on your website's Projects page. Newest first.</p>
     </div>
-  </div>
+    <div class="page-actions">
+        <a href="{% url 'admin_panel:project_add' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i>Add project
+        </a>
+    </div>
 </div>
 
-{% if is_paginated %}
-<nav aria-label="Page navigation">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-    {% endif %}
-    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
-    {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
+<div class="card table-card">
+    <div class="card-header table-toolbar">
+        {% include 'admin_panel/partials/_search.html' with placeholder="Search projects" %}
+        <span class="table-count">{{ page_obj.paginator.count }} {% if page_obj.paginator.count == 1 %}project{% else %}projects{% endif %}{% if search_query %} found{% endif %}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Project</th>
+                    <th scope="col" class="d-none d-md-table-cell">Technologies</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in projects %}
+                    <tr>
+                        <td><a href="{% url 'admin_panel:project_edit' obj.pk %}" class="cell-title">{{ obj.title }}</a><span class="cell-sub">{% if obj.showcased_design %}Links to the {{ obj.showcased_design }} design of this website{% else %}/projects/{{ obj.slug }}/{% endif %}</span></td>
+                        <td class="d-none d-md-table-cell"><span class="text-muted">{{ obj.technologies_used|truncatechars:60|default:"—" }}</span></td>
+                        <td class="text-end">
+                            <span class="row-actions">
+                                <a href="{% url 'admin_panel:project_media' obj.pk %}" class="btn btn-sm btn-outline-secondary">Media</a>
+                                <a href="{% url 'admin_panel:project_edit' obj.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'admin_panel:project_delete' obj.pk %}" class="btn btn-sm btn-outline-danger btn-icon" title="Delete" aria-label="Delete"><i class="fas fa-trash-can" aria-hidden="true"></i></a>
+                            </span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="table-empty">
+                            {% if search_query %}No projects match &ldquo;{{ search_query }}&rdquo;.{% else %}No projects yet. <a href="{% url 'admin_panel:project_add' %}">Add the first one</a>.{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'admin_panel/partials/_pagination.html' %}
 {% endblock %}

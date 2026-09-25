@@ -161,6 +161,18 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('project_detail', kwargs={'slug': self.slug})
 
+    def save(self, *args, **kwargs):
+        """Create a unique slug from the title when none is given, so every
+        project has a working page address (a blank slug broke the links)."""
+        if not self.slug:
+            base = slugify(self.title) or 'project'
+            slug, counter = base, 1
+            while Project.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f'{base}-{counter}'
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
     @property
     def showcased_design(self):
         """The site design this project showcases ('professional' or

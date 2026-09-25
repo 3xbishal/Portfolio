@@ -1,0 +1,20 @@
+{% comment %}
+Standard delete confirmation. Include from a *_confirm_delete.html template with:
+  noun      - lower-case name of the record, e.g. "project"
+  name      - what is being deleted, shown in quotes
+  list_url  - where Cancel goes
+  note      - optional extra sentence
+{% endcomment %}
+<div class="card confirm-card">
+    <div class="card-body p-4">
+        <span class="confirm-icon" aria-hidden="true"><i class="fas fa-trash-can"></i></span>
+        <h1 class="mb-2">Delete this {{ noun }}?</h1>
+        <p class="mb-1">&ldquo;{{ name }}&rdquo; will be permanently removed.{% if note %} {{ note }}{% endif %}</p>
+        <p class="text-muted mb-4">This cannot be undone.</p>
+        <form method="post" class="form-actions justify-content-start">
+            {% csrf_token %}
+            <a href="{{ list_url }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">Delete {{ noun }}</button>
+        </form>
+    </div>
+</div>

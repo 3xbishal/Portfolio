@@ -62,6 +62,7 @@ urlpatterns = [
 
     # Contact Messages
     path('messages/', admin_views.ContactMessageListView.as_view(), name='contactmessage_list'),
+    path('messages/delete-all/', admin_views.ContactMessageDeleteAllView.as_view(), name='contactmessage_delete_all'),
     path('messages/<int:pk>/', admin_views.ContactMessageDetailView.as_view(), name='contactmessage_detail'),
     path('messages/<int:pk>/delete/', admin_views.ContactMessageDeleteView.as_view(), name='contactmessage_delete'),
     path('messages/<int:pk>/mark-read/', admin_views.mark_message_read, name='message_mark_read'),

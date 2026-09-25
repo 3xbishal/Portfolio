@@ -1,0 +1,12 @@
+{% comment %}
+Search box for admin list pages (works with AdminSearchMixin's ?q=).
+Pass `placeholder`, e.g. include ... with placeholder="Search projects".
+{% endcomment %}
+<form method="get" class="list-search" role="search">
+    <div class="input-group input-group-sm">
+        <span class="input-group-text"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
+        <input type="search" name="q" value="{{ search_query }}" class="form-control"
+               placeholder="{{ placeholder|default:'Search' }}" aria-label="{{ placeholder|default:'Search' }}">
+        {% if search_query %}<a href="?" class="btn btn-outline-secondary">Clear</a>{% endif %}
+    </div>
+</form>

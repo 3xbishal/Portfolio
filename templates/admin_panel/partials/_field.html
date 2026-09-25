@@ -1,0 +1,18 @@
+{% comment %}
+One form field in the admin: label (with "optional" when not required),
+input, help text and errors. Checkboxes render as a Bootstrap form-check.
+Expects `field` (a bound field).
+{% endcomment %}
+{% if field.field.widget.input_type == 'checkbox' %}
+    <div class="form-check">
+        {{ field }}
+        <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+    </div>
+{% else %}
+    <label class="form-label" for="{{ field.id_for_label }}">
+        {{ field.label }}{% if not field.field.required %} <span class="optional">(optional)</span>{% endif %}
+    </label>
+    {{ field }}
+{% endif %}
+{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}

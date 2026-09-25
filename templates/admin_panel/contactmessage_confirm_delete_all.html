@@ -1,0 +1,26 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Delete all messages{% endblock %}
+{% block content %}
+<a href="{% url 'admin_panel:contactmessage_list' %}" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to messages</a>
+<div class="card confirm-card">
+    <div class="card-body p-4">
+        <span class="confirm-icon" aria-hidden="true"><i class="fas fa-trash-can"></i></span>
+        {% if total_messages %}
+            <h1 class="mb-2">Delete all messages?</h1>
+            <p class="mb-1">
+                All {{ total_messages }} message{{ total_messages|pluralize }} will be permanently deleted{% if unread_count %}, including {{ unread_count }} you have not read yet{% endif %}.
+            </p>
+            <p class="text-muted mb-4">This cannot be undone.</p>
+            <form method="post" class="form-actions justify-content-start">
+                {% csrf_token %}
+                <a href="{% url 'admin_panel:contactmessage_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger">Delete all messages</button>
+            </form>
+        {% else %}
+            <h1 class="mb-2">No messages to delete</h1>
+            <p class="text-muted mb-4">Your inbox is already empty.</p>
+            <a href="{% url 'admin_panel:contactmessage_list' %}" class="btn btn-outline-secondary">Back to messages</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
